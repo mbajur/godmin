@@ -155,10 +155,17 @@ module Godmin
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
+          elsif association && many_to_many_association?(association)
+            { "#{attribute.to_s.singularize}_ids".to_sym => [] }
           else
             attribute
           end
         end
+      end
+
+      def many_to_many_association?(association)
+        association.macro == :has_and_belongs_to_many ||
+          (association.macro == :has_many && association.options[:through].present?)
       end
 
       def redirect_after_create

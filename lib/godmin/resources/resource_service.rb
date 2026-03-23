@@ -29,7 +29,16 @@ module Godmin
 
       def resources_relation
         if options[:resource_parent].present?
-          resource_class.where(options[:resource_parent].class.name.underscore => options[:resource_parent])
+          parent = options[:resource_parent]
+          association_name = resource_class.name.underscore.pluralize.to_sym
+          reflection = parent.class.reflect_on_association(association_name)
+
+          if reflection && (reflection.macro == :has_and_belongs_to_many ||
+              (reflection.macro == :has_many && reflection.options[:through].present?))
+            parent.send(association_name)
+          else
+            resource_class.where(parent.class.name.underscore => parent)
+          end
         else
           resource_class.all
         end
@@ -83,6 +92,14 @@ module Godmin
         self.class.attrs_for_export
       end
 
+      def display_name(record)
+        record.to_s
+      end
+
+      def option_text_for_association(attribute)
+        self.class.association_option_texts[attribute] || :to_s
+      end
+
       module ClassMethods
         def attrs_for_index(*attrs)
           @attrs_for_index = attrs if attrs.present?
@@ -102,6 +119,15 @@ module Godmin
         def attrs_for_export(*attrs)
           @attrs_for_export = attrs if attrs.present?
           @attrs_for_export || []
+        end
+
+        def association_option_text(attribute, method_name)
+          @association_option_texts ||= {}
+          @association_option_texts[attribute] = method_name
+        end
+
+        def association_option_texts
+          @association_option_texts || {}
         end
       end
     end

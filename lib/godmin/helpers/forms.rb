@@ -34,6 +34,15 @@ module Godmin
           select("#{attribute}_id", association_collection_for_select(attribute), options, html_options.deep_merge(
             data: { behavior: "select-box" }
           ))
+        when :has_and_belongs_to_many, :has_many
+          if many_to_many_association?(attribute)
+            select("#{attribute.to_s.singularize}_ids", association_collection_for_select(attribute), { label: attribute.to_s.humanize }.merge(options), html_options.deep_merge(
+              multiple: true,
+              data: { behavior: "select-box" }
+            ))
+          else
+            input(attribute, options)
+          end
         else
           input(attribute, options)
         end
@@ -65,6 +74,13 @@ module Godmin
         association_reflection(attribute).try(:macro)
       end
 
+      def many_to_many_association?(attribute)
+        reflection = association_reflection(attribute)
+        return false unless reflection
+        reflection.macro == :has_and_belongs_to_many ||
+          (reflection.macro == :has_many && reflection.options[:through].present?)
+      end
+
       def association_collection(attribute)
         association_reflection(attribute).try(:klass).try(:all)
       end
@@ -74,7 +90,30 @@ module Godmin
       end
 
       def association_collection_for_select(attribute)
-        association_collection(attribute).map { |a| [a.to_s, a.id] }
+        klass = association_reflection(attribute).try(:klass)
+        service = associated_service_for(klass)
+        if service
+          association_collection(attribute).map { |a| [service.display_name(a), a.id] }
+        else
+          method_name = association_option_text(attribute)
+          association_collection(attribute).map { |a| [a.public_send(method_name), a.id] }
+        end
+      end
+
+      def resource_service
+        @template.instance_variable_get(:@resource_service)
+      end
+
+      def associated_service_for(klass)
+        return nil unless klass
+        service_class = "#{klass.name}Service".safe_constantize
+        service_class&.new
+      rescue StandardError
+        nil
+      end
+
+      def association_option_text(attribute)
+        resource_service&.option_text_for_association(attribute) || :to_s
       end
 
       def datetime_value(attribute, options, format)

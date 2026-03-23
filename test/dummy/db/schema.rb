@@ -43,6 +43,12 @@ ActiveRecord::Schema.define(version: 2021_05_19_215502) do
     t.index ["article_id"], name: "index_comments_on_article_id"
   end
 
+  create_table "articles_magazines", id: false, force: :cascade do |t|
+    t.integer "article_id", null: false
+    t.integer "magazine_id", null: false
+    t.index ["article_id", "magazine_id"], name: "index_articles_magazines_on_article_id_and_magazine_id"
+  end
+
   create_table "magazines", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false

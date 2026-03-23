@@ -25,5 +25,11 @@ module Godmin
     def test_attrs_for_export
       assert_equal [:id, :title], @article_service.attrs_for_export
     end
+
+    def test_display_name
+      record = Object.new
+      def record.to_s; "my record"; end
+      assert_equal "my record", @article_service.display_name(record)
+    end
   end
 end
