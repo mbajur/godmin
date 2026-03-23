@@ -13,6 +13,10 @@ module Godmin
         record.public_send(attribute)
       end
 
+      def find_associated_service_class(klass)
+        Godmin::ServiceLocator.find_service_class_for(klass, context_service_class: resource_service.class)
+      end
+
       def self.partial_index
         "godmin/fields/#{field_type}/index"
       end

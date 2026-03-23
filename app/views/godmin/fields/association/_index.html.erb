@@ -1,6 +1,6 @@
 <% value = field.value %>
 <% if value.respond_to?(:each) %>
-  <%= value.map(&:to_s).join(", ") %>
+  <%= value.map { |v| field.display_name_for(v) }.join(", ") %>
 <% else %>
-  <%= value %>
+  <%= field.display_name_for(value) %>
 <% end %>

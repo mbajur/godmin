@@ -170,7 +170,7 @@ module Godmin
       end
 
       def nested_attribute_permit_list(association)
-        service_class = "#{association.klass.name}Service".safe_constantize
+        service_class = Godmin::ServiceLocator.find_service_class_for(association.klass, context_service_class: @resource_service.class)
         attrs = service_class&.attrs_for_form || []
         [:id] + attrs.map(&:name)
       end
