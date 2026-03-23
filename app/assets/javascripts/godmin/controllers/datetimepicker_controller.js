@@ -19,6 +19,6 @@ export default class extends Controller {
   disconnect() {
     if (typeof $ === "undefined" || !$.fn.datetimepicker) return
     const picker = $(this.element).data("DateTimePicker")
-    if (picker) picker.remove()
+    if (picker) picker.destroy()
   }
 }
