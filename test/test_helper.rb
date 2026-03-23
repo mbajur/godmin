@@ -9,7 +9,7 @@ require "minitest/reporters"
 require "pry"
 
 require File.expand_path("../fakes/article.rb", __FILE__)
-require File.expand_path("../fakes/article_service.rb", __FILE__)
+require File.expand_path("../fakes/article_resource.rb", __FILE__)
 
 Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(
   color: true

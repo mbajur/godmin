@@ -23,7 +23,7 @@ module Admin
     end
 
     def resource_service_class
-      Admin::ArticleService
+      Admin::ArticleResource
     end
   end
 end

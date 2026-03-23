@@ -20,6 +20,7 @@ require "godmin/field/nested_has_one"
 require "godmin/paginator"
 require "godmin/resolver"
 require "godmin/resources/resource_controller"
+require "godmin/resources/resource"
 require "godmin/resources/resource_service"
 require "godmin/version"
 
