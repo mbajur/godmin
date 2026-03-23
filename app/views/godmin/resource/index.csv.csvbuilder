@@ -1,5 +1,5 @@
-csv << @resource_service.attrs_for_export
+csv << @resource_service.attrs_for_export.map(&:name)
 
 @resources.limit(nil).offset(nil).each do |resource|
-  csv << @resource_service.attrs_for_export.map { |attr| resource.send(attr) }
+  csv << @resource_service.attrs_for_export.map { |attr| resource.send(attr.name) }
 end

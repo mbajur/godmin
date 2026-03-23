@@ -1,10 +1,7 @@
 <%= form_for @resource do |f| %>
   <% @resource_service.attrs_for_form.each do |attribute| %>
-    <% if f.object.class.reflect_on_association(attribute) %>
-      <%= f.association attribute %>
-    <% else %>
-      <%= f.input attribute %>
-    <% end %>
+    <% field = attribute.to_field(record: @resource, resource_service: @resource_service) %>
+    <%= render partial: field.class.partial_form, locals: { field: field, f: f } %>
   <% end %>
   <%= f.submit %>
 <% end %>

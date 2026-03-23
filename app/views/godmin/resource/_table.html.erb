@@ -8,9 +8,9 @@
         <% if @resource_service.include_batch_actions? %>
           <th></th>
         <% end %>
-        <% @resource_service.attrs_for_index.each do |attr| %>
-          <th class="column-<%= attr %>">
-            <%= column_header attr %>
+        <% @resource_service.attrs_for_index.each do |attribute| %>
+          <th class="column-<%= attribute.name %>">
+            <%= column_header attribute %>
           </th>
         <% end %>
         <th></th>
@@ -25,9 +25,12 @@
                 data: { behavior: "batch-actions-checkbox" } %>
             </td>
           <% end %>
-          <% @resource_service.attrs_for_index.each do |attr| %>
+          <% @resource_service.attrs_for_index.each do |attribute| %>
             <td>
-              <%= column_value(resource, attr) %>
+              <% field = attribute.to_field(record: resource, resource_service: @resource_service) %>
+              <%= partial_override "#{controller_path}/columns/#{attribute.name}", resource: resource do %>
+                <%= render partial: field.class.partial_index, locals: { field: field } %>
+              <% end %>
             </td>
           <% end %>
           <td>

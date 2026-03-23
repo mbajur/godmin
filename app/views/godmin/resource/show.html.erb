@@ -1,10 +1,11 @@
 <%= render partial: "breadcrumb" %>
 
 <table class="table">
-  <% @resource_service.attrs_for_show.each do |attr| %>
+  <% @resource_service.attrs_for_show.each do |attribute| %>
+    <% field = attribute.to_field(record: @resource, resource_service: @resource_service) %>
     <tr>
-      <th><%= @resource_class.human_attribute_name(attr) %></th>
-      <td><%= column_value(@resource, attr) %></td>
+      <th><%= @resource_class.human_attribute_name(attribute.name) %></th>
+      <td><%= render partial: field.class.partial_show, locals: { field: field } %></td>
     </tr>
   <% end %>
 </table>

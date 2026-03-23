@@ -1,0 +1,6 @@
+<% value = field.value %>
+<% if value.respond_to?(:each) %>
+  <%= value.map(&:to_s).join(", ") %>
+<% else %>
+  <%= value %>
+<% end %>
