@@ -19,6 +19,11 @@ jobs:
         ruby: ["3.0.1", "3.1.1"]
         gemfile:
           - gemfiles/rails_7.gemfile
+        include:
+          - ruby: "3.2"
+            gemfile: gemfiles/rails_8.gemfile
+          - ruby: "3.3"
+            gemfile: gemfiles/rails_8.gemfile
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
