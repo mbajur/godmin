@@ -3,7 +3,7 @@ class ArticleService
 
   attrs_for_index :id, :title, :non_orderable_column, :admin_user, :published, :created_at
   attrs_for_show :id, :title, :body, :admin_user, :published
-  attrs_for_form :title, :body, :admin_user, :published
+  attrs_for_form :title, :body, :admin_user, :published, :magazines
 
   has_many :comments
 
