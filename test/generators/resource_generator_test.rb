@@ -76,6 +76,9 @@ module Godmin
       system! "cd #{destination_root} && rails new . --skip-test --skip-spring --skip-bundle --skip-git --quiet"
       ensure_sprockets_manifest(destination_root)
       system! "cd #{destination_root} && bin/rails plugin new fakemin --mountable --quiet"
+      # The plugin's generated dummy app also needs a Sprockets manifest when
+      # booted via godmin's bundle (which includes sprockets-rails).
+      ensure_sprockets_manifest(File.join(destination_root, "fakemin", "test", "dummy"))
       system! "cd #{destination_root} && fakemin/bin/rails generate godmin:install --quiet"
       system! "cd #{destination_root} && fakemin/bin/rails generate godmin:resource foo bar --quiet"
 
