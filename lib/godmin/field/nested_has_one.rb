@@ -30,9 +30,7 @@ module Godmin
       end
 
       def associated_service_class
-        return nil unless associated_model_class
-
-        "#{associated_model_class.name}Service".safe_constantize
+        find_associated_service_class(associated_model_class)
       end
     end
   end

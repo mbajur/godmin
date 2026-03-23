@@ -39,16 +39,16 @@ module Godmin
         service ? service.display_name(associated_record) : associated_record.to_s
       end
 
-      private
-
       def associated_service
         @associated_service ||= begin
-          service_class = "#{reflection&.klass&.name}Service".safe_constantize
+          service_class = find_associated_service_class(reflection&.klass)
           service_class&.new
         rescue StandardError
           nil
         end
       end
+
+      private
 
       def macro
         reflection&.macro

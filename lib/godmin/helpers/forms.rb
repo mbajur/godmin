@@ -103,7 +103,8 @@ module Godmin
 
       def associated_service_for(klass)
         return nil unless klass
-        service_class = "#{klass.name}Service".safe_constantize
+
+        service_class = Godmin::ServiceLocator.find_service_class_for(klass, context_service_class: resource_service&.class)
         service_class&.new
       rescue StandardError
         nil
