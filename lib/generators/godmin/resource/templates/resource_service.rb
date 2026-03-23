@@ -2,8 +2,22 @@
 class <%= class_name %>Service
   include Godmin::Resources::ResourceService
 
-  attrs_for_index <%= @attributes.map { |x| ":#{x}" }.join(", ") %>
-  attrs_for_show <%= @attributes.map { |x| ":#{x}" }.join(", ") %>
-  attrs_for_form <%= @attributes.map { |x| ":#{x}" }.join(", ") %>
+  index do
+<% @attributes.each do |x| -%>
+    attribute :<%= x %>
+<% end -%>
+  end
+
+  show do
+<% @attributes.each do |x| -%>
+    attribute :<%= x %>
+<% end -%>
+  end
+
+  form do
+<% @attributes.each do |x| -%>
+    attribute :<%= x %>
+<% end -%>
+  end
 end
 <% end -%>

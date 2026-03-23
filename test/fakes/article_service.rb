@@ -4,10 +4,28 @@ module Fakes
 
     attr_accessor :called_methods
 
-    attrs_for_index :id, :title, :country
-    attrs_for_show :title, :country
-    attrs_for_form :id, :title, :country, :body
-    attrs_for_export :id, :title
+    index do
+      attribute :id
+      attribute :title
+      attribute :country
+    end
+
+    show do
+      attribute :title
+      attribute :country
+    end
+
+    form do
+      attribute :id
+      attribute :title
+      attribute :country
+      attribute :body
+    end
+
+    export do
+      attribute :id
+      attribute :title
+    end
 
     scope :unpublished, default: true
     scope :published

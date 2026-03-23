@@ -1,7 +1,19 @@
 class CommentService
   include Godmin::Resources::ResourceService
 
-  attrs_for_index :id, :title
-  attrs_for_show :id, :title, :body
-  attrs_for_form :title, :body
+  index do
+    attribute :id
+    attribute :title
+  end
+
+  show do
+    attribute :id
+    attribute :title
+    attribute :body
+  end
+
+  form do
+    attribute :title
+    attribute :body
+  end
 end

@@ -1,9 +1,30 @@
 class ArticleService
   include Godmin::Resources::ResourceService
 
-  attrs_for_index :id, :title, :non_orderable_column, :admin_user, :published, :created_at
-  attrs_for_show :id, :title, :body, :admin_user, :published
-  attrs_for_form :title, :body, :admin_user, :published, :magazines
+  index do
+    attribute :id
+    attribute :title
+    attribute :non_orderable_column
+    attribute :admin_user
+    attribute :published
+    attribute :created_at
+  end
+
+  show do
+    attribute :id
+    attribute :title
+    attribute :body
+    attribute :admin_user
+    attribute :published
+  end
+
+  form do
+    attribute :title
+    attribute :body
+    attribute :admin_user
+    attribute :published
+    attribute :magazines
+  end
   association_option_text :magazines, :name
 
   has_many :comments

@@ -10,6 +10,18 @@ module Godmin
     module ResourceService
       extend ActiveSupport::Concern
 
+      class AttributeBuilder
+        attr_reader :attributes
+
+        def initialize
+          @attributes = []
+        end
+
+        def attribute(name)
+          @attributes << name
+        end
+      end
+
       include Associations
       include BatchActions
       include Filters
@@ -101,23 +113,55 @@ module Godmin
       end
 
       module ClassMethods
-        def attrs_for_index(*attrs)
-          @attrs_for_index = attrs if attrs.present?
+        def index(&block)
+          if block_given?
+            builder = AttributeBuilder.new
+            builder.instance_eval(&block)
+            @attrs_for_index = builder.attributes
+          end
           @attrs_for_index || []
         end
 
-        def attrs_for_show(*attrs)
-          @attrs_for_show = attrs if attrs.present?
+        def show(&block)
+          if block_given?
+            builder = AttributeBuilder.new
+            builder.instance_eval(&block)
+            @attrs_for_show = builder.attributes
+          end
           @attrs_for_show || []
         end
 
-        def attrs_for_form(*attrs)
-          @attrs_for_form = attrs if attrs.present?
+        def form(&block)
+          if block_given?
+            builder = AttributeBuilder.new
+            builder.instance_eval(&block)
+            @attrs_for_form = builder.attributes
+          end
           @attrs_for_form || []
         end
 
-        def attrs_for_export(*attrs)
-          @attrs_for_export = attrs if attrs.present?
+        def export(&block)
+          if block_given?
+            builder = AttributeBuilder.new
+            builder.instance_eval(&block)
+            @attrs_for_export = builder.attributes
+          end
+          @attrs_for_export || []
+        end
+
+        def attrs_for_index
+          @attrs_for_index || []
+        end
+
+        def attrs_for_show
+          @attrs_for_show || []
+        end
+
+        def attrs_for_form
+          @attrs_for_form || []
+        end
+
+        def attrs_for_export
           @attrs_for_export || []
         end
 

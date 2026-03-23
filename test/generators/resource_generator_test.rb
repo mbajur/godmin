@@ -43,9 +43,17 @@ module Godmin
           class FooService
             include Godmin::Resources::ResourceService
 
-            attrs_for_index :bar
-            attrs_for_show :bar
-            attrs_for_form :bar
+            index do
+              attribute :bar
+            end
+
+            show do
+              attribute :bar
+            end
+
+            form do
+              attribute :bar
+            end
           end
         CONTENT
         assert_match expected_content, content
@@ -78,9 +86,17 @@ module Godmin
             class FooService
               include Godmin::Resources::ResourceService
 
-              attrs_for_index :bar
-              attrs_for_show :bar
-              attrs_for_form :bar
+              index do
+                attribute :bar
+              end
+
+              show do
+                attribute :bar
+              end
+
+              form do
+                attribute :bar
+              end
             end
           end
         CONTENT
