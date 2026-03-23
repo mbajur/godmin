@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/css/selectize.bootstrap3.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
     <%= stylesheet_link_tag "godmin/index", media: "all" %>
-    <%= stylesheet_link_tag File.join(engine_wrapper.namespaced_path, "application").gsub(/^\//, ""), media: "all" %>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-Mk0jIyllwBT1W9yqBtszOQ2FcAioiLjNTXY3peaVnCiq6CH5NE9N3Komy7Eu9rPw" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" crossorigin="anonymous"></script>
@@ -17,7 +17,7 @@
     <%= javascript_include_tag "godmin/datetimepickers" %>
     <%= javascript_include_tag "godmin/navigation" %>
     <%= javascript_include_tag "godmin/select-boxes" %>
-    <%= javascript_include_tag File.join(engine_wrapper.namespaced_path, "application").gsub(/^\//, "") %>
+
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= yield :head %>
