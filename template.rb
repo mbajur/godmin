@@ -226,13 +226,44 @@ def modify_article_service(namespace = nil)
       "app/services/article_service.rb"
     end
 
-  gsub_file article_service, "attrs_for_index", "attrs_for_index :title, :author, :published_at"
-  gsub_file article_service, "attrs_for_show", "attrs_for_show :title, :body, :author, :published, :published_at"
-  gsub_file article_service, "attrs_for_form", "attrs_for_form :title, :body, :author, :published, :published_at"
+  gsub_file article_service, /  index do\n  end/, <<-SERVICE.chomp.indent(2)
+  index do
+    attribute :title
+    attribute :author
+    attribute :published_at
+  end
+  SERVICE
 
-  inject_into_file article_service, after: "attrs_for_form :title, :body, :author, :published, :published_at \n" do
+  gsub_file article_service, /  show do\n  end/, <<-SERVICE.chomp.indent(2)
+  show do
+    attribute :title
+    attribute :body
+    attribute :author
+    attribute :published
+    attribute :published_at
+  end
+  SERVICE
+
+  gsub_file article_service, /  form do\n  end/, <<-SERVICE.chomp.indent(2)
+  form do
+    attribute :title
+    attribute :body
+    attribute :author
+    attribute :published
+    attribute :published_at
+  end
+  SERVICE
+
+  inject_into_file article_service, before: namespace ? "\n  end\nend" : "\nend" do
     <<-END.strip_heredoc.indent(namespace ? 4 : 2)
-      attrs_for_export :id, :title, :author, :published, :published_at
+
+      export do
+        attribute :id
+        attribute :title
+        attribute :author
+        attribute :published
+        attribute :published_at
+      end
 
       scope :unpublished
       scope :published
@@ -287,13 +318,31 @@ def modify_author_service(namespace = nil)
       "app/services/author_service.rb"
     end
 
-  gsub_file author_service, "attrs_for_index", "attrs_for_index :name"
-  gsub_file author_service, "attrs_for_show", "attrs_for_show :name"
-  gsub_file author_service, "attrs_for_form", "attrs_for_form :name"
+  gsub_file author_service, /  index do\n  end/, <<-SERVICE.chomp.indent(2)
+  index do
+    attribute :name
+  end
+  SERVICE
 
-  inject_into_file author_service, after: "attrs_for_form :name \n" do
+  gsub_file author_service, /  show do\n  end/, <<-SERVICE.chomp.indent(2)
+  show do
+    attribute :name
+  end
+  SERVICE
+
+  gsub_file author_service, /  form do\n  end/, <<-SERVICE.chomp.indent(2)
+  form do
+    attribute :name
+  end
+  SERVICE
+
+  inject_into_file author_service, before: namespace ? "\n  end\nend" : "\nend" do
     <<-END.strip_heredoc.indent(namespace ? 4 : 2)
-      attrs_for_export :id, :name
+
+      export do
+        attribute :id
+        attribute :name
+      end
 
       filter :name
 
