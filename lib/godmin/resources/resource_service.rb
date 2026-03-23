@@ -92,6 +92,10 @@ module Godmin
         self.class.attrs_for_export
       end
 
+      def display_name(record)
+        record.to_s
+      end
+
       def option_text_for_association(attribute)
         self.class.association_option_texts[attribute] || :to_s
       end
