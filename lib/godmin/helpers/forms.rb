@@ -31,14 +31,11 @@ module Godmin
       def association(attribute, options = {}, html_options = {})
         case association_type(attribute)
         when :belongs_to
-          select("#{attribute}_id", association_collection_for_select(attribute), options, html_options.deep_merge(
-            data: { behavior: "select-box" }
-          ))
+          select("#{attribute}_id", association_collection_for_select(attribute), options, html_options)
         when :has_and_belongs_to_many, :has_many
           if many_to_many_association?(attribute)
             select("#{attribute.to_s.singularize}_ids", association_collection_for_select(attribute), { label: attribute.to_s.humanize }.merge(options), html_options.deep_merge(
-              multiple: true,
-              data: { behavior: "select-box" }
+              multiple: true
             ))
           else
             input(attribute, options)
