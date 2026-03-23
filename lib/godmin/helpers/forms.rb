@@ -90,7 +90,16 @@ module Godmin
       end
 
       def association_collection_for_select(attribute)
-        association_collection(attribute).map { |a| [a.to_s, a.id] }
+        method_name = association_option_text(attribute)
+        association_collection(attribute).map { |a| [a.public_send(method_name), a.id] }
+      end
+
+      def resource_service
+        @template.instance_variable_get(:@resource_service)
+      end
+
+      def association_option_text(attribute)
+        resource_service&.option_text_for_association(attribute) || :to_s
       end
 
       def datetime_value(attribute, options, format)

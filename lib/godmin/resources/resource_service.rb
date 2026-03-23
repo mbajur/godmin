@@ -92,6 +92,10 @@ module Godmin
         self.class.attrs_for_export
       end
 
+      def option_text_for_association(attribute)
+        self.class.association_option_texts[attribute] || :to_s
+      end
+
       module ClassMethods
         def attrs_for_index(*attrs)
           @attrs_for_index = attrs if attrs.present?
@@ -111,6 +115,15 @@ module Godmin
         def attrs_for_export(*attrs)
           @attrs_for_export = attrs if attrs.present?
           @attrs_for_export || []
+        end
+
+        def association_option_text(attribute, method_name)
+          @association_option_texts ||= {}
+          @association_option_texts[attribute] = method_name
+        end
+
+        def association_option_texts
+          @association_option_texts || {}
         end
       end
     end
