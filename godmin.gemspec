@@ -20,15 +20,11 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency "bcrypt", [">= 3.0", "< 4.0"]
-  gem.add_dependency "bootstrap-sass", "~> 3.3"
   gem.add_dependency "bootstrap_form", "~> 2.4"
   gem.add_dependency "csv", ">= 3.0"
   gem.add_dependency "csv_builder", "~> 2.1"
-  gem.add_dependency "jquery-rails", [">= 4.0", "< 5.0"]
-  gem.add_dependency "momentjs-rails", "~> 2.8"
   gem.add_dependency "pundit", [">= 2.2.0", "< 3.0"]
   gem.add_dependency "rails", [">= 5.0", "< 9.0"]
-  gem.add_dependency "selectize-rails", "~> 0.12"
 
   gem.add_development_dependency "appraisal"
   gem.add_development_dependency "bootsnap"
