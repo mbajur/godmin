@@ -23,6 +23,11 @@ class Godmin::InstallGenerator < Godmin::Generators::Base
 
   def modify_application_js
     application_js = File.join("app/assets/javascripts", namespaced_path, "application.js")
+    application_js_full = File.join(destination_root, application_js)
+
+    # Rails 8 with Propshaft does not create app/assets/javascripts/application.js;
+    # skip this step when the file doesn't exist.
+    return unless File.exist?(application_js_full)
 
     inject_into_file application_js, before: "//= require_tree ." do
       <<-END.strip_heredoc
@@ -36,7 +41,14 @@ class Godmin::InstallGenerator < Godmin::Generators::Base
   end
 
   def modify_application_css
-    inject_into_file File.join("app/assets/stylesheets", namespaced_path, "application.css"), before: " *= require_tree ." do
+    application_css = File.join("app/assets/stylesheets", namespaced_path, "application.css")
+    application_css_full = File.join(destination_root, application_css)
+
+    # Rails 8 with Propshaft uses plain CSS without Sprockets directives;
+    # skip this step when the file doesn't exist.
+    return unless File.exist?(application_css_full)
+
+    inject_into_file application_css, before: " *= require_tree ." do
       " *= require godmin\n"
     end
   end
