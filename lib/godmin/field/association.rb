@@ -25,17 +25,30 @@ module Godmin
         klass = reflection&.klass
         return [] unless klass
 
-        service_class = "#{klass.name}Service".safe_constantize
-        if service_class
-          service = service_class.new
-          klass.all.map { |a| [service.display_name(a), a.id] }
+        if associated_service
+          klass.all.map { |a| [display_name_for(a), a.id] }
         else
           method_name = resource_service.option_text_for_association(attribute)
           klass.all.map { |a| [a.public_send(method_name), a.id] }
         end
       end
 
+      def display_name_for(associated_record)
+        return nil unless associated_record
+        service = associated_service
+        service ? service.display_name(associated_record) : associated_record.to_s
+      end
+
       private
+
+      def associated_service
+        @associated_service ||= begin
+          service_class = "#{reflection&.klass&.name}Service".safe_constantize
+          service_class&.new
+        rescue StandardError
+          nil
+        end
+      end
 
       def macro
         reflection&.macro
