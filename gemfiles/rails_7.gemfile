@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gem "admin", path: "../test/dummy/admin", group: [:test, :development]
-gem "rails", "~> 7.0"
-gem "tsort"
+gem "rails", "~> 7.0.0"
+gem "rack", "< 3"
 
 gemspec path: "../"

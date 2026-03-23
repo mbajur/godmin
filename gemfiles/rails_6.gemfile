@@ -4,7 +4,6 @@ source "https://rubygems.org"
 
 gem "admin", path: "../test/dummy/admin", group: [:test, :development]
 gem "rails", "~> 6.1"
-gem "logger"
 gem "net-imap", require: false
 gem "net-pop", require: false
 gem "net-smtp", require: false
