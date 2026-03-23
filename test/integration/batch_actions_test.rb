@@ -9,7 +9,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     visit articles_path
 
-    all("[data-behavior~=batch-actions-checkbox]").each(&:click)
+    all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
       click_link "Destroy"
     end
@@ -28,7 +28,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     visit articles_path(scope: :unpublished)
 
-    all("[data-behavior~=batch-actions-checkbox]").each(&:click)
+    all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
       click_link "Publish"
     end
@@ -46,7 +46,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     visit articles_path(scope: :unpublished)
 
-    all("[data-behavior~=batch-actions-checkbox]").each(&:click)
+    all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
       assert page.has_content? "Publish"
       assert page.has_no_content? "Unpublish"
@@ -63,7 +63,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
     visit articles_path(scope: :no_batch_actions)
 
     assert page.has_no_content?("Select all")
-    assert page.has_no_css?("[data-behavior~=batch-actions-checkbox]")
+    assert page.has_no_css?("[data-batch-actions-target='checkbox']")
 
     Capybara.use_default_driver
   end

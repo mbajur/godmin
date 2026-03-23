@@ -9,7 +9,8 @@ module Godmin
           [*@resource_parents, @resource_class],
           class: "btn btn-default hidden",
           data: {
-            behavior: "batch-actions-action-link",
+            batch_actions_target: "actionLink",
+            action: "click->batch-actions#triggerAction",
             confirm: options[:confirm] ? translate_scoped("batch_actions.confirm_message") : false,
             value: name
           }
