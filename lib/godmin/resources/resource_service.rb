@@ -29,7 +29,16 @@ module Godmin
 
       def resources_relation
         if options[:resource_parent].present?
-          resource_class.where(options[:resource_parent].class.name.underscore => options[:resource_parent])
+          parent = options[:resource_parent]
+          association_name = resource_class.name.underscore.pluralize.to_sym
+          reflection = parent.class.reflect_on_association(association_name)
+
+          if reflection && (reflection.macro == :has_and_belongs_to_many ||
+              (reflection.macro == :has_many && reflection.options[:through].present?))
+            parent.send(association_name)
+          else
+            resource_class.where(parent.class.name.underscore => parent)
+          end
         else
           resource_class.all
         end
