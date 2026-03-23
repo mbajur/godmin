@@ -1,3 +1,5 @@
+require "importmap-rails"
+require "stimulus-rails"
 require "bootstrap_form"
 require "csv_builder"
 require "godmin/application_controller"
