@@ -90,12 +90,26 @@ module Godmin
       end
 
       def association_collection_for_select(attribute)
-        method_name = association_option_text(attribute)
-        association_collection(attribute).map { |a| [a.public_send(method_name), a.id] }
+        klass = association_reflection(attribute).try(:klass)
+        service = associated_service_for(klass)
+        if service
+          association_collection(attribute).map { |a| [service.display_name(a), a.id] }
+        else
+          method_name = association_option_text(attribute)
+          association_collection(attribute).map { |a| [a.public_send(method_name), a.id] }
+        end
       end
 
       def resource_service
         @template.instance_variable_get(:@resource_service)
+      end
+
+      def associated_service_for(klass)
+        return nil unless klass
+        service_class = "#{klass.name}Service".safe_constantize
+        service_class&.new
+      rescue StandardError
+        nil
       end
 
       def association_option_text(attribute)
