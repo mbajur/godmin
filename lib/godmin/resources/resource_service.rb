@@ -1,3 +1,4 @@
+require "godmin/resources/attribute"
 require "godmin/resources/resource_service/associations"
 require "godmin/resources/resource_service/batch_actions"
 require "godmin/resources/resource_service/filters"
@@ -17,8 +18,8 @@ module Godmin
           @attributes = []
         end
 
-        def attribute(name)
-          @attributes << name
+        def attribute(name, field: nil)
+          @attributes << Attribute.new(name, field_class: field)
         end
       end
 

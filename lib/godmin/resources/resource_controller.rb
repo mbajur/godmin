@@ -151,14 +151,14 @@ module Godmin
 
       def resource_params_defaults
         @resource_service.attrs_for_form.map do |attribute|
-          association = @resource_class.reflect_on_association(attribute)
+          association = @resource_class.reflect_on_association(attribute.name)
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
           elsif association && many_to_many_association?(association)
-            { "#{attribute.to_s.singularize}_ids".to_sym => [] }
+            { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
           else
-            attribute
+            attribute.name
           end
         end
       end
