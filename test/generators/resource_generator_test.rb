@@ -21,20 +21,8 @@ module Godmin
       system(cmd) or fail("Failed to execute: #{cmd}")
     end
 
-    # Rails 8 uses Propshaft by default but godmin's bundle includes Sprockets
-    # (via sass-rails / bootstrap-sass). When a generated Rails 8 app is booted
-    # using godmin's bundle, sprockets-rails is loaded and requires a manifest
-    # file to be present. Create it so the app can boot successfully.
-    def ensure_sprockets_manifest(app_root)
-      config_dir = File.join(app_root, "app", "assets", "config")
-      FileUtils.mkdir_p(config_dir)
-      manifest = File.join(config_dir, "manifest.js")
-      File.write(manifest, "//= link_tree ../images\n") unless File.exist?(manifest)
-    end
-
     def test_resource_generator_in_standalone_install
       system! "cd #{destination_root} && rails new . --skip-test --skip-spring --skip-bundle --skip-git --quiet"
-      ensure_sprockets_manifest(destination_root)
       system! "cd #{destination_root} && bin/rails generate godmin:install --quiet"
       system! "cd #{destination_root} && bin/rails generate godmin:resource foo bar --quiet"
 
@@ -74,11 +62,7 @@ module Godmin
 
     def test_resource_generator_in_engine_install
       system! "cd #{destination_root} && rails new . --skip-test --skip-spring --skip-bundle --skip-git --quiet"
-      ensure_sprockets_manifest(destination_root)
       system! "cd #{destination_root} && bin/rails plugin new fakemin --mountable --quiet"
-      # The plugin's generated dummy app also needs a Sprockets manifest when
-      # booted via godmin's bundle (which includes sprockets-rails).
-      ensure_sprockets_manifest(File.join(destination_root, "fakemin", "test", "dummy"))
       system! "cd #{destination_root} && fakemin/bin/rails generate godmin:install --quiet"
       system! "cd #{destination_root} && fakemin/bin/rails generate godmin:resource foo bar --quiet"
 

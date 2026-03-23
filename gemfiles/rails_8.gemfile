@@ -2,6 +2,7 @@
 
 source "https://rubygems.org"
 
+gem "propshaft"
 gem "admin", path: "../test/dummy/admin", group: [:test, :development]
 gem "rails", "~> 8.0"
 gem "sqlite3", ">= 2.1"
