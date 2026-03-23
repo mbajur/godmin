@@ -41,7 +41,11 @@ ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 require "capybara/cuprite"
 Capybara.javascript_driver = :cuprite
 Capybara.register_driver(:cuprite) do |app|
-  Capybara::Cuprite::Driver.new(app, window_size: [1200, 800])
+  Capybara::Cuprite::Driver.new(app,
+    window_size: [1200, 800],
+    process_timeout: 30,
+    browser_options: { 'no-sandbox': nil, 'disable-gpu': nil }
+  )
 end
 
 class ActionDispatch::IntegrationTest
