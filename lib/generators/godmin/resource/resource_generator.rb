@@ -25,7 +25,7 @@ class Godmin::ResourceGenerator < Godmin::Generators::NamedBase
     template "resource_controller.rb", File.join("app/controllers", class_path, "#{file_name.pluralize}_controller.rb")
   end
 
-  def create_service
-    template "resource_service.rb", File.join("app/services", class_path, "#{file_name}_service.rb")
+  def create_resource
+    template "resource.rb", File.join("app/resources", class_path, "#{file_name}_resource.rb")
   end
 end

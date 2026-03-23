@@ -6,6 +6,6 @@ class AuthenticatedArticlesController < ArticlesController
   end
 
   def resource_service_class
-    ArticleService
+    ArticleResource
   end
 end

@@ -4,8 +4,8 @@ module Godmin
   class ResourceControllerParamsTest < ActiveSupport::TestCase
     # Minimal stubs used exclusively in this test
     module TestScope
-      class ProfileService
-        include Godmin::Resources::ResourceService
+      class ProfileResource
+        include Godmin::Resources::Resource
 
         form do
           attribute :bio
@@ -33,8 +33,8 @@ module Godmin
         end
       end
 
-      class AuthorService
-        include Godmin::Resources::ResourceService
+      class AuthorResource
+        include Godmin::Resources::Resource
 
         form do
           attribute :name
@@ -66,7 +66,7 @@ module Godmin
     def setup
       @controller = TestScope::FakeController.new(
         TestScope::Author,
-        TestScope::AuthorService.new
+        TestScope::AuthorResource.new
       )
     end
 

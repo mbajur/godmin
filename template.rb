@@ -18,9 +18,9 @@ def install_standalone
     modify_routes
     modify_locales
     modify_models
-    modify_author_service
+    modify_author_resource
     modify_article_controller
-    modify_article_service
+    modify_article_resource
     modify_readme
 
     migrate_and_seed
@@ -62,9 +62,9 @@ def install_engine
     modify_routes("admin")
     modify_locales
     modify_models
-    modify_author_service("admin")
+    modify_author_resource("admin")
     modify_article_controller("admin")
-    modify_article_service("admin")
+    modify_article_resource("admin")
     modify_readme
 
     migrate_and_seed
@@ -218,12 +218,12 @@ def modify_article_controller(namespace = nil)
   end
 end
 
-def modify_article_service(namespace = nil)
+def modify_article_resource(namespace = nil)
   article_service =
     if namespace
-      "admin/app/services/admin/article_service.rb"
+      "admin/app/resources/admin/article_resource.rb"
     else
-      "app/services/article_service.rb"
+      "app/resources/article_resource.rb"
     end
 
   gsub_file article_service, /  index do\n  end/, <<-SERVICE.chomp.indent(2)
@@ -310,12 +310,12 @@ def modify_article_service(namespace = nil)
   end
 end
 
-def modify_author_service(namespace = nil)
+def modify_author_resource(namespace = nil)
   author_service =
     if namespace
-      "admin/app/services/admin/author_service.rb"
+      "admin/app/resources/admin/author_resource.rb"
     else
-      "app/services/author_service.rb"
+      "app/resources/author_resource.rb"
     end
 
   gsub_file author_service, /  index do\n  end/, <<-SERVICE.chomp.indent(2)

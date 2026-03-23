@@ -161,11 +161,11 @@ class ArticlesController < ApplicationController
 end
 ```
 
-It creates a service object:
+It creates a resource object:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   attrs_for_index :title, :published
   attrs_for_show :title, :published
@@ -188,7 +188,7 @@ By now we have a basic admin interface for managing articles.
 
 ## Resources
 
-As we saw in the example above, resources are divided into controllers and service objects. Actions, redirects, params permitting etc go in the controller while resource fetching, building, sorting, filtering etc go in the service object. This makes the service objects small and easy to test.
+As we saw in the example above, resources are divided into controllers and resource objects. Actions, redirects, params permitting etc go in the controller while resource fetching, building, sorting, filtering etc go in the resource object. This makes the resource objects small and easy to test.
 
 We have already seen three methods at play: `attrs_for_index`, `attrs_for_show` and `attrs_for_form`. We will now look at some additional resource concepts.
 
@@ -197,8 +197,8 @@ We have already seen three methods at play: `attrs_for_index`, `attrs_for_show` 
 Scopes are a way of sectioning resources, useful for quick navigation, and can be created as follows:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   scope :unpublished, default: true
   scope :published
@@ -218,8 +218,8 @@ end
 Filters offer great flexibility when it comes to searching for resources, and can be created as follows:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   filter :title
 
@@ -248,8 +248,8 @@ filter :category, as: :select, collection: -> { Category.all }, option_text: "ti
 Batch actions can be created as follows:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   batch_action :publish
   batch_action :unpublish
@@ -287,11 +287,11 @@ If you are using Godmin's built in authorization functionality you must [authori
 ### Custom ordering
 
 By default, Godmin supports ordering of database columns in the index view table. However, it cannot automatically sort associations, custom attributes and so on.
-If you want to order something that Godmin doesn't support out of the box, or you just want to customize how a columns is ordered, you can implement your own ordering functionality in the service object by creating a `order_by_<attribute>` method.
+If you want to order something that Godmin doesn't support out of the box, or you just want to customize how a columns is ordered, you can implement your own ordering functionality in the resource object by creating a `order_by_<attribute>` method.
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
   attrs_for_index :title, :author
 
   # resources is an ActiveRecord::Relation object
@@ -304,9 +304,9 @@ end
 
 ### Resource fetching, building and saving
 
-Resources are made available to the views through instance variables. The index view can access the resources using `@resources` while show, new and edit can access the single resource using `@resource`. In addition, the resource class is available as `@resource_class` and the service object is available as `@resource_service`.
+Resources are made available to the views through instance variables. The index view can access the resources using `@resources` while show, new and edit can access the single resource using `@resource`. In addition, the resource class is available as `@resource_class` and the resource object is available as `@resource_service`.
 
-In order to modify resource fetching and construction, these methods can be overridden per resource service:
+In order to modify resource fetching and construction, these methods can be overridden per resource:
 
 - `resource_class`
 - `resources_relation`
@@ -317,11 +317,11 @@ In order to modify resource fetching and construction, these methods can be over
 - `update_resource`
 - `destroy_resource`
 
-To change the class name of the resource from the default based on the service class name:
+To change the class name of the resource from the default based on the resource class name:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   def resource_class
     FooArticle
@@ -332,10 +332,10 @@ end
 To scope resources for quering and building, e.g. based on the signed in user:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
-  # The signed in admin user is available to all service objects via the options hash
+  # The signed in admin user is available to all resource objects via the options hash
   def resources_relation
     super.where(user: options[:admin_user])
   end
@@ -345,8 +345,8 @@ end
 To add to the index page resources query, e.g. to change the default order:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   def resources(params)
     super(params).order(author: :desc)
@@ -357,8 +357,8 @@ end
 To change the way a resource is fetched for `show`, `edit`, `update` and `destroy` actions:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   def find_resource(id)
     resources_relation.find_by(slug: id)
@@ -369,8 +369,8 @@ end
 To change the way a resource is constructed for `new` and `create` actions:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   def build_resource(_params)
     article = super
@@ -383,8 +383,8 @@ end
 To change the way a resource is saved in the `create` action:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   # This method should return true or false
   def create_resource(resource)
@@ -396,8 +396,8 @@ end
 To change the way a resource is saved in the `update` action:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   # This method should return true or false
   def update_resource(resource, params)
@@ -410,8 +410,8 @@ end
 To change the way a resource is destroyed in the `destroy` action:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   def destroy_resource(resource)
     resource.paranoid_destroy
@@ -435,9 +435,9 @@ class ArticlesController < ApplicationController
 end
 ```
 
-#### Passing parameters to the service object
+#### Passing parameters to the resource object
 
-Sometimes you want to pass additional params to the service object, other that those passed in `resource_params`. In order to do this, you need to pass them along when initializing the service object in the controller:
+Sometimes you want to pass additional params to the resource object, other that those passed in `resource_params`. In order to do this, you need to pass them along when initializing the resource object in the controller:
 
 ```ruby
 class ArticlesController < ApplicationController
@@ -453,11 +453,11 @@ class ArticlesController < ApplicationController
 end
 ```
 
-You can then access it from the service object:
+You can then access it from the resource object:
 
 ```ruby
-class ArticleService
-  include Godmin::Resources::ResourceService
+class ArticleResource
+  include Godmin::Resources::Resource
 
   def some_method
     options[:some_param]
@@ -517,11 +517,11 @@ end
 
 ### Pagination
 
-If you wish to change the number of resources per page, you can override the `per_page` method in the service object:
+If you wish to change the number of resources per page, you can override the `per_page` method in the resource object:
 
 ```ruby
-class ArticlesService
-  include Godmin::Resources::ResourceService
+class ArticlesResource
+  include Godmin::Resources::Resource
 
   def per_page
     50
@@ -531,11 +531,11 @@ end
 
 ### Exporting
 
-The `attrs_for_export` method in the service object makes it possible to mark attributes or methods on the model as exportable. When implemented, an export button will appear on the index page with options for both CSV and JSON export.
+The `attrs_for_export` method in the resource object makes it possible to mark attributes or methods on the model as exportable. When implemented, an export button will appear on the index page with options for both CSV and JSON export.
 
 ```ruby
-class ArticlesService
-  include Godmin::Resources::ResourceService
+class ArticlesResource
+  include Godmin::Resources::Resource
 
   attrs_for_export :id, :title, :created_at, :updated_at
 end
@@ -553,11 +553,11 @@ end
 
 This will set up scoping of the nested resource as well as correct links in the breadcrumb.
 
-If you want to add a link to the nested resource from the parent's show and edit pages, you can add the following to the service object:
+If you want to add a link to the nested resource from the parent's show and edit pages, you can add the following to the resource object:
 
 ```ruby
-class BlogService
-  include Godmin::Resources::ResourceService
+class BlogResource
+  include Godmin::Resources::Resource
 
   has_many :blog_posts
 end

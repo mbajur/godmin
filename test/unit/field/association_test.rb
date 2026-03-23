@@ -3,10 +3,10 @@ require "test_helper"
 module Godmin
   class AssociationFieldTest < ActiveSupport::TestCase
     # Fake classes scoped to this test. Museum#name returns its full constant
-    # path so that safe_constantize can resolve MuseumService the same way.
+    # path so that safe_constantize can resolve MuseumResource the same way.
     module TestScope
-      class MuseumService
-        include Godmin::Resources::ResourceService
+      class MuseumResource
+        include Godmin::Resources::Resource
 
         def display_name(record)
           "display: #{record.title}"
@@ -34,8 +34,8 @@ module Godmin
         end
       end
 
-      class UserService
-        include Godmin::Resources::ResourceService
+      class UserResource
+        include Godmin::Resources::Resource
       end
 
       class User
@@ -51,12 +51,12 @@ module Godmin
       Field::Association.new(
         attribute: :museum,
         record: TestScope::User.new,
-        resource_service: TestScope::UserService.new
+        resource_service: TestScope::UserResource.new
       )
     end
 
     def test_associated_service_finds_service_by_convention
-      assert_instance_of TestScope::MuseumService, build_field.associated_service
+      assert_instance_of TestScope::MuseumResource, build_field.associated_service
     end
 
     def test_display_name_for_uses_service_display_name

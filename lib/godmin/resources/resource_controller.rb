@@ -99,7 +99,7 @@ module Godmin
       end
 
       def resource_service_class
-        "#{controller_path.singularize}_service".classify.constantize
+        "#{controller_path.singularize}_resource".classify.constantize
       end
 
       def resource_service

@@ -38,10 +38,10 @@ module Godmin
         assert_match expected_content, content
       end
 
-      assert_file "app/services/foo_service.rb" do |content|
+      assert_file "app/resources/foo_resource.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          class FooService
-            include Godmin::Resources::ResourceService
+          class FooResource
+            include Godmin::Resources::Resource
 
             index do
               attribute :bar
@@ -80,11 +80,11 @@ module Godmin
         assert_match expected_content, content
       end
 
-      assert_file "fakemin/app/services/fakemin/foo_service.rb" do |content|
+      assert_file "fakemin/app/resources/fakemin/foo_resource.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
           module Fakemin
-            class FooService
-              include Godmin::Resources::ResourceService
+            class FooResource
+              include Godmin::Resources::Resource
 
               index do
                 attribute :bar

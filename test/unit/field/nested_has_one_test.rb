@@ -2,10 +2,10 @@ require "test_helper"
 
 module Godmin
   class NestedHasOneFieldTest < ActiveSupport::TestCase
-    # Minimal fake models and services used exclusively in this test
+    # Minimal fake models and resources used exclusively in this test
     module TestScope
-      class ProfileService
-        include Godmin::Resources::ResourceService
+      class ProfileResource
+        include Godmin::Resources::Resource
 
         index do
           attribute :bio
@@ -40,14 +40,14 @@ module Godmin
         end
       end
 
-      class ArticleService
-        include Godmin::Resources::ResourceService
+      class ArticleResource
+        include Godmin::Resources::Resource
       end
     end
 
     def setup
       @record = TestScope::Article.new
-      @resource_service = TestScope::ArticleService.new
+      @resource_service = TestScope::ArticleResource.new
       @field = Field::NestedHasOne.new(
         attribute: :profile,
         record: @record,
@@ -60,7 +60,7 @@ module Godmin
     end
 
     def test_associated_service_finds_service_by_convention
-      assert_instance_of TestScope::ProfileService, @field.associated_service
+      assert_instance_of TestScope::ProfileResource, @field.associated_service
     end
 
     def test_nested_attributes_returns_form_attrs_from_associated_service
