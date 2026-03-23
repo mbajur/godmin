@@ -28,7 +28,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "momentjs-rails", "~> 2.8"
   gem.add_dependency "pundit", [">= 2.2.0", "< 3.0"]
   gem.add_dependency "rails", [">= 5.0", "< 9.0"]
-  gem.add_dependency "sprockets-rails", ">= 3.0"
   gem.add_dependency "selectize-rails", "~> 0.12"
 
   gem.add_development_dependency "appraisal"
