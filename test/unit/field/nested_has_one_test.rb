@@ -11,6 +11,11 @@ module Godmin
           attribute :bio
           attribute :website
         end
+
+        form do
+          attribute :bio
+          attribute :website
+        end
       end
 
       class Profile
@@ -58,7 +63,7 @@ module Godmin
       assert_instance_of TestScope::ProfileService, @field.associated_service
     end
 
-    def test_nested_attributes_returns_index_attrs_from_associated_service
+    def test_nested_attributes_returns_form_attrs_from_associated_service
       attrs = @field.nested_attributes
       assert_equal [:bio, :website], attrs.map(&:name)
     end

@@ -16,7 +16,7 @@ module Godmin
       end
 
       def nested_attributes
-        associated_service&.attrs_for_index || []
+        associated_service&.attrs_for_form || []
       end
 
       private
