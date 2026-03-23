@@ -12,6 +12,11 @@ module Godmin
           (reflection.macro == :has_many && reflection.options[:through].present?)
       end
 
+      def has_many?
+        return false unless reflection
+        macro == :has_many && !many_to_many?
+      end
+
       def select_attribute
         belongs_to? ? :"#{attribute}_id" : :"#{attribute.to_s.singularize}_ids"
       end

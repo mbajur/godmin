@@ -22,14 +22,6 @@ body {
   min-width: 170px;
 }
 
-#filters .filter .form-control.selectize-control {
-  height: 34px;
-}
-
-#filters .filter .form-control.selectize-control.single .item {
-  padding-right: 25px;
-}
-
 #actions {
   margin-bottom: 20px;
 }

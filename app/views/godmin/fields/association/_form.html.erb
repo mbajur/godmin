@@ -1,7 +1,7 @@
 <% if field.belongs_to? %>
-  <%= f.select field.select_attribute, field.collection, {}, data: { controller: "select-box" } %>
-<% elsif field.many_to_many? %>
-  <%= f.select field.select_attribute, field.collection, { label: field.attribute.to_s.humanize }, multiple: true, data: { controller: "select-box" } %>
+  <%= f.select field.select_attribute, field.collection %>
+<% elsif field.many_to_many? || field.has_many? %>
+  <%= f.select field.select_attribute, field.collection, { label: field.attribute.to_s.humanize }, multiple: true %>
 <% else %>
   <%= f.text_field field.attribute %>
 <% end %>

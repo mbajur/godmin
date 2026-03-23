@@ -155,7 +155,7 @@ module Godmin
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
-          elsif association && many_to_many_association?(association)
+          elsif association && (many_to_many_association?(association) || has_many_association?(association))
             { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
           elsif association && nested_attributes_accepted?(attribute.name)
             { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
@@ -178,6 +178,10 @@ module Godmin
       def many_to_many_association?(association)
         association.macro == :has_and_belongs_to_many ||
           (association.macro == :has_many && association.options[:through].present?)
+      end
+
+      def has_many_association?(association)
+        association.macro == :has_many && !association.options[:through].present?
       end
 
       def redirect_after_create

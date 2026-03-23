@@ -108,7 +108,6 @@ module Godmin
             include_hidden: true,
             include_blank: true
           }.deep_merge(options), {
-            data: { behavior: "select-box" },
             wrapper_class: "filter"
           }.deep_merge(html_options)
         )
