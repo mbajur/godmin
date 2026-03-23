@@ -1,8 +1,8 @@
 <% if @resource_service.include_batch_actions? %>
   <%= link_to translate_scoped("batch_actions.buttons.select_all"), "#", class: "btn btn-default",
-    data: { behavior: "batch-actions-select batch-actions-select-all" } %>
+    data: { batch_actions_target: "selectAll", action: "click->batch-actions#toggle" } %>
   <%= link_to translate_scoped("batch_actions.buttons.deselect_all"), "#", class: "btn btn-default hidden",
-    data: { behavior: "batch-actions-select batch-actions-select-none" } %>
+    data: { batch_actions_target: "selectNone", action: "click->batch-actions#toggle" } %>
 
   <div class="btn-group">
     <% @resource_service.batch_action_map.each do |name, options| %>

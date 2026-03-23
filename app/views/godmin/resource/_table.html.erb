@@ -20,9 +20,11 @@
       <% @resources.each do |resource| %>
         <tr data-resource-id="<%= resource.id %>" class="<%= "highlight" if flash[:updated_ids] && flash[:updated_ids].include?(resource.id) %>">
           <% if @resource_service.include_batch_actions? %>
-            <td align="center" data-behavior="batch-actions-checkbox-container">
+            <td align="center"
+                data-batch-actions-target="checkboxContainer"
+                data-action="click->batch-actions#containerClick">
               <%= check_box_tag "batch_action[items][#{resource.id}]", nil, nil,
-                data: { behavior: "batch-actions-checkbox" } %>
+                data: { batch_actions_target: "checkbox", action: "change->batch-actions#checkboxChange" } %>
             </td>
           <% end %>
           <% @resource_service.attrs_for_index.each do |attribute| %>
