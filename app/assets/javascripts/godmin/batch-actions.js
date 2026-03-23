@@ -18,7 +18,7 @@ Godmin.BatchActions = (function() {
     $container.find('[data-behavior~=batch-actions-select]').on('click', toggleCheckboxes);
     $container.find('[data-behavior~=batch-actions-checkbox-container]').on('click', toggleCheckbox);
     $container.find('[data-behavior~=batch-actions-checkbox]').on('change', toggleActions);
-    $(document).delegate('[data-behavior~=batch-actions-action-link]', 'mousedown', triggerAction);
+    $(document).on('click', '[data-behavior~=batch-actions-action-link]', triggerAction);
   }
 
   function initializeState() {}
@@ -67,8 +67,21 @@ Godmin.BatchActions = (function() {
     }
   }
 
-  function triggerAction() {
-    $(this).attr('href', $(this).attr('href') + '/' + checkedCheckboxes() + '?batch_action=' + $(this).data('value'));
+  function triggerAction(e) {
+    e.preventDefault();
+
+    var action = $(this).attr('href') + '/' + checkedCheckboxes();
+    var batchAction = $(this).data('value');
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    var $form = $('<form>', { method: 'post', action: action });
+    $form.append($('<input>', { type: 'hidden', name: '_method', value: 'patch' }));
+    $form.append($('<input>', { type: 'hidden', name: 'batch_action', value: batchAction }));
+    if (csrfToken) {
+      $form.append($('<input>', { type: 'hidden', name: 'authenticity_token', value: csrfToken }));
+    }
+    $('body').append($form);
+    $form.submit();
   }
 
   return {
