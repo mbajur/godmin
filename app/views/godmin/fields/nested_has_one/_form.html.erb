@@ -1,0 +1,9 @@
+<%= f.fields_for field.attribute, field.associated_record do |nested_f| %>
+  <fieldset>
+    <legend><%= field.attribute.to_s.humanize %></legend>
+    <% field.nested_attributes.each do |nested_attribute| %>
+      <% nested_field = nested_attribute.to_field(record: field.associated_record, resource_service: field.associated_service) %>
+      <%= render partial: nested_field.class.partial_form, locals: { field: nested_field, f: nested_f } %>
+    <% end %>
+  </fieldset>
+<% end %>

@@ -157,10 +157,22 @@ module Godmin
             association.foreign_key.to_sym
           elsif association && many_to_many_association?(association)
             { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
+          elsif association && nested_attributes_accepted?(attribute.name)
+            { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
           else
             attribute.name
           end
         end
+      end
+
+      def nested_attributes_accepted?(attribute_name)
+        @resource_class.method_defined?("#{attribute_name}_attributes=")
+      end
+
+      def nested_attribute_permit_list(association)
+        service_class = "#{association.klass.name}Service".safe_constantize
+        attrs = service_class&.attrs_for_form || []
+        [:id] + attrs.map(&:name)
       end
 
       def many_to_many_association?(association)
