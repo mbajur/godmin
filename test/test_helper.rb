@@ -59,6 +59,7 @@ class ActionDispatch::IntegrationTest
     @template_paths.each do |path|
       File.delete(path)
     end
+    clear_view_cache
   end
 
   private
@@ -67,5 +68,14 @@ class ActionDispatch::IntegrationTest
     template_path = File.expand_path("../dummy/#{path}", __FILE__)
     @template_paths << template_path
     File.write(template_path, content)
+    clear_view_cache
+  end
+
+  def clear_view_cache
+    # Rails 8 changed how template caching works: FileSystemResolver persists an
+    # @unbound_templates cache at the class level even when cache_template_loading
+    # is false. Clearing DetailsKey resets all resolver caches so dynamically
+    # added/removed templates are picked up on the next request.
+    ActionView::LookupContext::DetailsKey.clear if ActionView::LookupContext::DetailsKey.respond_to?(:clear)
   end
 end
