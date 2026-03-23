@@ -70,9 +70,10 @@ module Godmin
 
     def test_collection_uses_service_display_name
       museum = TestScope::Museum.new("The Louvre", 1)
-      TestScope::Museum.stub :all, [museum] do
-        assert_equal [["display: The Louvre", 1]], build_field.collection
-      end
+      TestScope::Museum.define_singleton_method(:all) { [museum] }
+      assert_equal [["display: The Louvre", 1]], build_field.collection
+    ensure
+      TestScope::Museum.define_singleton_method(:all) { [] }
     end
   end
 end
