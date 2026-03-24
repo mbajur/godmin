@@ -54,6 +54,12 @@ module Godmin
       def attributes
         FormBuilder.extract_attributes(children)
       end
+
+      # Returns true for tab components. Override in tab-like components to
+      # allow FormBuilder to identify and extract them.
+      def tab_component?
+        false
+      end
     end
   end
 end

@@ -53,8 +53,17 @@ module Godmin
         end
       end
 
+      # Extracts the list of Tab components from a top-level node array.
+      def self.extract_tabs(nodes)
+        nodes.select { |n| n.is_a?(ComponentNode) && n.component.tab_component? }.map(&:component)
+      end
+
       def attributes
         self.class.extract_attributes(@nodes)
+      end
+
+      def tabs
+        self.class.extract_tabs(@nodes)
       end
     end
 

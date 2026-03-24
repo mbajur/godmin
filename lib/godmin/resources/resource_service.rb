@@ -106,6 +106,10 @@ module Godmin
         self.class.form_nodes
       end
 
+      def form_tabs
+        self.class.form_tabs
+      end
+
       def attrs_for_export
         self.class.attrs_for_export
       end
@@ -143,6 +147,7 @@ module Godmin
             builder.instance_eval(&block)
             @form_nodes = builder.nodes
             @attrs_for_form = builder.attributes
+            @form_tabs = builder.tabs
           end
           @attrs_for_form || []
         end
@@ -170,6 +175,10 @@ module Godmin
 
         def form_nodes
           @form_nodes || attrs_for_form.map { |attr| AttributeNode.new(attr) }
+        end
+
+        def form_tabs
+          @form_tabs || []
         end
 
         def attrs_for_export

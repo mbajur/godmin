@@ -25,6 +25,7 @@ require "godmin/resources/form_component"
 require "godmin/resources/form_components/row"
 require "godmin/resources/form_components/col"
 require "godmin/resources/form_components/section"
+require "godmin/resources/form_components/tab"
 require "godmin/version"
 
 module Godmin
@@ -33,3 +34,4 @@ end
 Godmin::Resources::FormBuilder.register_component(:row, Godmin::Resources::FormComponents::Row)
 Godmin::Resources::FormBuilder.register_component(:col, Godmin::Resources::FormComponents::Col)
 Godmin::Resources::FormBuilder.register_component(:section, Godmin::Resources::FormComponents::Section)
+Godmin::Resources::FormBuilder.register_component(:tab, Godmin::Resources::FormComponents::Tab)

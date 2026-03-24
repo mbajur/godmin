@@ -428,5 +428,137 @@ module Godmin
       attrs = builder.attributes
       assert_equal [:title, :body, :published], attrs.map(&:name)
     end
+
+    # Tab built-in component
+
+    def test_tab_component_produces_component_node
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        tab(title: "General") { attribute :title }
+      end
+
+      assert_equal 1, builder.nodes.length
+      assert_kind_of Resources::ComponentNode, builder.nodes.first
+      assert_kind_of Resources::FormComponents::Tab, builder.nodes.first.component
+    end
+
+    def test_tab_component_stores_title_and_derives_key
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        tab(title: "General settings") { attribute :title }
+      end
+
+      component = builder.nodes.first.component
+      assert_equal "General settings", component.title
+      assert_equal "general_settings", component.key
+    end
+
+    def test_tab_component_children_are_passed
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        tab(title: "General") do
+          attribute :title
+          attribute :body
+        end
+      end
+
+      component = builder.nodes.first.component
+      assert_equal 2, component.children.length
+      assert_equal :title, component.children.first.attribute.name
+      assert_equal :body, component.children.last.attribute.name
+    end
+
+    def test_tab_component_is_identified_as_tab
+      component = Resources::FormComponents::Tab.new([], title: "Test")
+      assert component.tab_component?
+    end
+
+    def test_tab_supports_nested_dsl_components
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        tab(title: "Config") do
+          row do
+            col(size: 6) { attribute :foo }
+            col(size: 6) { attribute :bar }
+          end
+        end
+      end
+
+      component = builder.nodes.first.component
+      assert_equal 1, component.children.length
+      assert_kind_of Resources::ComponentNode, component.children.first
+      assert_kind_of Resources::FormComponents::Row, component.children.first.component
+    end
+
+    def test_form_builder_tabs_returns_tab_components
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        tab(title: "General") { attribute :title }
+        tab(title: "Config") { attribute :body }
+        attribute :published
+      end
+
+      tabs = builder.tabs
+      assert_equal 2, tabs.length
+      assert tabs.all? { |t| t.is_a?(Resources::FormComponents::Tab) }
+      assert_equal ["General", "Config"], tabs.map(&:title)
+    end
+
+    def test_form_builder_tabs_returns_empty_when_no_tabs
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        attribute :title
+        attribute :body
+      end
+
+      assert_equal [], builder.tabs
+    end
+
+    def test_tab_attributes_are_included_in_attrs_for_form
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        tab(title: "General") { attribute :title }
+        tab(title: "Config") do
+          row do
+            col { attribute :body }
+          end
+        end
+        attribute :published
+      end
+
+      attrs = builder.attributes
+      assert_equal [:title, :body, :published], attrs.map(&:name)
+    end
+
+    def test_form_tabs_on_resource_service
+      klass = Class.new do
+        include Godmin::Resources::ResourceService
+
+        form do
+          tab(title: "General") { attribute :title }
+          tab(title: "Config") { attribute :body }
+        end
+      end
+
+      tabs = klass.form_tabs
+      assert_equal 2, tabs.length
+      assert_equal "general", tabs.first.key
+      assert_equal "config", tabs.last.key
+
+      attrs = klass.attrs_for_form
+      assert_equal [:title, :body], attrs.map(&:name)
+    end
+
+    def test_form_tabs_returns_empty_when_no_tabs_defined
+      klass = Class.new do
+        include Godmin::Resources::ResourceService
+
+        form do
+          attribute :title
+        end
+      end
+
+      assert_equal [], klass.form_tabs
+    end
   end
 end
