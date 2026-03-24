@@ -19,8 +19,8 @@ module Godmin
           @attributes = []
         end
 
-        def attribute(name, field: nil)
-          @attributes << Attribute.new(name, field_class: field)
+        def attribute(name, field: nil, **options)
+          @attributes << Attribute.new(name, field_class: field, **options)
         end
       end
 

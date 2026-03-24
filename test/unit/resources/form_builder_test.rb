@@ -125,6 +125,18 @@ module Godmin
       assert_equal Field::Text, node.attribute.field_class
     end
 
+    def test_attribute_with_extra_options
+      builder = Resources::FormBuilder.new
+      val = ->(record) { record.foo }
+      builder.instance_eval do
+        attribute :body, field: Field::Text, value: val, label: "Custom"
+      end
+
+      attr = builder.nodes.first.attribute
+      assert_equal val, attr.options[:value]
+      assert_equal "Custom", attr.options[:label]
+    end
+
     def test_form_nodes_on_resource_service
       klass = Class.new do
         include Godmin::Resources::ResourceService

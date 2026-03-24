@@ -1,18 +1,20 @@
 module Godmin
   module Resources
     class Attribute
-      attr_reader :name, :field_class
+      attr_reader :name, :field_class, :options
 
-      def initialize(name, field_class: nil)
+      def initialize(name, field_class: nil, **options)
         @name = name
         @field_class = field_class
+        @options = options
       end
 
       def to_field(record:, resource_service:)
         resolved_field_class(record).new(
           attribute: name,
           record: record,
-          resource_service: resource_service
+          resource_service: resource_service,
+          **options
         )
       end
 
