@@ -44,4 +44,14 @@ class NestedResourcesTest < ActionDispatch::IntegrationTest
 
     assert page.has_content? "bar"
   end
+
+  def test_breadcrumb_uses_parent_display_name
+    article = Article.create! title: "foo"
+
+    visit article_comments_path(article)
+
+    within "#breadcrumb" do
+      assert page.has_content? "Article: foo"
+    end
+  end
 end

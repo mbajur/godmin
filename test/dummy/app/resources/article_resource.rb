@@ -1,6 +1,10 @@
 class ArticleResource
   include Godmin::Resources::Resource
 
+  def display_name(record)
+    "Article: #{record.title}"
+  end
+
   index do
     attribute :id
     attribute :title
