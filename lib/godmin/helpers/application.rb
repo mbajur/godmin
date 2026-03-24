@@ -4,6 +4,20 @@ module Godmin
       # Renders the provided partial with locals if it exists, otherwise
       # yields the given block. The lookup context call is cached for
       # each partial.
+      # Returns the display name for a resource record by looking up its service
+      # class via ServiceLocator and calling display_name on it. Falls back to
+      # record.to_s if no service class is found.
+      def resource_display_name(record)
+        service_class = Godmin::ServiceLocator.find_service_class_for(
+          record.class,
+          context_service_class: @resource_service&.class
+        )
+        service = service_class&.new
+        service ? service.display_name(record) : record.to_s
+      rescue StandardError
+        record.to_s
+      end
+
       def partial_override(partial, locals = {}, &block)
         @_partial_override ||= {}
 
