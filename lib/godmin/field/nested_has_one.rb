@@ -19,6 +19,10 @@ module Godmin
         associated_service&.attrs_for_form || []
       end
 
+      def nested_form_nodes
+        associated_service&.form_nodes || []
+      end
+
       private
 
       def reflection

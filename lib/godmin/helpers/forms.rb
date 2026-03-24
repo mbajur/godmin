@@ -11,6 +11,17 @@ module Godmin
         safe_join(nodes.map { |node| render_form_node(node, f) })
       end
 
+      def render_form_nodes_for(nodes, f, record:, resource_service:)
+        old_resource = @resource
+        old_resource_service = @resource_service
+        @resource = record
+        @resource_service = resource_service
+        render_form_nodes(nodes, f)
+      ensure
+        @resource = old_resource
+        @resource_service = old_resource_service
+      end
+
       private
 
       def render_form_node(node, f)
