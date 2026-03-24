@@ -167,21 +167,38 @@ It creates a resource object:
 class ArticleResource
   include Godmin::Resources::Resource
 
-  attrs_for_index :title, :published
-  attrs_for_show :title, :published
-  attrs_for_form :title, :published
+  index do
+    attribute :title
+    attribute :published
+  end
+
+  show do
+    attribute :title
+    attribute :published
+  end
+
+  form do
+    attribute :title
+    attribute :published
+  end
 end
 ```
 
-Using `attrs_for_index` we can control what fields are displayed in the table listing, using `attrs_for_show` we can control what fields are displayed on the show page, and using `attrs_for_form` we can control what fields are available in the new and edit forms. We can, for instance, add the `body` field to `attrs_for_form` to make it appear in forms:
+Using the `index` block we can control what fields are displayed in the table listing, using the `show` block we can control what fields are displayed on the show page, and using the `form` block we can control what fields are available in the new and edit forms. We can, for instance, add the `body` field to the `form` block to make it appear in forms:
 
 ```ruby
-attrs_for_form :title, :body, :published
+form do
+  attribute :title
+  attribute :body
+  attribute :published
+end
 ```
 
 For quick prototyping, we could build the parameters this way (if appropriate).
 ```ruby
-attrs_for_show *Article.column_names
+show do
+  Article.column_names.each { |col| attribute col.to_sym }
+end
 ```
 
 By now we have a basic admin interface for managing articles.
@@ -190,7 +207,7 @@ By now we have a basic admin interface for managing articles.
 
 As we saw in the example above, resources are divided into controllers and resource objects. Actions, redirects, params permitting etc go in the controller while resource fetching, building, sorting, filtering etc go in the resource object. This makes the resource objects small and easy to test.
 
-We have already seen three methods at play: `attrs_for_index`, `attrs_for_show` and `attrs_for_form`. We will now look at some additional resource concepts.
+We have already seen three block DSL methods at play: `index`, `show` and `form`. We will now look at some additional resource concepts.
 
 ### Scopes
 
@@ -292,7 +309,11 @@ If you want to order something that Godmin doesn't support out of the box, or yo
 ```ruby
 class ArticleResource
   include Godmin::Resources::Resource
-  attrs_for_index :title, :author
+
+  index do
+    attribute :title
+    attribute :author
+  end
 
   # resources is an ActiveRecord::Relation object
   # direction is the order direction ("asc" or "desc")
@@ -421,7 +442,7 @@ end
 
 #### Strong parameters
 
-When using `attrs_for_form`, parameters are automatically permitted. If building a custom form, see the [forms](#forms) section, parameters can be permitted by overriding the `resource_params` method in the controller:
+When using the `form` block, parameters are automatically permitted based on the declared attributes. If building a custom form, see the [forms](#forms) section, parameters can be permitted by overriding the `resource_params` method in the controller:
 
 ```ruby
 class ArticlesController < ApplicationController
@@ -531,13 +552,18 @@ end
 
 ### Exporting
 
-The `attrs_for_export` method in the resource object makes it possible to mark attributes or methods on the model as exportable. When implemented, an export button will appear on the index page with options for both CSV and JSON export.
+The `export` block in the resource object makes it possible to mark attributes or methods on the model as exportable. When implemented, an export button will appear on the index page with options for both CSV and JSON export.
 
 ```ruby
 class ArticlesResource
   include Godmin::Resources::Resource
 
-  attrs_for_export :id, :title, :created_at, :updated_at
+  export do
+    attribute :id
+    attribute :title
+    attribute :created_at
+    attribute :updated_at
+  end
 end
 ```
 
@@ -581,6 +607,118 @@ If you wish to customize the content of a table column, you can place a partial 
 The full list of templates and partials that can be overridden [can be found here](https://github.com/varvet/godmin/tree/master/app/views/godmin).
 
 ### Forms
+
+Godmin uses a block-based DSL to define form fields in the resource object. The `form` block supports plain attribute declarations as well as richer layout components.
+
+#### Basic usage
+
+```ruby
+class ArticleResource
+  include Godmin::Resources::Resource
+
+  form do
+    attribute :title
+    attribute :body
+    attribute :published
+  end
+end
+```
+
+#### Using HTML tags
+
+Any of the standard HTML container tags (`div`, `span`, `p`, `fieldset`, `article`, `header`, `footer`, `main`, `h1`–`h6`, `ul`, `ol`, `li`, `dl`, `dt`, `dd`) can be used directly inside a `form` block to add arbitrary markup:
+
+```ruby
+form do
+  div(class: "col-md-6") do
+    attribute :title
+  end
+  div(class: "col-md-6") do
+    attribute :published
+  end
+end
+```
+
+#### Built-in form components
+
+Godmin ships with three higher-level layout components.
+
+**`row` / `col`** — Bootstrap grid helpers:
+
+```ruby
+form do
+  row do
+    col(size: 6) { attribute :title }
+    col(size: 6) { attribute :published }
+  end
+  attribute :body
+end
+```
+
+`col` accepts an optional `size` keyword (default: `12`) that maps to Bootstrap's `col-md-*` classes.
+
+**`section`** — a titled, optionally described group of fields:
+
+```ruby
+form do
+  section(title: "Content", description: "Fill in the article content below.") do
+    attribute :title
+    attribute :body
+  end
+  section(title: "Meta") do
+    attribute :published
+  end
+end
+```
+
+Both `title` and `description` are optional.
+
+#### Registering custom form DSL components
+
+You can extend the form DSL with your own components by creating a class that includes `Godmin::Resources::FormComponent` and registering it with `FormBuilder.register_component`.
+
+**Step 1 – Create the component:**
+
+```ruby
+class CardComponent
+  include Godmin::Resources::FormComponent
+
+  def initialize(children, heading:)
+    super(children)
+    @heading = heading
+  end
+
+  def render(view_context, f)
+    view_context.content_tag(:div, class: "card") do
+      view_context.content_tag(:div, @heading, class: "card-header") +
+        view_context.content_tag(:div, class: "card-body") do
+          view_context.render_form_nodes(children, f)
+        end
+    end
+  end
+end
+```
+
+**Step 2 – Register the component** (e.g. in an initializer):
+
+```ruby
+Godmin::Resources::FormBuilder.register_component(:card, CardComponent)
+```
+
+**Step 3 – Use it in a form block:**
+
+```ruby
+form do
+  card(heading: "Details") do
+    attribute :title
+    attribute :body
+  end
+end
+```
+
+Strong parameters are automatically derived from all attributes declared inside the component.
+
+#### Custom form partials
 
 Oftentimes, the default form provided by Godmin doesn't cut it. The `godmin/resource/_form.html.erb` partial is therefore one of the most common to override per resource.
 
