@@ -23,7 +23,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "propshaft"
   gem.add_dependency "stimulus-rails"
   gem.add_dependency "bcrypt", [">= 3.0", "< 4.0"]
-  gem.add_dependency "bootstrap_form", "~> 2.4"
   gem.add_dependency "csv", ">= 3.0"
   gem.add_dependency "csv_builder", "~> 2.1"
   gem.add_dependency "pundit", [">= 2.2.0", "< 3.0"]

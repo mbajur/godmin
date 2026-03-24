@@ -4,8 +4,7 @@ module Godmin
       def form_for(record, options = {}, &block)
         super(record, {
           url: [*@resource_parents, record],
-          builder: FormBuilders::FormBuilder,
-          inline_errors: false
+          builder: FormBuilders::FormBuilder
         }.merge(options), &block)
       end
 
@@ -32,7 +31,39 @@ module Godmin
   end
 
   module FormBuilders
-    class FormBuilder < BootstrapForm::FormBuilder
+    class FormBuilder < ActionView::Helpers::FormBuilder
+      def text_field(attribute, options = {})
+        wrap_field(attribute) { super(attribute, with_form_control_class(options)) }
+      end
+
+      def text_area(attribute, options = {})
+        wrap_field(attribute) { super(attribute, with_form_control_class(options)) }
+      end
+
+      def number_field(attribute, options = {})
+        wrap_field(attribute) { super(attribute, with_form_control_class(options)) }
+      end
+
+      def password_field(attribute, options = {})
+        wrap_field(attribute) { super(attribute, with_form_control_class(options)) }
+      end
+
+      def select(attribute, choices, options = {}, html_options = {})
+        label_text = options.delete(:label)
+        wrap_field(attribute, label_text: label_text) do
+          super(attribute, choices, options, with_form_control_class(html_options))
+        end
+      end
+
+      def check_box(attribute, options = {}, checked_value = "1", unchecked_value = "0")
+        @template.content_tag(:div, class: "form-group") do
+          @template.content_tag(:div, class: "form-check") do
+            @template.concat(super(attribute, with_class(options, "form-check-input"), checked_value, unchecked_value))
+            @template.concat(label(attribute, nil, class: "form-check-label"))
+          end
+        end
+      end
+
       def input(attribute, options = {})
         case attribute_type(attribute)
         when :text
@@ -80,6 +111,23 @@ module Godmin
       end
 
       private
+
+      def wrap_field(attribute, label_text: nil)
+        @template.content_tag(:div, class: "form-group") do
+          @template.concat(label(attribute, label_text))
+          @template.concat(yield)
+        end
+      end
+
+      def with_form_control_class(options)
+        with_class(options, "form-control")
+      end
+
+      def with_class(options, *classes)
+        existing = options[:class]
+        new_class = [*classes, existing].compact.join(" ")
+        options.merge(class: new_class)
+      end
 
       def attribute_type(attribute)
         if @object.has_attribute?(attribute)
