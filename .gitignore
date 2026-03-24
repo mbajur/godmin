@@ -29,3 +29,5 @@ Gemfile.lock
 .tags
 gemfiles/.bundle
 gemfiles/*.lock
+gemfiles/vendor/
+gemfiles/gemfiles/
