@@ -153,5 +153,135 @@ module Godmin
 
       assert_equal [], klass.form_nodes
     end
+
+    # Component registration tests
+
+    def test_register_component_adds_dsl_method
+      component_klass = Class.new do
+        include Godmin::Resources::FormComponent
+
+        def render(_view_context, _f)
+          "<custom/>"
+        end
+      end
+
+      builder_klass = Class.new(Resources::FormBuilder)
+      builder_klass.register_component(:my_widget, component_klass)
+
+      builder = builder_klass.new
+      builder.instance_eval do
+        my_widget
+      end
+
+      assert_equal 1, builder.nodes.length
+      assert_kind_of Resources::ComponentNode, builder.nodes.first
+      assert_kind_of component_klass, builder.nodes.first.component
+    end
+
+    def test_register_component_passes_args_to_constructor
+      received = {}
+      component_klass = Class.new do
+        include Godmin::Resources::FormComponent
+
+        define_method(:initialize) do |children, label:, **rest|
+          super(children)
+          received[:label] = label
+        end
+
+        def render(_view_context, _f) = ""
+      end
+
+      builder_klass = Class.new(Resources::FormBuilder)
+      builder_klass.register_component(:my_widget, component_klass)
+
+      builder = builder_klass.new
+      builder.instance_eval { my_widget(label: "My Label") }
+
+      assert_equal "My Label", received[:label]
+    end
+
+    def test_register_component_passes_child_nodes
+      component_klass = Class.new do
+        include Godmin::Resources::FormComponent
+        def render(_view_context, _f) = ""
+      end
+
+      builder_klass = Class.new(Resources::FormBuilder)
+      builder_klass.register_component(:my_widget, component_klass)
+
+      builder = builder_klass.new
+      builder.instance_eval do
+        my_widget do
+          attribute :title
+          attribute :body
+        end
+      end
+
+      component = builder.nodes.first.component
+      assert_equal 2, component.children.length
+      assert_kind_of Resources::AttributeNode, component.children.first
+      assert_equal :title, component.children.first.attribute.name
+    end
+
+    def test_register_component_attributes_extracted_from_children
+      component_klass = Class.new do
+        include Godmin::Resources::FormComponent
+        def render(_view_context, _f) = ""
+      end
+
+      builder_klass = Class.new(Resources::FormBuilder)
+      builder_klass.register_component(:my_widget, component_klass)
+
+      builder = builder_klass.new
+      builder.instance_eval do
+        my_widget do
+          attribute :title
+          attribute :body
+        end
+        attribute :published
+      end
+
+      attrs = builder.attributes
+      assert_equal [:title, :body, :published], attrs.map(&:name)
+    end
+
+    def test_register_component_custom_attributes_method
+      component_klass = Class.new do
+        include Godmin::Resources::FormComponent
+
+        def render(_view_context, _f) = ""
+
+        def attributes
+          []
+        end
+      end
+
+      builder_klass = Class.new(Resources::FormBuilder)
+      builder_klass.register_component(:my_widget, component_klass)
+
+      builder = builder_klass.new
+      builder.instance_eval do
+        my_widget do
+          attribute :title
+        end
+        attribute :body
+      end
+
+      # Custom attributes method returns [] so :title is excluded
+      attrs = builder.attributes
+      assert_equal [:body], attrs.map(&:name)
+    end
+
+    def test_extract_attributes_class_method
+      nodes = [
+        Resources::AttributeNode.new(Resources::Attribute.new(:title)),
+        Resources::HtmlNode.new("div", {}, [
+          Resources::AttributeNode.new(Resources::Attribute.new(:body))
+        ])
+      ]
+
+      attrs = Resources::FormBuilder.extract_attributes(nodes)
+      assert_equal [:title, :body], attrs.map(&:name)
+    end
   end
 end

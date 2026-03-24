@@ -24,6 +24,8 @@ module Godmin
           content_tag(node.tag, node.html_attrs) do
             render_form_nodes(node.children, f)
           end
+        when Resources::ComponentNode
+          node.component.render(self, f)
         end
       end
     end

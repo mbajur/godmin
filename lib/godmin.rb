@@ -22,6 +22,7 @@ require "godmin/resolver"
 require "godmin/resources/resource_controller"
 require "godmin/resources/resource"
 require "godmin/resources/resource_service"
+require "godmin/resources/form_component"
 require "godmin/version"
 
 module Godmin
