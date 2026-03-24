@@ -283,5 +283,76 @@ module Godmin
       attrs = Resources::FormBuilder.extract_attributes(nodes)
       assert_equal [:title, :body], attrs.map(&:name)
     end
+
+    # Row / Col built-in components
+
+    def test_row_component_produces_component_node
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        row do
+          attribute :title
+        end
+      end
+
+      assert_equal 1, builder.nodes.length
+      assert_kind_of Resources::ComponentNode, builder.nodes.first
+      assert_kind_of Resources::FormComponents::Row, builder.nodes.first.component
+    end
+
+    def test_row_component_children_are_passed
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        row do
+          attribute :title
+          attribute :body
+        end
+      end
+
+      component = builder.nodes.first.component
+      assert_equal 2, component.children.length
+      assert_equal :title, component.children.first.attribute.name
+      assert_equal :body, component.children.last.attribute.name
+    end
+
+    def test_col_component_produces_component_node
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        col { attribute :title }
+      end
+
+      assert_equal 1, builder.nodes.length
+      assert_kind_of Resources::ComponentNode, builder.nodes.first
+      assert_kind_of Resources::FormComponents::Col, builder.nodes.first.component
+    end
+
+    def test_col_component_default_size
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { col { attribute :title } }
+
+      col = builder.nodes.first.component
+      assert_equal 12, col.instance_variable_get(:@size)
+    end
+
+    def test_col_component_custom_size
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { col(size: 6) { attribute :title } }
+
+      col = builder.nodes.first.component
+      assert_equal 6, col.instance_variable_get(:@size)
+    end
+
+    def test_row_col_attributes_are_extracted
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        row do
+          col(size: 6) { attribute :title }
+          col(size: 6) { attribute :body }
+        end
+        attribute :published
+      end
+
+      attrs = builder.attributes
+      assert_equal [:title, :body, :published], attrs.map(&:name)
+    end
   end
 end
