@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_19_215502) do
+ActiveRecord::Schema.define(version: 2026_03_24_000000) do
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email"
@@ -55,5 +55,13 @@ ActiveRecord::Schema.define(version: 2021_05_19_215502) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "profiles", force: :cascade do |t|
+    t.integer "article_id"
+    t.string "bio"
+    t.string "website"
+    t.index ["article_id"], name: "index_profiles_on_article_id"
+  end
+
   add_foreign_key "comments", "articles"
+  add_foreign_key "profiles", "articles"
 end

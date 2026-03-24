@@ -25,6 +25,7 @@ class ArticleService
     attribute :published
     attribute :magazines
     attribute :comments
+    attribute :profile
   end
   association_option_text :magazines, :name
 
