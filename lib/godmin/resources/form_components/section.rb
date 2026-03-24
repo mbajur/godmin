@@ -4,7 +4,8 @@ module Godmin
       # Renders a titled, described section wrapping its child form nodes.
       #
       # Accepts optional +title+ and +description+ keyword arguments which are
-      # rendered above a +<div>+ that wraps the section's child nodes.
+      # rendered above a +<div>+ that wraps the section's child nodes. The entire
+      # output is wrapped in an outer +<div>+.
       #
       # Usage in a form block:
       #
@@ -24,11 +25,13 @@ module Godmin
         end
 
         def render(view_context, f)
-          parts = []
-          parts << view_context.content_tag(:h3, @title) if @title.present?
-          parts << view_context.content_tag(:p, @description) if @description.present?
-          parts << view_context.content_tag(:div) { view_context.render_form_nodes(children, f) }
-          view_context.safe_join(parts)
+          view_context.content_tag(:div) do
+            parts = []
+            parts << view_context.content_tag(:h4, @title) if @title.present?
+            parts << view_context.content_tag(:p, @description) if @description.present?
+            parts << view_context.content_tag(:div) { view_context.render_form_nodes(children, f) }
+            view_context.safe_join(parts)
+          end
         end
       end
     end
