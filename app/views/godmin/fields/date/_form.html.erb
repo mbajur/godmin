@@ -1,1 +1,5 @@
-<%= f.date_field field.attribute %>
+<% value = field.value.try(:strftime, translate_scoped("datetimepickers.datepicker")) %>
+<div class="form-group">
+  <%= f.label field.attribute %>
+  <%= f.text_field field.attribute, class: "form-control", value: value, data: { behavior: "datepicker" } %>
+</div>

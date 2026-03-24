@@ -2,15 +2,16 @@ module Godmin
   module Helpers
     module Filters
       def filter_form(url: params.to_unsafe_h)
-        bootstrap_form_tag url: url, method: :get, layout: :inline, builder: FormBuilders::FilterFormBuilder do |f|
-          yield(f)
+        builder = FormBuilders::FilterFormBuilder.new("", nil, self, {})
+        form_tag(url, method: :get, class: "form-inline") do
+          yield(builder)
         end
       end
     end
   end
 
   module FormBuilders
-    class FilterFormBuilder < BootstrapForm::FormBuilder
+    class FilterFormBuilder < ActionView::Helpers::FormBuilder
       def filter_field(name, options, html_options = {})
         case options[:as]
         when :string
@@ -23,15 +24,15 @@ module Godmin
       end
 
       def string_filter_field(name, _options, html_options = {})
-        text_field(
-          name, {
-            name: "filter[#{name}]",
-            label: @template.translate_scoped("filters.labels.#{name}", default: name.to_s.titleize),
-            value: default_filter_value(name),
-            placeholder: @template.translate_scoped("filters.labels.#{name}", default: name.to_s.titleize),
-            wrapper_class: "filter"
-          }.deep_merge(html_options)
-        )
+        label_text = @template.translate_scoped("filters.labels.#{name}", default: name.to_s.titleize)
+        @template.content_tag(:div, class: "form-group filter") do
+          @template.concat(@template.label_tag(name, label_text, class: "control-label"))
+          @template.concat(@template.text_field_tag(
+            "filter[#{name}]",
+            default_filter_value(name),
+            { placeholder: label_text, class: "form-control", id: name }.merge(html_options)
+          ))
+        end
       end
 
       def select_filter_field(name, options, html_options = {})
@@ -60,7 +61,7 @@ module Godmin
       end
 
       def apply_filters_button
-        submit @template.translate_scoped("filters.buttons.apply")
+        submit @template.translate_scoped("filters.buttons.apply"), class: "btn btn-primary"
       end
 
       def clear_filters_button
@@ -80,12 +81,12 @@ module Godmin
           raise "A collection proc must be specified for select filters"
         end
 
-        # We need to dup this here because we later delete some properties
-        # from the hash. We should consider adding an additional options
-        # param to separate filter params from select tag params.
         options = options.dup
 
         collection = options.delete(:collection).call
+        options.delete(:include_hidden)
+
+        label_text = @template.translate_scoped("filters.labels.#{name}", default: name.to_s.titleize)
 
         choices =
           if collection.is_a? ActiveRecord::Relation
@@ -102,15 +103,16 @@ module Godmin
             )
           end
 
-        select(
-          name, choices, {
-            label: @template.translate_scoped("filters.labels.#{name}", default: name.to_s.titleize),
-            include_hidden: true,
-            include_blank: true
-          }.deep_merge(options), {
-            wrapper_class: "filter"
-          }.deep_merge(html_options)
-        )
+        blank_option = @template.content_tag(:option, "", value: "")
+
+        @template.content_tag(:div, class: "form-group filter") do
+          @template.concat(@template.label_tag(name, label_text, class: "control-label"))
+          @template.concat(@template.select_tag(
+            html_options[:name] || "filter[#{name}]",
+            @template.safe_join([blank_option, choices]),
+            { class: "form-control", id: name }.merge(html_options.except(:name))
+          ))
+        end
       end
 
       def default_filter_value(name)

@@ -3,13 +3,12 @@ require "test_helper"
 module Godmin
   module Helpers
     class FiltersTest < ActionView::TestCase
-      include BootstrapForm::Helper
       include Godmin::Helpers::Filters
       include Godmin::Helpers::Translations
 
-      def test_filter_form_is_a_bootstrap_form_builder
+      def test_filter_form_uses_filter_form_builder
         filter_form url: "/" do |f|
-          assert f.is_a? BootstrapForm::FormBuilder
+          assert f.is_a? Godmin::FormBuilders::FilterFormBuilder
         end
       end
 

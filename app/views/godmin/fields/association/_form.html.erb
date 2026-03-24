@@ -1,7 +1,16 @@
 <% if field.belongs_to? %>
-  <%= f.select field.select_attribute, field.collection %>
+  <div class="form-group">
+    <%= f.label field.select_attribute %>
+    <%= f.select field.select_attribute, field.collection, {}, class: "form-control" %>
+  </div>
 <% elsif field.many_to_many? || field.has_many? %>
-  <%= f.select field.select_attribute, field.collection, { label: field.attribute.to_s.humanize }, multiple: true %>
+  <div class="form-group">
+    <%= f.label field.select_attribute, field.attribute.to_s.humanize %>
+    <%= f.select field.select_attribute, field.collection, {}, class: "form-control", multiple: true %>
+  </div>
 <% else %>
-  <%= f.text_field field.attribute %>
+  <div class="form-group">
+    <%= f.label field.attribute %>
+    <%= f.text_field field.attribute, class: "form-control" %>
+  </div>
 <% end %>
