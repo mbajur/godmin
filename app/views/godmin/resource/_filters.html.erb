@@ -2,8 +2,8 @@
   <div id="filters" class="panel panel-default">
     <div class="panel-body">
       <%= filter_form do |f| %>
-        <%= f.hidden_field :scope, value: params[:scope] %>
-        <%= f.hidden_field :order, value: params[:order] %>
+        <%= hidden_field_tag :scope, params[:scope] %>
+        <%= hidden_field_tag :order, params[:order] %>
 
         <% @resource_service.filter_map.each do |name, options| %>
           <%= partial_override "#{controller_path}/filters/#{name}", f: f, name: name, options: options do %>

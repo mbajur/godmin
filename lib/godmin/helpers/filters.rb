@@ -3,7 +3,7 @@ module Godmin
     module Filters
       def filter_form(url: params.to_unsafe_h)
         builder = FormBuilders::FilterFormBuilder.new("", nil, self, {})
-        form_tag(url, method: :get) do
+        form_tag(url, method: :get, class: "form-inline") do
           yield(builder)
         end
       end
@@ -61,7 +61,7 @@ module Godmin
       end
 
       def apply_filters_button
-        submit @template.translate_scoped("filters.buttons.apply")
+        submit @template.translate_scoped("filters.buttons.apply"), class: "btn btn-primary"
       end
 
       def clear_filters_button
