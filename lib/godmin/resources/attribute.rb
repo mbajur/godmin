@@ -23,8 +23,8 @@ module Godmin
       def resolved_field_class(record)
         return field_class if field_class
 
-        if record.class.respond_to?(:reflect_on_association) && record.class.reflect_on_association(name)
-          Field::Association
+        if record.class.respond_to?(:reflect_on_association) && (reflection = record.class.reflect_on_association(name))
+          reflection.macro == :has_one ? Field::NestedHasOne : Field::Association
         elsif record.class.respond_to?(:has_attribute?) && record.class.has_attribute?(name.to_s)
           column = record.class.column_for_attribute(name)
           case column.type

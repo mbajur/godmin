@@ -2,6 +2,8 @@ class Article < ActiveRecord::Base
   belongs_to :admin_user, optional: true
   has_many :comments
   has_and_belongs_to_many :magazines
+  has_one :profile
+  accepts_nested_attributes_for :profile, allow_destroy: true
 
   def non_orderable_column
     "Not orderable"
