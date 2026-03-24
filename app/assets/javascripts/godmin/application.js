@@ -1,10 +1,8 @@
 import { Application } from "@hotwired/stimulus"
-import BatchActionsController from "godmin/controllers/batch_actions_controller"
-import DatetimepickerController from "godmin/controllers/datetimepicker_controller"
-import NavigationController from "godmin/controllers/navigation_controller"
+import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
 
 const application = Application.start()
+application.debug = false
+window.Stimulus = application
 
-application.register("batch-actions", BatchActionsController)
-application.register("datetimepicker", DatetimepickerController)
-application.register("navigation", NavigationController)
+eagerLoadControllersFrom("controllers", application)

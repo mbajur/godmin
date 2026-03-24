@@ -29,6 +29,7 @@ require "godmin/resources/form_components/tab"
 require "godmin/version"
 
 module Godmin
+  mattr_accessor :importmap, default: Importmap::Map.new
 end
 
 Godmin::Resources::FormBuilder.register_component(:row, Godmin::Resources::FormComponents::Row)
