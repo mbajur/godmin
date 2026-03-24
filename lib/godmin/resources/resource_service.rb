@@ -1,4 +1,5 @@
 require "godmin/resources/attribute"
+require "godmin/resources/form_builder"
 require "godmin/resources/resource_service/associations"
 require "godmin/resources/resource_service/batch_actions"
 require "godmin/resources/resource_service/filters"
@@ -101,6 +102,10 @@ module Godmin
         self.class.attrs_for_form
       end
 
+      def form_nodes
+        self.class.form_nodes
+      end
+
       def attrs_for_export
         self.class.attrs_for_export
       end
@@ -134,8 +139,9 @@ module Godmin
 
         def form(&block)
           if block_given?
-            builder = AttributeBuilder.new
+            builder = FormBuilder.new
             builder.instance_eval(&block)
+            @form_nodes = builder.nodes
             @attrs_for_form = builder.attributes
           end
           @attrs_for_form || []
@@ -160,6 +166,10 @@ module Godmin
 
         def attrs_for_form
           @attrs_for_form || []
+        end
+
+        def form_nodes
+          @form_nodes || attrs_for_form.map { |attr| AttributeNode.new(attr) }
         end
 
         def attrs_for_export

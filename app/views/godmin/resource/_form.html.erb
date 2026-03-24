@@ -1,7 +1,4 @@
 <%= form_for @resource do |f| %>
-  <% @resource_service.attrs_for_form.each do |attribute| %>
-    <% field = attribute.to_field(record: @resource, resource_service: @resource_service) %>
-    <%= render partial: field.class.partial_form, locals: { field: field, f: f } %>
-  <% end %>
+  <%= render_form_nodes(@resource_service.form_nodes, f) %>
   <%= f.submit %>
 <% end %>
