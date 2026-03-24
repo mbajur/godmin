@@ -6,15 +6,9 @@ module Godmin
       include Godmin::Helpers::Filters
       include Godmin::Helpers::Translations
 
-      def test_filter_form_uses_filter_form_builder
-        filter_form url: "/" do |f|
-          assert f.is_a? Godmin::FormBuilders::FilterFormBuilder
-        end
-      end
-
       def test_filter_field_as_string
-        @output_buffer = filter_form url: "/" do |f|
-          f.filter_field :foo, { as: :string }, value: "Foobar"
+        @output_buffer = filter_form do
+          concat filter_field(:foo, { as: :string }, value: "Foobar")
         end
 
         assert_select "label[for=foo]", 1, "No label was found"
@@ -25,8 +19,8 @@ module Godmin
       end
 
       def test_filter_field_as_select
-        @output_buffer = filter_form url: "/" do |f|
-          f.filter_field :foo, as: :select, collection: -> { %w(Foo Bar) }
+        @output_buffer = filter_form do
+          concat filter_field(:foo, as: :select, collection: -> { %w(Foo Bar) })
         end
 
         assert_select "label[for=foo]", 1, "No label was found"
@@ -36,8 +30,8 @@ module Godmin
       end
 
       def test_filter_field_as_multiselect
-        @output_buffer = filter_form url: "/" do |f|
-          f.filter_field :foo, as: :multiselect, collection: -> { %w(Foo Bar) }
+        @output_buffer = filter_form do
+          concat filter_field(:foo, as: :multiselect, collection: -> { %w(Foo Bar) })
         end
 
         assert_select "label[for=foo]", 1, "No label was found"

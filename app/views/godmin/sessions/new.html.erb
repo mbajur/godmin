@@ -1,5 +1,11 @@
 <%= form_for(@admin_user, url: session_path) do |f| %>
-  <%= f.text_field @admin_user.class.login_column %>
-  <%= f.password_field :password %>
+  <div class="form-group">
+    <%= f.label @admin_user.class.login_column %>
+    <%= f.text_field @admin_user.class.login_column, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :password %>
+    <%= f.password_field :password, class: "form-control" %>
+  </div>
   <%= f.submit translate_scoped("sessions.sign_in"), class: "btn btn-block btn-primary" %>
 <% end %>
