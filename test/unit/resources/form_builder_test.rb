@@ -100,18 +100,18 @@ module Godmin
     def test_span_and_other_tags
       builder = Resources::FormBuilder.new
       builder.instance_eval do
-        section do
+        article do
           p { attribute :title }
           span { attribute :body }
         end
       end
 
-      section_node = builder.nodes.first
-      assert_kind_of Resources::HtmlNode, section_node
-      assert_equal "section", section_node.tag
-      assert_equal 2, section_node.children.length
-      assert_equal "p", section_node.children.first.tag
-      assert_equal "span", section_node.children.last.tag
+      article_node = builder.nodes.first
+      assert_kind_of Resources::HtmlNode, article_node
+      assert_equal "article", article_node.tag
+      assert_equal 2, article_node.children.length
+      assert_equal "p", article_node.children.first.tag
+      assert_equal "span", article_node.children.last.tag
     end
 
     def test_attribute_with_custom_field
@@ -347,6 +347,68 @@ module Godmin
         row do
           col(size: 6) { attribute :title }
           col(size: 6) { attribute :body }
+        end
+        attribute :published
+      end
+
+      attrs = builder.attributes
+      assert_equal [:title, :body, :published], attrs.map(&:name)
+    end
+
+    # Section built-in component
+
+    def test_section_component_produces_component_node
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        section { attribute :title }
+      end
+
+      assert_equal 1, builder.nodes.length
+      assert_kind_of Resources::ComponentNode, builder.nodes.first
+      assert_kind_of Resources::FormComponents::Section, builder.nodes.first.component
+    end
+
+    def test_section_component_stores_title_and_description
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        section(title: "Details", description: "Fill in below.") { attribute :title }
+      end
+
+      component = builder.nodes.first.component
+      assert_equal "Details", component.instance_variable_get(:@title)
+      assert_equal "Fill in below.", component.instance_variable_get(:@description)
+    end
+
+    def test_section_component_title_and_description_default_to_nil
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { section { attribute :title } }
+
+      component = builder.nodes.first.component
+      assert_nil component.instance_variable_get(:@title)
+      assert_nil component.instance_variable_get(:@description)
+    end
+
+    def test_section_component_children_are_passed
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        section do
+          attribute :title
+          attribute :body
+        end
+      end
+
+      component = builder.nodes.first.component
+      assert_equal 2, component.children.length
+      assert_equal :title, component.children.first.attribute.name
+      assert_equal :body, component.children.last.attribute.name
+    end
+
+    def test_section_attributes_are_extracted
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        section(title: "Details") do
+          attribute :title
+          attribute :body
         end
         attribute :published
       end

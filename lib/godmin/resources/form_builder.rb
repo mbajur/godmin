@@ -4,7 +4,7 @@ module Godmin
   module Resources
     class FormBuilder
       HTML_TAGS = %w[
-        div span p section fieldset article header footer main
+        div span p fieldset article header footer main
         h1 h2 h3 h4 h5 h6 ul ol li dl dt dd
       ].freeze
 
