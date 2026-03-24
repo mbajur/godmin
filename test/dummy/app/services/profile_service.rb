@@ -2,7 +2,9 @@ class ProfileService
   include Godmin::Resources::ResourceService
 
   form do
-    attribute :bio
-    attribute :website
+    row do
+      col(size: 6) { attribute :bio }
+      col(size: 6) { attribute :website }
+    end
   end
 end
