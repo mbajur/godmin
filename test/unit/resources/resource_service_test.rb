@@ -47,6 +47,20 @@ module Godmin
       assert_equal Field::Text, attrs.first.field_class
     end
 
+    def test_attribute_with_extra_options
+      val = ->(record) { record.to_s }
+      klass = Class.new do
+        include Godmin::Resources::Resource
+
+        index do
+          attribute :title, field: Field::Text, value: val, label: "My Label"
+        end
+      end
+      attr = klass.attrs_for_index.first
+      assert_equal val, attr.options[:value]
+      assert_equal "My Label", attr.options[:label]
+    end
+
     def test_display_name
       record = Object.new
       def record.to_s; "my record"; end

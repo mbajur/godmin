@@ -1,12 +1,13 @@
 module Godmin
   module Field
     class Base
-      attr_reader :attribute, :record, :resource_service
+      attr_reader :attribute, :record, :resource_service, :options
 
-      def initialize(attribute:, record:, resource_service:)
+      def initialize(attribute:, record:, resource_service:, **options)
         @attribute = attribute
         @record = record
         @resource_service = resource_service
+        @options = options
       end
 
       def value
