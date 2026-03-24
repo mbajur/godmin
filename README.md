@@ -780,6 +780,35 @@ class ArticleResource
 end
 ```
 
+**Passing options to a custom field:**
+
+You can pass arbitrary keyword arguments alongside `field:` when declaring an attribute. They are forwarded to the field instance and accessible via `field.options` — both inside the field class and inside its ERB partials.
+
+```ruby
+# Resource service
+index do
+  attribute :color, field: ColorField, label: "Hex colour", swatch: true
+end
+```
+
+```ruby
+# app/fields/color_field.rb
+class ColorField < Godmin::Field::Base
+  def value
+    # options[:swatch] is true/false, etc.
+    record.public_send(attribute).to_s.upcase
+  end
+end
+```
+
+```erb
+<%# app/views/godmin/fields/color_field/_index.html.erb %>
+<% if field.options[:swatch] %>
+  <span class="color-swatch" style="background: <%= field.value %>"></span>
+<% end %>
+<%= field.value %>
+```
+
 #### Custom form partials
 
 Oftentimes, the default form provided by Godmin doesn't cut it. The `godmin/resource/_form.html.erb` partial is therefore one of the most common to override per resource.
