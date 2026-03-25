@@ -26,4 +26,15 @@ Gem::Specification.new do |spec|
   spec.add_dependency "importmap-rails"
   spec.add_dependency "propshaft"
   spec.add_dependency "stimulus-rails"
+
+  spec.add_development_dependency "appraisal"
+  spec.add_development_dependency "bootsnap"
+  spec.add_development_dependency "byebug"
+  spec.add_development_dependency "capybara"
+  spec.add_development_dependency "cuprite"
+  spec.add_development_dependency "minitest"
+  spec.add_development_dependency "minitest-reporters"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "puma"
+  spec.add_development_dependency "sqlite3"
 end
