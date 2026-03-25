@@ -3,5 +3,5 @@
     <%= f.check_box field.attribute, class: "form-check-input" %>
     <%= f.label field.attribute, class: "form-check-label" %>
   </div>
-  <%= content_tag(:p, field.hint.html_safe, class: "help-block") if field.hint.present? %>
+  <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
 </div>
