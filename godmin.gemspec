@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "importmap-rails"
   spec.add_dependency "propshaft"
   spec.add_dependency "stimulus-rails"
+  spec.add_dependency "bcrypt", [">= 3.0", "< 4.0"]
 
   spec.add_development_dependency "appraisal"
   spec.add_development_dependency "bootsnap"
