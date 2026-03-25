@@ -25,6 +25,8 @@ module Godmin
 
         if record.class.respond_to?(:reflect_on_association) && (reflection = record.class.reflect_on_association(name))
           reflection.macro == :has_one ? Field::NestedHasOne : Field::Association
+        elsif record.class.respond_to?(:defined_enums) && record.class.defined_enums.key?(name.to_s)
+          Field::Enum
         elsif record.class.respond_to?(:has_attribute?) && record.class.has_attribute?(name.to_s)
           column = record.class.column_for_attribute(name)
           case column.type

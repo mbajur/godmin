@@ -32,6 +32,10 @@ module Godmin
           end
         end
 
+        def self.defined_enums
+          { "status" => { "draft" => 0, "published" => 1 } }
+        end
+
         def self.has_attribute?(_name)
           false
         end
@@ -57,6 +61,11 @@ module Godmin
     def test_has_many_association_resolves_to_association_field
       field = to_field(:comments)
       assert_instance_of Field::Association, field
+    end
+
+    def test_enum_attribute_resolves_to_enum_field
+      field = to_field(:status)
+      assert_instance_of Field::Enum, field
     end
 
     def test_explicit_field_class_is_respected
