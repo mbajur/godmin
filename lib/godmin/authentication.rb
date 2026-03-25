@@ -16,7 +16,7 @@ module Godmin
       return unless authentication_enabled?
       return if admin_user_signed_in?
 
-      redirect_to new_session_path
+      redirect_to godmin_sign_in_path
     end
 
     def admin_user_class; end

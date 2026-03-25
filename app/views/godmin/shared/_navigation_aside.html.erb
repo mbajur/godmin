@@ -2,6 +2,6 @@
       admin_user.singleton_class.include?(Godmin::Authentication::User) &&
       admin_user_signed_in? %>
   <li>
-    <%= link_to translate_scoped("sessions.sign_out"), session_path, method: :delete %>
+    <%= link_to translate_scoped("sessions.sign_out"), godmin_session_path, method: :delete %>
   </li>
 <% end %>

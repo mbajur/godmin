@@ -1,4 +1,4 @@
-<%= form_for(@admin_user, url: session_path) do |f| %>
+<%= form_for(@admin_user, url: godmin_session_path) do |f| %>
   <div class="form-group">
     <%= f.label @admin_user.class.login_column %>
     <%= f.text_field @admin_user.class.login_column, class: "form-control" %>

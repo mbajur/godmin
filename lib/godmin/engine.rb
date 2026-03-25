@@ -2,6 +2,17 @@ module Godmin
   class Engine < ::Rails::Engine
     isolate_namespace Godmin
 
+    # When Godmin is used with namespace routing (e.g. `namespace :godmin, path: :admin` in
+    # the host app's routes.rb) rather than mounting the engine, the engine's route set is
+    # empty and engine controllers must resolve URLs through the main application's router.
+    initializer "godmin.detect_routing_mode" do |app|
+      app.config.after_initialize do
+        if Godmin::Engine.routes.routes.empty?
+          Godmin::ApplicationController._routes = Rails.application.routes
+        end
+      end
+    end
+
     initializer "godmin.assets" do |app|
       if app.config.respond_to?(:assets)
         app.config.assets.paths << root.join("app/assets/stylesheets")
