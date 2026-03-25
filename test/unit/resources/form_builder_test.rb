@@ -429,6 +429,58 @@ module Godmin
       assert_equal [:title, :body, :published], attrs.map(&:name)
     end
 
+    def test_section_component_description_can_be_a_proc
+      builder = Resources::FormBuilder.new
+      desc_proc = ->(record) { "Dynamic: #{record}" }
+      builder.instance_eval do
+        section(description: desc_proc) { attribute :title }
+      end
+
+      component = builder.nodes.first.component
+      assert_equal desc_proc, component.instance_variable_get(:@description)
+    end
+
+    def test_section_component_title_can_be_a_proc
+      builder = Resources::FormBuilder.new
+      title_proc = ->(record) { "Dynamic: #{record}" }
+      builder.instance_eval do
+        section(title: title_proc) { attribute :title }
+      end
+
+      component = builder.nodes.first.component
+      assert_equal title_proc, component.instance_variable_get(:@title)
+    end
+
+    def test_section_render_calls_proc_description_with_form_object
+      record = Object.new
+      desc_proc = ->(r) { "Editing #{r.object_id}" }
+
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { section(description: desc_proc) { attribute :title } }
+      component = builder.nodes.first.component
+
+      view_context = build_section_view_context
+      f = build_form_stub(record)
+
+      output = component.render(view_context, f)
+      assert_includes output, "Editing #{record.object_id}"
+    end
+
+    def test_section_render_calls_proc_title_with_form_object
+      record = Object.new
+      title_proc = ->(r) { "Title for #{r.object_id}" }
+
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { section(title: title_proc) { attribute :title } }
+      component = builder.nodes.first.component
+
+      view_context = build_section_view_context
+      f = build_form_stub(record)
+
+      output = component.render(view_context, f)
+      assert_includes output, "Title for #{record.object_id}"
+    end
+
     # Tab built-in component
 
     def test_tab_component_produces_component_node
@@ -559,6 +611,24 @@ module Godmin
       end
 
       assert_equal [], klass.form_tabs
+    end
+
+    private
+
+    def build_section_view_context
+      view_context = Object.new
+      view_context.define_singleton_method(:content_tag) do |_tag, content = nil, &block|
+        block ? block.call : content.to_s
+      end
+      view_context.define_singleton_method(:safe_join) { |parts| parts.join }
+      view_context.define_singleton_method(:render_form_nodes) { |_children, _f| "" }
+      view_context
+    end
+
+    def build_form_stub(record)
+      f = Object.new
+      f.define_singleton_method(:object) { record }
+      f
     end
   end
 end
