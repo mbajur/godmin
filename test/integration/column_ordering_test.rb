@@ -4,7 +4,7 @@ class ColumnOrderingTest < ActionDispatch::IntegrationTest
   def test_default_order_links
     visit godmin.articles_path
     link = find("#table th.column-created_at a")
-    assert_equal "/admin/articles?order=created_at_desc", link[:href]
+    assert_equal godmin.articles_path(order: "created_at_desc"), link[:href]
   end
 
   def test_order_flipped
@@ -12,13 +12,13 @@ class ColumnOrderingTest < ActionDispatch::IntegrationTest
     link_matcher = "#table th.column-created_at a"
     find(link_matcher).click
     link = find(link_matcher)
-    assert_equal "/admin/articles?order=created_at_asc", link[:href]
+    assert_equal godmin.articles_path(order: "created_at_asc"), link[:href]
   end
 
   def test_order_links_when_order_empty
     visit godmin.articles_path(order: "")
     link = find("#table th.column-created_at a")
-    assert_equal "/admin/articles?order=created_at_desc", link[:href]
+    assert_equal godmin.articles_path(order: "created_at_desc"), link[:href]
   end
 
   def test_order_links_when_not_orderable
@@ -30,6 +30,6 @@ class ColumnOrderingTest < ActionDispatch::IntegrationTest
   def test_order_links_when_custom_orderable
     visit godmin.articles_path
     link = find("#table th.column-admin_user a")
-    assert_equal "/admin/articles?order=admin_user_desc", link[:href]
+    assert_equal godmin.articles_path(order: "admin_user_desc"), link[:href]
   end
 end

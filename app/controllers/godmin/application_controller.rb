@@ -9,6 +9,8 @@ module Godmin
   class ApplicationController < ActionController::Base
     include Godmin::Helpers::Translations
 
+    protect_from_forgery with: :exception
+
     helper Godmin::Helpers::Application
     helper Godmin::Helpers::Forms
     helper Godmin::Helpers::Navigation
