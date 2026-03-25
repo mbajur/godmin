@@ -2,4 +2,5 @@
 <div class="form-group">
   <%= f.label field.attribute %>
   <%= f.text_field field.attribute, class: "form-control", value: value, data: { behavior: "datepicker" } %>
+  <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
 </div>
