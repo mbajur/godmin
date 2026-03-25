@@ -6,13 +6,13 @@ class NestedResourcesTest < ActionDispatch::IntegrationTest
       Comment.new(title: "bar")
     ]
 
-    visit articles_path
+    visit godmin.articles_path
     within "[data-resource-id='#{article.id}']" do
       click_link "Show"
     end
     click_link "Comments"
 
-    assert_equal article_comments_path(article), current_path
+    assert_equal godmin.article_comments_path(article), current_path
     assert page.has_content? "bar"
   end
 
@@ -22,7 +22,7 @@ class NestedResourcesTest < ActionDispatch::IntegrationTest
     ]
     Comment.create! title: "baz"
 
-    visit article_comments_path(article)
+    visit godmin.article_comments_path(article)
 
     assert page.has_content? "bar"
     assert page.has_no_content? "baz"
@@ -31,12 +31,12 @@ class NestedResourcesTest < ActionDispatch::IntegrationTest
   def test_create_nested_resource
     article = Article.create! title: "foo"
 
-    visit new_article_comment_path(article)
+    visit godmin.new_article_comment_path(article)
 
     fill_in "Title", with: "bar"
     click_button "Create Comment"
 
-    assert_equal article_comment_path(article, Comment.last), current_path
+    assert_equal godmin.article_comment_path(article, Comment.last), current_path
 
     within "#breadcrumb" do
       click_link "Comments"
@@ -48,7 +48,7 @@ class NestedResourcesTest < ActionDispatch::IntegrationTest
   def test_breadcrumb_uses_parent_display_name
     article = Article.create! title: "foo"
 
-    visit article_comments_path(article)
+    visit godmin.article_comments_path(article)
 
     within "#breadcrumb" do
       assert page.has_content? "Article: foo"

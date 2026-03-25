@@ -9,7 +9,7 @@ class Godmin::AuthenticationGenerator < Godmin::Generators::NamedBase
 
   def modify_model
     inject_into_file File.join("app/models", class_path, "#{file_name}.rb"), after: "ActiveRecord::Base\n" do
-      <<-END.strip_heredoc.indent(namespace ? 4 : 2)
+      <<-END.strip_heredoc.indent(2)
         include Godmin::Authentication::User
 
         def self.login_column
@@ -20,22 +20,13 @@ class Godmin::AuthenticationGenerator < Godmin::Generators::NamedBase
   end
 
   def create_route
-    route "resource :session, only: [:new, :create, :destroy]"
+    inject_into_file "config/routes.rb",
+      "    resource :session, only: [:new, :create, :destroy]\n",
+      after: /Godmin::Engine\.routes\.draw do\s*\n/m
   end
 
   def create_sessions_controller
-    template "sessions_controller.rb", File.join("app/controllers", namespaced_path, "sessions_controller.rb")
-  end
-
-  def modify_application_controller
-    inject_into_file File.join("app/controllers", namespaced_path, "application_controller.rb"), after: "Godmin::ApplicationController\n" do
-      <<-END.strip_heredoc.indent(namespace ? 4 : 2)
-        include Godmin::Authentication
-
-        def admin_user_class
-          #{full_class_name}
-        end
-      END
-    end
+    template "sessions_controller.rb",
+      File.join("app/controllers", admin_path, "sessions_controller.rb")
   end
 end

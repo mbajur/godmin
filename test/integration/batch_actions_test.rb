@@ -7,7 +7,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
     Article.create! title: "foo"
     Article.create! title: "bar"
 
-    visit articles_path
+    visit godmin.articles_path
 
     all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
@@ -26,14 +26,14 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     Article.create! title: "foo"
 
-    visit articles_path(scope: :unpublished)
+    visit godmin.articles_path(scope: :unpublished)
 
     all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
       click_link "Publish"
     end
 
-    assert_equal articles_path(scope: :published), current_path_with_params
+    assert_equal godmin.articles_path(scope: :published), current_path_with_params
     assert_equal 200, page.status_code
 
     Capybara.use_default_driver
@@ -44,7 +44,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     Article.create! title: "foo"
 
-    visit articles_path(scope: :unpublished)
+    visit godmin.articles_path(scope: :unpublished)
 
     all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
@@ -60,7 +60,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     Article.create! title: "foo"
 
-    visit articles_path(scope: :no_batch_actions)
+    visit godmin.articles_path(scope: :no_batch_actions)
 
     assert page.has_no_content?("Select all")
     assert page.has_no_css?("[data-batch-actions-target='checkbox']")

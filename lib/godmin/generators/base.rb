@@ -11,57 +11,14 @@ module Godmin
 
       private
 
-      def namespace
-        @_namespace ||= Rails::Generators.namespace
-      end
-
-      def namespaced?
-        @_namespaced ||= namespace.present?
-      end
-
-      def namespaced_path
-        @_namespaced_path ||= begin
-          if namespaced?
-            namespace.name.split("::").map(&:underscore)
-          else
-            []
-          end
-        end
-      end
-
-      # Returns the path used for admin-specific files.
-      # For namespaced (custom engine) installs this is the engine namespace path.
-      # For non-namespaced (direct Godmin::Engine) installs this is ["godmin"].
+      # All Godmin files live under the godmin/ namespace in the host application.
       def admin_path
-        namespaced? ? namespaced_path : ["godmin"]
-      end
-
-      def module_namespacing(&block)
-        content = capture(&block)
-        content = wrap_with_namespace(content) if namespaced?
-        concat(content)
-      end
-
-      # Like module_namespacing but always wraps in some module:
-      # the engine's namespace for namespaced installs, or Godmin for standalone.
-      def admin_module_namespacing(&block)
-        content = capture(&block)
-        content = if namespaced?
-          wrap_with_namespace(content)
-        else
-          wrap_with_godmin_namespace(content)
-        end
-        concat(content)
+        ["godmin"]
       end
 
       def indent(content, multiplier = 2)
         spaces = " " * multiplier
         content.each_line.map { |line| line.blank? ? line : "#{spaces}#{line}" }.join
-      end
-
-      def wrap_with_namespace(content)
-        content = indent(content).chomp
-        "module #{namespace.name}\n#{content}\nend\n"
       end
 
       def wrap_with_godmin_namespace(content)

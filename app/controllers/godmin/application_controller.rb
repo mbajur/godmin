@@ -4,34 +4,30 @@ require "godmin/helpers/navigation"
 require "godmin/helpers/translations"
 
 module Godmin
-  module ApplicationController
-    extend ActiveSupport::Concern
+  # Base controller class for all Godmin admin controllers.
+  # All controllers inside module Godmin inherit from this class directly.
+  class ApplicationController < ActionController::Base
+    include Godmin::Helpers::Translations
 
-    included do
-      include Godmin::Helpers::Translations
+    helper Godmin::Helpers::Application
+    helper Godmin::Helpers::Forms
+    helper Godmin::Helpers::Navigation
+    helper Godmin::Helpers::Translations
 
-      helper Godmin::Helpers::Application
-      helper Godmin::Helpers::Forms
-      helper Godmin::Helpers::Navigation
-      helper Godmin::Helpers::Translations
+    helper_method :authentication_enabled?
+    helper_method :authorization_enabled?
+    helper_method :engine_wrapper
 
-      helper_method :authentication_enabled?
-      helper_method :authorization_enabled?
-      helper_method :engine_wrapper
+    before_action :append_view_paths
 
-      before_action :append_view_paths
-
-      layout "godmin/application"
-    end
+    layout "godmin/application"
 
     def welcome; end
-
-    protected
 
     private
 
     def engine_wrapper
-      EngineWrapper.new(self.class)
+      Godmin::EngineWrapper.new
     end
 
     def append_view_paths

@@ -99,7 +99,10 @@ module Godmin
       end
 
       def resource_service_class
-        "#{controller_path.singularize}_resource".classify.constantize
+        namespaced = "#{controller_path.singularize}_resource".classify
+        namespaced.safe_constantize ||
+          namespaced.demodulize.safe_constantize ||
+          raise(NameError, "uninitialized constant #{namespaced} or #{namespaced.demodulize}")
       end
 
       def resource_service

@@ -1,5 +1,5 @@
 module Godmin
-  class <%= class_name.pluralize %>Controller < ApplicationController
+  class MagazinesController < ApplicationController
     include Godmin::Resources::ResourceController
   end
 end

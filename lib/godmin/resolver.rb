@@ -45,20 +45,19 @@ module Godmin
     end
   end
 
-  # Matches templates such as:
+  # Looks in the host application's app/views for user-defined resource-level
+  # template overrides. Controllers are always under the "godmin/" prefix so:
   #
-  # { name: index, prefix: articles } => app/views/resource/index
-  # { name: form, prefix: articles }  => app/views/resource/_form
-  # { name: title, prefix: columns }  => app/views/resource/columns/_title
+  # { name: index, prefix: godmin/articles } => app/views/godmin/resource/index
+  # { name: form,  prefix: godmin/articles } => app/views/godmin/resource/_form
+  # { name: title, prefix: godmin/articles/columns } => app/views/godmin/resource/columns/_title
   class EngineResolver < Resolver
     def initialize(controller_path, engine_wrapper)
       super(File.join(engine_wrapper.root, "app/views"), controller_path, engine_wrapper)
     end
 
     def template_paths(prefix)
-      [
-        resource_path_for_engine(prefix)
-      ]
+      [resource_path_for_engine(prefix)]
     end
 
     def resource_path_for_engine(prefix)
@@ -66,12 +65,12 @@ module Godmin
     end
   end
 
-  # Matches templates such as:
+  # Looks in the Godmin gem's app/views/godmin/ for built-in templates:
   #
-  # { name: index, prefix: articles }      => godmin/app/views/godmin/resource/index
-  # { name: form, prefix: articles }       => godmin/app/views/godmin/resource/_form
-  # { name: welcome, prefix: application } => godmin/app/views/godmin/application/welcome
-  # { name: navigation, prefix: shared }   => godmin/app/views/godmin/shared/navigation
+  # { name: index, prefix: godmin/articles }      => godmin/app/views/godmin/resource/index
+  # { name: form,  prefix: godmin/articles }       => godmin/app/views/godmin/resource/_form
+  # { name: welcome, prefix: godmin/application } => godmin/app/views/godmin/application/welcome
+  # { name: navigation, prefix: godmin/shared }   => godmin/app/views/godmin/shared/navigation
   class GodminResolver < Resolver
     def initialize(controller_path, engine_wrapper)
       super(File.join(Godmin::Engine.root, "app/views/godmin"), controller_path, engine_wrapper)

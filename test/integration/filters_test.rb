@@ -5,7 +5,7 @@ class FiltersTest < ActionDispatch::IntegrationTest
     Article.create! title: "foo"
     Article.create! title: "bar"
 
-    visit articles_path
+    visit godmin.articles_path
 
     fill_in "Title", with: "foo"
     click_button "Filter"
@@ -23,7 +23,7 @@ class FiltersTest < ActionDispatch::IntegrationTest
     Article.create! title: "foo", published: true
     Article.create! title: "bar"
 
-    visit articles_path
+    visit godmin.articles_path
 
     within "#filters" do
       find("select").select("Published")
