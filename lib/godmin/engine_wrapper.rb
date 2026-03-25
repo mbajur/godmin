@@ -25,7 +25,11 @@ module Godmin
     end
 
     def root
-      engine.root
+      if engine == Godmin::Engine
+        Rails.application.root
+      else
+        engine.root
+      end
     end
 
     private

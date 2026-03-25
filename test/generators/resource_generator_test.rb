@@ -27,12 +27,25 @@ module Godmin
       system! "cd #{destination_root} && bin/rails generate godmin:resource foo bar --quiet"
 
       assert_file "config/routes.rb", /resources :foos/
-      assert_file "app/views/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+      assert_file "app/views/godmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
-      assert_file "app/controllers/foos_controller.rb" do |content|
+      assert_file "app/controllers/godmin/application_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          class FoosController < ApplicationController
-            include Godmin::Resources::ResourceController
+          module Godmin
+            class ApplicationController < ActionController::Base
+              include Godmin::ApplicationController
+            end
+          end
+        CONTENT
+        assert_match expected_content, content
+      end
+
+      assert_file "app/controllers/godmin/foos_controller.rb" do |content|
+        expected_content = <<-CONTENT.strip_heredoc
+          module Godmin
+            class FoosController < ApplicationController
+              include Godmin::Resources::ResourceController
+            end
           end
         CONTENT
         assert_match expected_content, content

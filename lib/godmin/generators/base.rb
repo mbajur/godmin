@@ -29,9 +29,28 @@ module Godmin
         end
       end
 
+      # Returns the path used for admin-specific files.
+      # For namespaced (custom engine) installs this is the engine namespace path.
+      # For non-namespaced (direct Godmin::Engine) installs this is ["godmin"].
+      def admin_path
+        namespaced? ? namespaced_path : ["godmin"]
+      end
+
       def module_namespacing(&block)
         content = capture(&block)
         content = wrap_with_namespace(content) if namespaced?
+        concat(content)
+      end
+
+      # Like module_namespacing but always wraps in some module:
+      # the engine's namespace for namespaced installs, or Godmin for standalone.
+      def admin_module_namespacing(&block)
+        content = capture(&block)
+        content = if namespaced?
+          wrap_with_namespace(content)
+        else
+          wrap_with_godmin_namespace(content)
+        end
         concat(content)
       end
 
@@ -43,6 +62,11 @@ module Godmin
       def wrap_with_namespace(content)
         content = indent(content).chomp
         "module #{namespace.name}\n#{content}\nend\n"
+      end
+
+      def wrap_with_godmin_namespace(content)
+        content = indent(content).chomp
+        "module Godmin\n#{content}\nend\n"
       end
     end
   end

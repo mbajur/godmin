@@ -2,22 +2,47 @@ require "godmin/generators/base"
 
 class Godmin::InstallGenerator < Godmin::Generators::Base
   def create_routes
-    inject_into_file "config/routes.rb", before: /^end/ do
-      <<-END.strip_heredoc.indent(2)
-        root to: "application#welcome"
-      END
+    if namespaced?
+      inject_into_file "config/routes.rb", before: /^end/ do
+        <<-END.strip_heredoc.indent(2)
+          root to: "application#welcome"
+        END
+      end
+    else
+      inject_into_file "config/routes.rb", before: /^end/ do
+        <<-END.strip_heredoc.indent(2)
+          mount Godmin::Engine, at: "/admin"
+
+          Godmin::Engine.routes.draw do
+            # Add admin routes here, e.g.:
+            # resources :articles
+          end
+        END
+      end
     end
   end
 
   def create_navigation
-    create_file File.join("app/views", namespaced_path, "shared/_navigation.html.erb")
+    create_file File.join("app/views", admin_path, "shared/_navigation.html.erb")
   end
 
   def modify_application_controller
-    inject_into_file File.join("app/controllers", namespaced_path, "application_controller.rb"), after: "ActionController::Base\n" do
-      <<-END.strip_heredoc.indent(namespace ? 4 : 2)
-        include Godmin::ApplicationController
-      END
+    if namespaced?
+      inject_into_file File.join("app/controllers", namespaced_path, "application_controller.rb"), after: "ActionController::Base\n" do
+        <<-END.strip_heredoc.indent(4)
+          include Godmin::ApplicationController
+        END
+      end
+    else
+      create_file "app/controllers/godmin/application_controller.rb" do
+        <<-END.strip_heredoc
+          module Godmin
+            class ApplicationController < ActionController::Base
+              include Godmin::ApplicationController
+            end
+          end
+        END
+      end
     end
   end
 
