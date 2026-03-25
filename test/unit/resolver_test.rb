@@ -2,12 +2,8 @@ require "test_helper"
 
 module Godmin
   class ResolverTest < ActiveSupport::TestCase
-    def setup
-      @engine_wrapper = EngineWrapper.new
-    end
-
     def test_engine_resolver_template_paths
-      resolver = EngineResolver.new("godmin/articles", @engine_wrapper)
+      resolver = EngineResolver.new("godmin/articles")
 
       assert_equal [
         "godmin/resource"
@@ -15,7 +11,7 @@ module Godmin
     end
 
     def test_engine_resolver_template_paths_for_nested_prefix
-      resolver = EngineResolver.new("godmin/articles", @engine_wrapper)
+      resolver = EngineResolver.new("godmin/articles")
 
       assert_equal [
         "godmin/resource/columns"
@@ -23,7 +19,7 @@ module Godmin
     end
 
     def test_godmin_resolver_template_paths
-      resolver = GodminResolver.new("godmin/articles", @engine_wrapper)
+      resolver = GodminResolver.new("godmin/articles")
 
       assert_equal [
         "articles",
@@ -32,7 +28,7 @@ module Godmin
     end
 
     def test_godmin_resolver_template_paths_for_application
-      resolver = GodminResolver.new("godmin/application", @engine_wrapper)
+      resolver = GodminResolver.new("godmin/application")
 
       assert_equal [
         "application",

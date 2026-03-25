@@ -1,8 +1,3 @@
-require "godmin/helpers/application"
-require "godmin/helpers/forms"
-require "godmin/helpers/navigation"
-require "godmin/helpers/translations"
-
 module Godmin
   # Base controller class for all Godmin admin controllers.
   # All controllers inside module Godmin inherit from this class directly.
@@ -18,7 +13,6 @@ module Godmin
 
     helper_method :authentication_enabled?
     helper_method :authorization_enabled?
-    helper_method :engine_wrapper
 
     before_action :append_view_paths
 
@@ -28,12 +22,8 @@ module Godmin
 
     private
 
-    def engine_wrapper
-      Godmin::EngineWrapper.new
-    end
-
     def append_view_paths
-      append_view_path Godmin::Resolver.resolvers(controller_path, engine_wrapper)
+      append_view_path Godmin::Resolver.resolvers(controller_path)
     end
 
     def disable_authentication
