@@ -5,6 +5,11 @@ module Godmin
         app.config.assets.paths << root.join("app/assets/stylesheets")
         app.config.assets.paths << root.join("app/javascript")
         app.config.assets.paths << root.join("vendor/assets/javascripts")
+
+        Rails::Engine.subclasses.reject { |e| e <= Godmin::Engine || e < Rails::Application }.each do |engine|
+          js_path = engine.root.join("app/javascript")
+          app.config.assets.paths << js_path if js_path.exist?
+        end
       end
     end
 
