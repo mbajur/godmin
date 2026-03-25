@@ -16,16 +16,27 @@ module Godmin
       end
     end
 
-    def build_field(status = nil)
+    def build_field(status = nil, **options)
       Field::Select.new(
         attribute: :status,
         record: TestScope::Article.new(status),
-        resource_service: TestScope::ArticleResource.new
+        resource_service: TestScope::ArticleResource.new,
+        **options
       )
     end
 
     def test_collection_returns_empty_array_by_default
       assert_equal [], build_field.collection
+    end
+
+    def test_collection_returns_static_array_when_passed
+      col = [["Draft", "draft"], ["Published", "published"]]
+      assert_equal col, build_field(nil, collection: col).collection
+    end
+
+    def test_collection_calls_proc_with_record_when_passed
+      col = ->(record) { [["Value", record.status]] }
+      assert_equal [["Value", "draft"]], build_field("draft", collection: col).collection
     end
 
     def test_value_returns_current_attribute_value
