@@ -1239,6 +1239,71 @@ Godmin.Datetimepickers.initializeDatepicker($elems, {
 });
 ```
 
+### Stimulus controllers
+
+Godmin uses [Stimulus](https://stimulus.hotwired.dev/) and maintains its own importmap instance (`Godmin.importmap`) separate from your application's default importmap. Controllers are auto-discovered via `eagerLoadControllersFrom`, meaning any module pinned under the `controllers/` prefix in `Godmin.importmap` is automatically registered as a Stimulus controller.
+
+#### Registering a controller from a standalone app
+
+Create your controller under `app/javascript/controllers/`:
+
+```js
+// app/javascript/controllers/my_controller.js
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  connect() {
+    console.log("my controller connected")
+  }
+}
+```
+
+Propshaft serves `app/javascript` automatically in a Rails app, so you only need to pin the controller in `Godmin.importmap`. Add an initializer:
+
+```ruby
+# config/initializers/godmin.rb
+Godmin.importmap.draw(Rails.root.join("config/godmin_importmap.rb"))
+```
+
+```ruby
+# config/godmin_importmap.rb
+pin "controllers/my_controller"
+```
+
+The controller identifier is derived from the pin name after `controllers/`, with underscores converted to dashes — so `controllers/my_controller` becomes `data-controller="my-controller"`.
+
+#### Registering a controller from an engine
+
+For an engine, you must register paths during the initialization phase (not in `config/initializers/`) so that Propshaft and the importmap cache sweeper are set up in time:
+
+```ruby
+# lib/my_engine/engine.rb
+initializer "my_engine.importmap", after: "godmin.importmap" do |app|
+  app.config.assets.paths << MyEngine::Engine.root.join("app/javascript")
+  Godmin.importmap.draw MyEngine::Engine.root.join("config/godmin_importmap.rb")
+  Godmin.importmap.cache_sweeper watches: MyEngine::Engine.root.join("app/javascript")
+end
+```
+
+```ruby
+# config/godmin_importmap.rb (inside your engine)
+pin_all_from MyEngine::Engine.root.join("app/javascript/controllers"),
+             under: "controllers"
+```
+
+Place your controllers under `app/javascript/controllers/` within the engine:
+
+```js
+// app/javascript/controllers/my_controller.js
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  connect() {
+    console.log("my engine controller connected")
+  }
+}
+```
+
 ### Select boxes
 
 Make a [selectize.js](http://brianreavis.github.io/selectize.js/) select box out of a text field or select box:
