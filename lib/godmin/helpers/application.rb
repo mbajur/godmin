@@ -35,9 +35,11 @@ module Godmin
       # Wraps the policy helper so that it is always accessible, even when
       # authorization is not enabled. When that is the case, it returns a
       # policy that always returns true.
+      # Delegates to the controller's policy method to ensure engine namespace
+      # is respected when looking up the policy class.
       def policy(resource)
         if authorization_enabled?
-          super(resource)
+          controller.policy(resource)
         else
           Authorization::Policy.new(nil, nil, default: true)
         end
