@@ -2,18 +2,18 @@
   <div class="form-group">
     <%= f.label field.select_attribute %>
     <%= f.select field.select_attribute, field.collection, {}, class: "form-control" %>
-    <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
+    <%= content_tag(:p, field.hint.html_safe, class: "help-block") if field.hint.present? %>
   </div>
 <% elsif field.many_to_many? || field.has_many? %>
   <div class="form-group">
     <%= f.label field.select_attribute, field.attribute.to_s.humanize %>
     <%= f.select field.select_attribute, field.collection, {}, class: "form-control", multiple: true %>
-    <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
+    <%= content_tag(:p, field.hint.html_safe, class: "help-block") if field.hint.present? %>
   </div>
 <% else %>
   <div class="form-group">
     <%= f.label field.attribute %>
     <%= f.text_field field.attribute, class: "form-control" %>
-    <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
+    <%= content_tag(:p, field.hint.html_safe, class: "help-block") if field.hint.present? %>
   </div>
 <% end %>

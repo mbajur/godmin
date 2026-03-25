@@ -1,5 +1,5 @@
 <div class="form-group">
   <%= f.label field.attribute %>
   <%= f.select field.attribute, field.collection, field.select_options, field.select_html_options %>
-  <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
+  <%= content_tag(:p, field.hint.html_safe, class: "help-block") if field.hint.present? %>
 </div>
