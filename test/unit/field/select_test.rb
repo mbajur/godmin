@@ -39,6 +39,28 @@ module Godmin
       assert_equal [["Value", "draft"]], build_field("draft", collection: col).collection
     end
 
+    def test_select_options_returns_empty_hash_by_default
+      assert_equal({}, build_field.select_options)
+    end
+
+    def test_select_options_returns_passed_options
+      assert_equal({ include_blank: true }, build_field(nil, options: { include_blank: true }).select_options)
+    end
+
+    def test_select_html_options_includes_form_control_class_by_default
+      assert_equal({ class: "form-control" }, build_field.select_html_options)
+    end
+
+    def test_select_html_options_merges_passed_html_options
+      result = build_field(nil, html_options: { disabled: true }).select_html_options
+      assert_equal({ class: "form-control", disabled: true }, result)
+    end
+
+    def test_select_html_options_allows_class_override
+      result = build_field(nil, html_options: { class: "my-select" }).select_html_options
+      assert_equal({ class: "my-select" }, result)
+    end
+
     def test_value_returns_current_attribute_value
       assert_equal "draft", build_field("draft").value
     end
