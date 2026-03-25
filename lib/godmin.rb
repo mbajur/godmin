@@ -30,6 +30,21 @@ require "godmin/version"
 
 module Godmin
   mattr_accessor :importmap, default: Importmap::Map.new
+
+  # Draw an additional importmap file into Godmin's importmap and optionally
+  # register a JavaScript path for the cache sweeper.
+  #
+  # Call this from your engine's or application's initializer:
+  #
+  #   initializer "admin.importmap", after: "godmin.importmap" do |app|
+  #     Godmin.draw_importmap Admin::Engine.root.join("config/godmin_importmap.rb"),
+  #                           js_path: Admin::Engine.root.join("app/javascript")
+  #     app.config.assets.paths << Admin::Engine.root.join("app/javascript") if app.config.respond_to?(:assets)
+  #   end
+  def self.draw_importmap(path, js_path: nil)
+    importmap.draw(path)
+    importmap.cache_sweeper(watches: js_path) if js_path
+  end
 end
 
 Godmin::Resources::FormBuilder.register_component(:row, Godmin::Resources::FormComponents::Row)
