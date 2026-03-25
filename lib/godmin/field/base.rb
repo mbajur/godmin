@@ -16,13 +16,14 @@ module Godmin
 
       def hint
         hint_option = options[:hint]
-        if hint_option.is_a?(Proc)
+        result = if hint_option.is_a?(Proc)
           hint_option.call(record)
         elsif hint_option.present?
           hint_option
         else
           i18n_hint
         end
+        result&.html_safe
       end
 
       def find_associated_service_class(klass)
