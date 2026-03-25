@@ -14,6 +14,17 @@ module Godmin
         record.public_send(attribute)
       end
 
+      def hint
+        hint_option = options[:hint]
+        if hint_option.is_a?(Proc)
+          hint_option.call(record)
+        elsif hint_option.present?
+          hint_option
+        else
+          i18n_hint
+        end
+      end
+
       def find_associated_service_class(klass)
         Godmin::ServiceLocator.find_service_class_for(klass, context_service_class: resource_service.class)
       end
@@ -32,6 +43,13 @@ module Godmin
 
       private_class_method def self.field_type
         name.demodulize.underscore
+      end
+
+      private
+
+      def i18n_hint
+        model_key = record.class.model_name.i18n_key
+        I18n.t("activerecord.hints.#{model_key}.#{attribute}", default: nil)
       end
     end
   end
