@@ -1,0 +1,5 @@
+<div class="form-group">
+  <%= f.label field.attribute %>
+  <%= f.password_field field.attribute, class: "form-control" %>
+  <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
+</div>
