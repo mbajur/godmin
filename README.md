@@ -738,10 +738,10 @@ end
 
 **Step 2 – Create the partials:**
 
-Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>` is the underscored class name with the `Field` suffix removed (e.g. `color` for `ColorField`). Each context — `_form.html.erb`, `_index.html.erb`, and `_show.html.erb` — can be overridden independently.
+Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>` is the underscored class name (e.g. `color_field` for `ColorField`). Each context — `_form.html.erb`, `_index.html.erb`, and `_show.html.erb` — can be overridden independently.
 
 ```erb
-<%# app/views/godmin/fields/color/_form.html.erb %>
+<%# app/views/godmin/fields/color_field/_form.html.erb %>
 <div class="form-group">
   <%= f.label field.attribute %>
   <%= f.color_field field.attribute, class: "form-control" %>
@@ -749,12 +749,12 @@ Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>
 ```
 
 ```erb
-<%# app/views/godmin/fields/color/_index.html.erb %>
+<%# app/views/godmin/fields/color_field/_index.html.erb %>
 <span class="color-swatch" style="background: <%= field.value %>"><%= field.value %></span>
 ```
 
 ```erb
-<%# app/views/godmin/fields/color/_show.html.erb %>
+<%# app/views/godmin/fields/color_field/_show.html.erb %>
 <span class="color-swatch" style="background: <%= field.value %>"><%= field.value %></span>
 ```
 
@@ -802,7 +802,7 @@ end
 ```
 
 ```erb
-<%# app/views/godmin/fields/color/_index.html.erb %>
+<%# app/views/godmin/fields/color_field/_index.html.erb %>
 <% if field.options[:swatch] %>
   <span class="color-swatch" style="background: <%= field.value %>"></span>
 <% end %>
