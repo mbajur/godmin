@@ -1,2 +1,2 @@
-class MagazinesController < Godmin::ResourceController
+class MagazinesController < Goodmin::ResourceController
 end

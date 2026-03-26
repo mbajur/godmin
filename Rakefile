@@ -8,7 +8,7 @@ require "rdoc/task"
 
 RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = "rdoc"
-  rdoc.title    = "Godmin"
+  rdoc.title    = "Goodmin"
   rdoc.options << "--line-numbers"
   rdoc.rdoc_files.include("README.rdoc")
   rdoc.rdoc_files.include("lib/**/*.rb")
@@ -34,14 +34,14 @@ task default: :test
 namespace :sandbox do
   desc "Generate the Sandbox app then push it to GitHub which deploys it to Heroku"
   task :deploy do
-    message = "Generated from: https://github.com/varvet/godmin/commit/#{`git rev-parse HEAD`.strip}"
+    message = "Generated from: https://github.com/varvet/goodmin/commit/#{`git rev-parse HEAD`.strip}"
     template_path = File.expand_path("../template.rb", __FILE__)
     Bundler.with_unbundled_env do
       Dir.mktmpdir do |dir|
         Dir.chdir(dir)
-        system("git clone git@github.com:varvet/godmin-sandbox.git")
+        system("git clone git@github.com:varvet/goodmin-sandbox.git")
         if $CHILD_STATUS.success?
-          Dir.chdir("godmin-sandbox")
+          Dir.chdir("goodmin-sandbox")
           system("rm -rf *")
           system("rails _5.2.5_ new . -d postgresql -m #{template_path} --without-engine --skip-spring")
           if $CHILD_STATUS.success?

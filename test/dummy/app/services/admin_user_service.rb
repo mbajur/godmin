@@ -1,5 +1,5 @@
 class AdminUserService
-  include Godmin::Resources::ResourceService
+  include Goodmin::Resources::ResourceService
 
   def display_name(record)
     record.email

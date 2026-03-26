@@ -1,10 +1,10 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class BaseFieldTest < ActiveSupport::TestCase
     module TestScope
       class ArticleResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
       end
 
       class Article
@@ -71,12 +71,12 @@ module Godmin
     def test_partial_paths_for_custom_field_class
       custom_field_class = Class.new(Fields::Base) do
         def self.name
-          "Godmin::Fields::Color"
+          "Goodmin::Fields::Color"
         end
       end
-      assert_equal "godmin/fields/color/index", custom_field_class.partial_index
-      assert_equal "godmin/fields/color/show", custom_field_class.partial_show
-      assert_equal "godmin/fields/color/form", custom_field_class.partial_form
+      assert_equal "goodmin/fields/color/index", custom_field_class.partial_index
+      assert_equal "goodmin/fields/color/show", custom_field_class.partial_show
+      assert_equal "goodmin/fields/color/form", custom_field_class.partial_form
     end
   end
 end

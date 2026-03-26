@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   module Resource
     class OrderingTest < ActiveSupport::TestCase
       def setup

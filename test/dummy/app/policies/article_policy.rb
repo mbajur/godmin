@@ -1,4 +1,4 @@
-class ArticlePolicy < Godmin::Authorization::Policy
+class ArticlePolicy < Goodmin::Authorization::Policy
   def index?
     true
   end

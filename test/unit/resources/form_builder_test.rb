@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class FormBuilderTest < ActiveSupport::TestCase
     def test_attribute_node_for_flat_attribute
       builder = Resources::FormBuilder.new
@@ -139,7 +139,7 @@ module Godmin
 
     def test_form_nodes_on_resource_service
       klass = Class.new do
-        include Godmin::Resources::ResourceService
+        include Goodmin::Resources::ResourceService
 
         form do
           div do
@@ -160,7 +160,7 @@ module Godmin
 
     def test_form_nodes_fallback_when_no_form_block
       klass = Class.new do
-        include Godmin::Resources::ResourceService
+        include Goodmin::Resources::ResourceService
       end
 
       assert_equal [], klass.form_nodes
@@ -170,7 +170,7 @@ module Godmin
 
     def test_register_component_adds_dsl_method
       component_klass = Class.new do
-        include Godmin::Resources::FormComponent
+        include Goodmin::Resources::FormComponent
 
         def render(_view_context, _f)
           "<custom/>"
@@ -193,7 +193,7 @@ module Godmin
     def test_register_component_passes_args_to_constructor
       received = {}
       component_klass = Class.new do
-        include Godmin::Resources::FormComponent
+        include Goodmin::Resources::FormComponent
 
         define_method(:initialize) do |children, label:, **rest|
           super(children)
@@ -214,7 +214,7 @@ module Godmin
 
     def test_register_component_passes_child_nodes
       component_klass = Class.new do
-        include Godmin::Resources::FormComponent
+        include Goodmin::Resources::FormComponent
         def render(_view_context, _f) = ""
       end
 
@@ -237,7 +237,7 @@ module Godmin
 
     def test_register_component_attributes_extracted_from_children
       component_klass = Class.new do
-        include Godmin::Resources::FormComponent
+        include Goodmin::Resources::FormComponent
         def render(_view_context, _f) = ""
       end
 
@@ -259,7 +259,7 @@ module Godmin
 
     def test_register_component_custom_attributes_method
       component_klass = Class.new do
-        include Godmin::Resources::FormComponent
+        include Goodmin::Resources::FormComponent
 
         def render(_view_context, _f) = ""
 
@@ -584,7 +584,7 @@ module Godmin
 
     def test_form_tabs_on_resource_service
       klass = Class.new do
-        include Godmin::Resources::ResourceService
+        include Goodmin::Resources::ResourceService
 
         form do
           tab(title: "General") { attribute :title }
@@ -603,7 +603,7 @@ module Godmin
 
     def test_form_tabs_returns_empty_when_no_tabs_defined
       klass = Class.new do
-        include Godmin::Resources::ResourceService
+        include Goodmin::Resources::ResourceService
 
         form do
           attribute :title

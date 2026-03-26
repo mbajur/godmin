@@ -1,6 +1,6 @@
 pt-BR:
-  godmin:
-    title: Godmin
+  goodmin:
+    title: Goodmin
     batch_actions:
       buttons:
         select_all: Selecionar todos

@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   module Resource
     class ScopesTest < ActiveSupport::TestCase
       def setup
@@ -9,7 +9,7 @@ module Godmin
 
       def test_returns_resources_when_no_scopes_are_defined
         resource_class = Class.new do
-          include Godmin::Resources::Resource
+          include Goodmin::Resources::Resource
         end
 
         resource = resource_class.new

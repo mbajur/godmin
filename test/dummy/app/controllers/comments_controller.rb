@@ -1,2 +1,2 @@
-class CommentsController < Godmin::ResourceController
+class CommentsController < Goodmin::ResourceController
 end

@@ -1,14 +1,14 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class ResolverTest < ActiveSupport::TestCase
     def test_engine_resolver_when_not_namespaced
       resolver = EngineResolver.new("articles")
 
       assert_equal [
-        "godmin/resource",
-        "godmin/shared",
-        "godmin/application",
+        "goodmin/resource",
+        "goodmin/shared",
+        "goodmin/application",
         "resource",
         "shared",
         "application"
@@ -16,23 +16,23 @@ module Godmin
     end
 
     def test_engine_resolver_when_namespaced
-      resolver = EngineResolver.new("godmin/resolver_test/admin/articles")
+      resolver = EngineResolver.new("goodmin/resolver_test/admin/articles")
 
       assert_equal [
-        "godmin/resolver_test/admin/resource",
-        "godmin/resolver_test/admin/shared",
-        "godmin/resolver_test/admin/application"
-      ], resolver.template_paths("godmin/resolver_test/admin/articles")
+        "goodmin/resolver_test/admin/resource",
+        "goodmin/resolver_test/admin/shared",
+        "goodmin/resolver_test/admin/application"
+      ], resolver.template_paths("goodmin/resolver_test/admin/articles")
     end
 
     def test_engine_resolver_with_subpath_when_not_namespaced
       resolver = EngineResolver.new("articles")
 
       assert_equal [
-        "godmin/resource/columns",
-        "godmin/shared/columns",
-        "godmin/shared",
-        "godmin/application",
+        "goodmin/resource/columns",
+        "goodmin/shared/columns",
+        "goodmin/shared",
+        "goodmin/application",
         "resource/columns",
         "shared/columns",
         "shared",
@@ -41,18 +41,18 @@ module Godmin
     end
 
     def test_engine_resolver_with_subpath_when_namespaced
-      resolver = EngineResolver.new("godmin/resolver_test/admin/articles")
+      resolver = EngineResolver.new("goodmin/resolver_test/admin/articles")
 
       assert_equal [
-        "godmin/resolver_test/admin/resource/columns",
-        "godmin/resolver_test/admin/shared/columns",
-        "godmin/resolver_test/admin/shared",
-        "godmin/resolver_test/admin/application"
-      ], resolver.template_paths("godmin/resolver_test/admin/articles/columns")
+        "goodmin/resolver_test/admin/resource/columns",
+        "goodmin/resolver_test/admin/shared/columns",
+        "goodmin/resolver_test/admin/shared",
+        "goodmin/resolver_test/admin/application"
+      ], resolver.template_paths("goodmin/resolver_test/admin/articles/columns")
     end
 
-    def test_godmin_resolver_when_not_namespaced
-      resolver = GodminResolver.new("articles")
+    def test_goodmin_resolver_when_not_namespaced
+      resolver = GoodminResolver.new("articles")
 
       assert_equal [
         "articles",
@@ -61,18 +61,18 @@ module Godmin
       ], resolver.template_paths("articles")
     end
 
-    def test_godmin_resolver_when_namespaced
-      resolver = GodminResolver.new("godmin/resolver_test/admin/articles")
+    def test_goodmin_resolver_when_namespaced
+      resolver = GoodminResolver.new("goodmin/resolver_test/admin/articles")
 
       assert_equal [
         "articles",
         "resource",
         "shared"
-      ], resolver.template_paths("godmin/resolver_test/admin/articles")
+      ], resolver.template_paths("goodmin/resolver_test/admin/articles")
     end
 
-    def test_godmin_resolver_with_subpath_when_not_namespaced
-      resolver = GodminResolver.new("articles")
+    def test_goodmin_resolver_with_subpath_when_not_namespaced
+      resolver = GoodminResolver.new("articles")
 
       assert_equal [
         "articles/columns",
@@ -81,14 +81,14 @@ module Godmin
       ], resolver.template_paths("articles/columns")
     end
 
-    def test_godmin_resolver_with_subpath_when_namespaced
-      resolver = GodminResolver.new("godmin/resolver_test/admin/articles")
+    def test_goodmin_resolver_with_subpath_when_namespaced
+      resolver = GoodminResolver.new("goodmin/resolver_test/admin/articles")
 
       assert_equal [
         "articles/columns",
         "resource/columns",
         "shared/columns"
-      ], resolver.template_paths("godmin/resolver_test/admin/articles/columns")
+      ], resolver.template_paths("goodmin/resolver_test/admin/articles/columns")
     end
   end
 end

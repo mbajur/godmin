@@ -1,11 +1,11 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class ResourceControllerParamsTest < ActiveSupport::TestCase
     # Minimal stubs used exclusively in this test
     module TestScope
       class ProfileResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         form do
           attribute :bio
@@ -15,7 +15,7 @@ module Godmin
 
       class Profile
         def self.name
-          "Godmin::ResourceControllerParamsTest::TestScope::Profile"
+          "Goodmin::ResourceControllerParamsTest::TestScope::Profile"
         end
       end
 
@@ -34,7 +34,7 @@ module Godmin
       end
 
       class AuthorResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         form do
           attribute :name
@@ -44,7 +44,7 @@ module Godmin
 
       # A minimal controller object that exposes resource_params_defaults
       # without needing the full ActionController stack.
-      class FakeController < Godmin::ResourceController
+      class FakeController < Goodmin::ResourceController
         # Expose the protected method for testing
         public :resource_params_defaults
 

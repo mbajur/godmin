@@ -1,12 +1,12 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class AssociationFieldTest < ActiveSupport::TestCase
     # Fake classes scoped to this test. Museum#name returns its full constant
     # path so that safe_constantize can resolve MuseumResource the same way.
     module TestScope
       class MuseumResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         def display_name(record)
           "display: #{record.title}"
@@ -15,7 +15,7 @@ module Godmin
 
       class Museum
         def self.name
-          "Godmin::AssociationFieldTest::TestScope::Museum"
+          "Goodmin::AssociationFieldTest::TestScope::Museum"
         end
 
         def self.all
@@ -35,7 +35,7 @@ module Godmin
       end
 
       class UserResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
       end
 
       class User

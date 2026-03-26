@@ -1,6 +1,6 @@
 module Fakes
   class ArticleResource
-    include Godmin::Resources::Resource
+    include Goodmin::Resources::Resource
 
     attr_accessor :called_methods
 

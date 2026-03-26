@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class ResourceServiceTest < ActiveSupport::TestCase
     def setup
       @article_resource = Fakes::ArticleResource.new
@@ -36,7 +36,7 @@ module Godmin
 
     def test_attribute_with_custom_field
       klass = Class.new do
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         index do
           attribute :title, field: Fields::Text
@@ -50,7 +50,7 @@ module Godmin
     def test_attribute_with_extra_options
       val = ->(record) { record.to_s }
       klass = Class.new do
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         index do
           attribute :title, field: Fields::Text, value: val, label: "My Label"
