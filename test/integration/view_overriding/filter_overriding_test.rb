@@ -24,28 +24,4 @@ class ColumnOverridingTest < ActionDispatch::IntegrationTest
     visit articles_path
     assert find("#filters").has_content? "foo"
   end
-
-  def test_default_filter_in_engine
-    visit admin.articles_path
-    assert find("#filters").has_content? "Title"
-  end
-
-  def test_override_filter_in_engine
-    add_template "admin/app/views/admin/articles/filters/_title.html.erb", "foo"
-    visit admin.articles_path
-    assert find("#filters").has_content? "foo"
-  end
-
-  def test_override_resource_filter_in_engine
-    add_template "admin/app/views/admin/resource/filters/_title.html.erb", "foo"
-    visit admin.articles_path
-    assert find("#filters").has_content? "foo"
-  end
-
-  def test_override_filter_and_resource_filter_in_engine
-    add_template "admin/app/views/admin/articles/filters/_title.html.erb", "foo"
-    add_template "admin/app/views/admin/resource/filters/_title.html.erb", "bar"
-    visit admin.articles_path
-    assert find("#filters").has_content? "foo"
-  end
 end

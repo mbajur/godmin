@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "admin", path: "../test/dummy/admin", group: [:test, :development]
 gem "rails", "~> 5.2"
 gem "puma", "< 6"
 

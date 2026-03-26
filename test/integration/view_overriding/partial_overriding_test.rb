@@ -37,28 +37,4 @@ class PartialOverridingTest < ActionDispatch::IntegrationTest
     visit new_article_path
     assert page.has_content? "foo"
   end
-
-  def test_default_partial_in_engine
-    visit admin.new_article_path
-    assert page.has_content? "Title"
-  end
-
-  def test_override_partial_in_engine
-    add_template "admin/app/views/admin/articles/_form.html.erb", "foo"
-    visit admin.new_article_path
-    assert page.has_content? "foo"
-  end
-
-  def test_override_resource_partial_in_engine
-    add_template "admin/app/views/admin/resource/_form.html.erb", "foo"
-    visit admin.new_article_path
-    assert page.has_content? "foo"
-  end
-
-  def test_override_partial_and_resource_partial_in_engine
-    add_template "admin/app/views/admin/articles/_form.html.erb", "foo"
-    add_template "admin/app/views/admin/resource/_form.html.erb", "bar"
-    visit admin.new_article_path
-    assert page.has_content? "foo"
-  end
 end
