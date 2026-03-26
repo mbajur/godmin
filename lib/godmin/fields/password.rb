@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class Password < Base
     end
   end

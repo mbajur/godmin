@@ -55,26 +55,26 @@ module Godmin
 
     def test_has_one_association_resolves_to_nested_has_one_field
       field = to_field(:profile)
-      assert_instance_of Field::NestedHasOne, field
+      assert_instance_of Fields::NestedHasOne, field
     end
 
     def test_has_many_association_resolves_to_association_field
       field = to_field(:comments)
-      assert_instance_of Field::Association, field
+      assert_instance_of Fields::Association, field
     end
 
     def test_enum_attribute_resolves_to_enum_field
       field = to_field(:status)
-      assert_instance_of Field::Enum, field
+      assert_instance_of Fields::Enum, field
     end
 
     def test_explicit_field_class_is_respected
-      attribute = Resources::Attribute.new(:profile, field_class: Field::Association)
+      attribute = Resources::Attribute.new(:profile, field_class: Fields::Association)
       field = attribute.to_field(
         record: TestScope::Article.new,
         resource_service: TestScope::ArticleResource.new
       )
-      assert_instance_of Field::Association, field
+      assert_instance_of Fields::Association, field
     end
   end
 end

@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class Association < Base
       def belongs_to?
         macro == :belongs_to

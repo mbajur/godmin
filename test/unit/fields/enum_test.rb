@@ -25,7 +25,7 @@ module Godmin
     end
 
     def build_field(status = nil)
-      Field::Enum.new(
+      Fields::Enum.new(
         attribute: :status,
         record: TestScope::Article.new(status),
         resource_service: TestScope::ArticleResource.new

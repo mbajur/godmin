@@ -23,7 +23,7 @@ module Godmin
     end
 
     def build_field(**options)
-      Field::String.new(
+      Fields::String.new(
         attribute: :title,
         record: TestScope::Article.new,
         resource_service: TestScope::ArticleResource.new,
@@ -38,7 +38,7 @@ module Godmin
 
     def test_hint_calls_proc_with_record_when_hint_option_is_a_proc
       record = TestScope::Article.new(title: "Hello")
-      field = Field::String.new(
+      field = Fields::String.new(
         attribute: :title,
         record: record,
         resource_service: TestScope::ArticleResource.new,
@@ -66,6 +66,17 @@ module Godmin
       assert_equal "The explicit hint", field.hint
     ensure
       I18n.backend.reload!
+    end
+
+    def test_partial_paths_for_custom_field_class
+      custom_field_class = Class.new(Fields::Base) do
+        def self.name
+          "Godmin::Fields::Color"
+        end
+      end
+      assert_equal "godmin/fields/color/index", custom_field_class.partial_index
+      assert_equal "godmin/fields/color/show", custom_field_class.partial_show
+      assert_equal "godmin/fields/color/form", custom_field_class.partial_form
     end
   end
 end

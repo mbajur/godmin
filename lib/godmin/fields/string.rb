@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class String < Base
     end
   end

@@ -117,19 +117,19 @@ module Godmin
     def test_attribute_with_custom_field
       builder = Resources::FormBuilder.new
       builder.instance_eval do
-        attribute :body, field: Field::Text
+        attribute :body, field: Fields::Text
       end
 
       node = builder.nodes.first
       assert_kind_of Resources::AttributeNode, node
-      assert_equal Field::Text, node.attribute.field_class
+      assert_equal Fields::Text, node.attribute.field_class
     end
 
     def test_attribute_with_extra_options
       builder = Resources::FormBuilder.new
       val = ->(record) { record.foo }
       builder.instance_eval do
-        attribute :body, field: Field::Text, value: val, label: "Custom"
+        attribute :body, field: Fields::Text, value: val, label: "Custom"
       end
 
       attr = builder.nodes.first.attribute

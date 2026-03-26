@@ -17,7 +17,7 @@ module Godmin
     end
 
     def build_field(status = nil, **options)
-      Field::Select.new(
+      Fields::Select.new(
         attribute: :status,
         record: TestScope::Article.new(status),
         resource_service: TestScope::ArticleResource.new,
@@ -66,11 +66,11 @@ module Godmin
     end
 
     def test_enum_field_inherits_from_select_field
-      assert Field::Enum < Field::Select
+      assert Fields::Enum < Fields::Select
     end
 
     def test_enum_field_uses_select_form_partial
-      assert_equal Field::Select.partial_form, Field::Enum.partial_form
+      assert_equal Fields::Select.partial_form, Fields::Enum.partial_form
     end
   end
 end
