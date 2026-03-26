@@ -53,11 +53,15 @@ class ActionDispatch::IntegrationTest
 
   def setup
     @template_paths = []
+    @saved_templates = {}
   end
 
   def teardown
     @template_paths.each do |path|
-      File.delete(path)
+      File.delete(path) if File.exist?(path)
+    end
+    @saved_templates.each do |path, content|
+      File.write(path, content)
     end
     clear_view_cache
   end
@@ -66,8 +70,21 @@ class ActionDispatch::IntegrationTest
 
   def add_template(path, content)
     template_path = File.expand_path("../dummy/#{path}", __FILE__)
-    @template_paths << template_path
+    if File.exist?(template_path)
+      @saved_templates[template_path] = File.read(template_path)
+    else
+      @template_paths << template_path
+    end
+    FileUtils.mkdir_p(File.dirname(template_path))
     File.write(template_path, content)
+    clear_view_cache
+  end
+
+  def remove_template(path)
+    template_path = File.expand_path("../dummy/#{path}", __FILE__)
+    return unless File.exist?(template_path)
+    @saved_templates[template_path] = File.read(template_path)
+    File.delete(template_path)
     clear_view_cache
   end
 

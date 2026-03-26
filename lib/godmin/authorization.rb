@@ -22,15 +22,17 @@ module Godmin
     end
 
     def namespaced_record(record)
-      return record unless engine_wrapper.namespaced?
+      return record if controller_namespace_path.empty?
 
       class_name = find_class_name(record)
       if already_namespaced?(class_name)
         record
       else
-        engine_wrapper.namespaced_path.map(&:to_sym) << record
+        controller_namespace_path.map(&:to_sym) << record
       end
     end
+
+    private
 
     # Borrowed from Pundit::PolicyFinder
     def find_class_name(subject)
@@ -48,7 +50,20 @@ module Godmin
     end
 
     def already_namespaced?(subject)
-      subject.to_s.start_with?("#{engine_wrapper.namespace.name}::")
+      return false if controller_namespace_name.blank?
+
+      subject.to_s.start_with?("#{controller_namespace_name}::")
+    end
+
+    def controller_namespace_path
+      @_controller_namespace_path ||= begin
+        parts = controller_path.split("/")
+        parts.length > 1 ? parts.first(parts.length - 1) : []
+      end
+    end
+
+    def controller_namespace_name
+      @_controller_namespace_name ||= controller_namespace_path.map(&:camelize).join("::")
     end
   end
 end

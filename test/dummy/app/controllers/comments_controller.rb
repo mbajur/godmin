@@ -1,3 +1,2 @@
-class CommentsController < ApplicationController
-  include Godmin::Resources::ResourceController
+class CommentsController < Godmin::ResourceController
 end

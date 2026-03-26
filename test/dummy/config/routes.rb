@@ -11,5 +11,4 @@ Rails.application.routes.draw do
   resource :another_admin_session, only: [:create]
 
   root to: "application#welcome"
-  mount Admin::Engine, at: "admin"
 end

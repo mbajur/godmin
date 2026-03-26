@@ -1,41 +1,43 @@
-$:.push File.expand_path("../lib", __FILE__)
+require_relative "lib/godmin/version"
 
-# Maintain your gem's version:
-require "godmin/version"
+Gem::Specification.new do |spec|
+  spec.name        = "godmin"
+  spec.version     = Godmin::VERSION
+  spec.authors     = ["Jens Ljungblad", "Linus Pettersson", "Varvet", "Mike Bajur"]
+  spec.email       = ["mbajur@gmail.com"]
+  spec.homepage    = "https://github.com/mbajur/godmin"
+  spec.summary     = "Godmin is an admin framework for Rails 8+"
+  spec.description = "Godmin is an admin framework for Rails 8+. Use it to build dedicated admin sections for your apps, or stand alone admin apps such as internal tools."
+  spec.license     = "MIT"
 
-# Describe your gem and declare its dependencies:
-Gem::Specification.new do |gem|
-  gem.name        = "godmin"
-  gem.version     = Godmin::VERSION
-  gem.authors     = ["Jens Ljungblad", "Linus Pettersson", "Varvet"]
-  gem.email       = ["info@varvet.se"]
-  gem.homepage    = "https://github.com/varvet/godmin"
-  gem.summary     = "Godmin is an admin framework for Rails 5+"
-  gem.description = "Godmin is an admin framework for Rails 5+. Use it to build dedicated admin sections for your apps, or stand alone admin apps such as internal tools."
-  gem.license     = "MIT"
+  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
+  # to allow pushing to a single host or delete this section to allow pushing to any host.
+  # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
-  gem.files         = `git ls-files`.split($/)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.require_paths = ["lib"]
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/mbajur/godmin"
 
-  gem.add_dependency "importmap-rails"
-  gem.add_dependency "propshaft"
-  gem.add_dependency "stimulus-rails"
-  gem.add_dependency "bcrypt", [">= 3.0", "< 4.0"]
-  gem.add_dependency "csv", ">= 3.0"
-  gem.add_dependency "csv_builder", "~> 2.1"
-  gem.add_dependency "pundit", [">= 2.2.0", "< 3.0"]
-  gem.add_dependency "rails", [">= 5.0", "< 9.0"]
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
+    Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  end
 
-  gem.add_development_dependency "appraisal"
-  gem.add_development_dependency "bootsnap"
-  gem.add_development_dependency "byebug"
-  gem.add_development_dependency "capybara"
-  gem.add_development_dependency "cuprite"
-  gem.add_development_dependency "minitest"
-  gem.add_development_dependency "minitest-reporters"
-  gem.add_development_dependency "pry"
-  gem.add_development_dependency "puma"
-  gem.add_development_dependency "sqlite3"
+  spec.add_dependency "rails", [">= 5.0", "< 9.0"]
+  spec.add_dependency "csv", ">= 3.0"
+  spec.add_dependency "csv_builder", "~> 2.1"
+  spec.add_dependency "pundit", [">= 2.2.0", "< 3.0"]
+  spec.add_dependency "importmap-rails"
+  spec.add_dependency "propshaft"
+  spec.add_dependency "stimulus-rails"
+  spec.add_dependency "bcrypt", [">= 3.0", "< 4.0"]
+
+  spec.add_development_dependency "appraisal"
+  spec.add_development_dependency "bootsnap"
+  spec.add_development_dependency "byebug"
+  spec.add_development_dependency "capybara"
+  spec.add_development_dependency "cuprite"
+  spec.add_development_dependency "minitest"
+  spec.add_development_dependency "minitest-reporters"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "puma"
+  spec.add_development_dependency "sqlite3"
 end

@@ -3,17 +3,33 @@ require "action_view/template/resolver"
 
 module Godmin
   class Resolver < ::ActionView::FileSystemResolver
-    def self.resolvers(controller_path, engine_wrapper)
+    def self.resolvers(controller_path)
+      engine_root = engine_root_for(controller_path)
       [
-        EngineResolver.new(controller_path, engine_wrapper),
-        GodminResolver.new(controller_path, engine_wrapper)
+        EngineResolver.new(controller_path, engine_root),
+        GodminResolver.new(controller_path)
       ]
     end
 
-    def initialize(path, controller_path, engine_wrapper)
+    def self.engine_root_for(controller_path)
+      parts = controller_path.split("/")
+      return Rails.application.root if parts.length < 2
+
+      namespace_path = parts.first(parts.length - 1).join("/")
+
+      engine = Rails::Engine.subclasses.find do |e|
+        next unless e.railtie_namespace
+        e.railtie_namespace.name.underscore.gsub("::", "/") == namespace_path
+      rescue NameError, NoMethodError
+        nil
+      end
+
+      engine&.root || Rails.application.root
+    end
+
+    def initialize(path, controller_path)
       super(path)
       @controller_path = controller_path
-      @engine_wrapper = engine_wrapper
     end
 
     # This function is for Rails 6 and up since the `find_templates` function
@@ -45,51 +61,81 @@ module Godmin
     end
   end
 
-  # Matches templates such as:
-  #
-  # { name: index, prefix: articles } => app/views/resource/index
-  # { name: form, prefix: articles }  => app/views/resource/_form
-  # { name: title, prefix: columns }  => app/views/resource/columns/_title
   class EngineResolver < Resolver
-    def initialize(controller_path, engine_wrapper)
-      super(File.join(engine_wrapper.root, "app/views"), controller_path, engine_wrapper)
+    def initialize(controller_path, engine_root = Rails.application.root)
+      super(File.join(engine_root, "app/views"), controller_path)
     end
 
     def template_paths(prefix)
+      application_path = application_path_for_engine
+      resource_path = resource_path_for_engine(prefix)
+      shared_path = shared_path_for_engine(prefix)
+      # Always include the base shared path (without any prefix sub-path) before application_path.
+      # This ensures app/views/godmin/shared overrides are found even when Rails invokes the
+      # resolver with a non-controller prefix (e.g. "layouts/godmin" from the layout file),
+      # where the prefix-specific shared path won't match the user's shared partial.
+      # Using @controller_path as the prefix argument produces a sub_path of "" (no suffix),
+      # giving us the plain namespace-scoped shared directory (e.g. "shared" or "admin/shared").
+      base_shared_path = shared_path_for_engine(@controller_path)
+
+      paths = [resource_path, shared_path, base_shared_path, application_path].uniq
+      return paths if @controller_path.split("/").length > 1
+
       [
-        resource_path_for_engine(prefix)
-      ]
+        "godmin/#{resource_path}",
+        "godmin/#{shared_path}",
+        "godmin/#{base_shared_path}",
+        "godmin/#{application_path}"
+      ].uniq + paths
+    end
+
+    def application_path_for_engine
+      parts = @controller_path.split("/")
+      parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/application" : "application"
     end
 
     def resource_path_for_engine(prefix)
-      prefix.sub(/\A#{@controller_path}/, File.join(@engine_wrapper.namespaced_path, "resource")).sub(/\A\//, "")
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      parts = @controller_path.split("/")
+      resource_base = parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/resource" : "resource"
+      sub_path.present? ? "#{resource_base}/#{sub_path}" : resource_base
+    end
+
+    def shared_path_for_engine(prefix)
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      parts = @controller_path.split("/")
+      shared_base = parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/shared" : "shared"
+      sub_path.present? ? "#{shared_base}/#{sub_path}" : shared_base
     end
   end
 
-  # Matches templates such as:
-  #
-  # { name: index, prefix: articles }      => godmin/app/views/godmin/resource/index
-  # { name: form, prefix: articles }       => godmin/app/views/godmin/resource/_form
-  # { name: welcome, prefix: application } => godmin/app/views/godmin/application/welcome
-  # { name: navigation, prefix: shared }   => godmin/app/views/godmin/shared/navigation
   class GodminResolver < Resolver
-    def initialize(controller_path, engine_wrapper)
-      super(File.join(Godmin::Engine.root, "app/views/godmin"), controller_path, engine_wrapper)
+    def initialize(controller_path)
+      super(File.join(Godmin::Engine.root, "app/views/godmin"), controller_path)
     end
 
     def template_paths(prefix)
       [
         default_path_for_godmin(prefix),
-        resource_path_for_godmin(prefix)
+        resource_path_for_godmin(prefix),
+        shared_path_for_godmin(prefix)
       ]
     end
 
     def default_path_for_godmin(prefix)
-      prefix.sub(/\A#{File.join(@engine_wrapper.namespaced_path)}/, "").sub(/\A\//, "")
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      base = File.basename(@controller_path)
+      sub_path.present? ? "#{base}/#{sub_path}" : base
     end
 
     def resource_path_for_godmin(prefix)
-      prefix.sub(/\A#{@controller_path}/, "resource").sub(/\A\//, "")
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      sub_path.present? ? "resource/#{sub_path}" : "resource"
+    end
+
+    def shared_path_for_godmin(prefix)
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      sub_path.present? ? "shared/#{sub_path}" : "shared"
     end
   end
 end
