@@ -67,6 +67,7 @@ class ActionDispatch::IntegrationTest
   def add_template(path, content)
     template_path = File.expand_path("../dummy/#{path}", __FILE__)
     @template_paths << template_path
+    FileUtils.mkdir_p(File.dirname(template_path))
     File.write(template_path, content)
     clear_view_cache
   end

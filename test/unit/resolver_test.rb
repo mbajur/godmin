@@ -6,6 +6,8 @@ module Godmin
       resolver = EngineResolver.new("articles")
 
       assert_equal [
+        "godmin/resource",
+        "godmin/shared",
         "resource",
         "shared"
       ], resolver.template_paths("articles")
@@ -24,6 +26,8 @@ module Godmin
       resolver = EngineResolver.new("articles")
 
       assert_equal [
+        "godmin/resource/columns",
+        "godmin/shared/columns",
         "resource/columns",
         "shared/columns"
       ], resolver.template_paths("articles/columns")

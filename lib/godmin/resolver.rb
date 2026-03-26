@@ -67,10 +67,13 @@ module Godmin
     end
 
     def template_paths(prefix)
+      paths = [resource_path_for_engine(prefix), shared_path_for_engine(prefix)]
+      return paths if @controller_path.split("/").length > 1
+
       [
-        resource_path_for_engine(prefix),
-        shared_path_for_engine(prefix)
-      ]
+        "godmin/#{resource_path_for_engine(prefix)}",
+        "godmin/#{shared_path_for_engine(prefix)}"
+      ] + paths
     end
 
     def resource_path_for_engine(prefix)
