@@ -1,5 +1,5 @@
 class ProfileService
-  include Godmin::Resources::ResourceService
+  include Goodmin::Resources::ResourceService
 
   form do
     row do

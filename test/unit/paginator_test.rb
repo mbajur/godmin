@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class PaginatorTest < ActiveSupport::TestCase
     def setup
       resources_class = Class.new do

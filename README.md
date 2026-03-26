@@ -1,15 +1,15 @@
-# Godmin
+# Goodmin
 
-[![Gem Version](http://img.shields.io/gem/v/godmin.svg)](https://rubygems.org/gems/godmin)
-[![Build Status](https://img.shields.io/travis/varvet/godmin/master.svg)](https://travis-ci.org/varvet/godmin)
-[![Code Climate](https://api.codeclimate.com/v1/badges/d8e5c7c54c1dba073689/maintainability)](https://codeclimate.com/github/varvet/godmin)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d8e5c7c54c1dba073689/test_coverage)](https://codeclimate.com/github/varvet/godmin)
+[![Gem Version](http://img.shields.io/gem/v/goodmin.svg)](https://rubygems.org/gems/goodmin)
+[![Build Status](https://img.shields.io/travis/varvet/goodmin/master.svg)](https://travis-ci.org/varvet/goodmin)
+[![Code Climate](https://api.codeclimate.com/v1/badges/d8e5c7c54c1dba073689/maintainability)](https://codeclimate.com/github/varvet/goodmin)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d8e5c7c54c1dba073689/test_coverage)](https://codeclimate.com/github/varvet/goodmin)
 
-Godmin is an admin framework for Rails 5+. Use it to build dedicated admin sections for your apps, or stand alone admin apps such as internal tools. It has support for common features such as scoping, filtering and performing batch actions on your models. Check out the [demo app](http://godmin-sandbox.herokuapp.com) and its [source code](https://github.com/varvet/godmin-sandbox) to get a feel for how it works.
+Goodmin is an admin framework for Rails 5+. Use it to build dedicated admin sections for your apps, or stand alone admin apps such as internal tools. It has support for common features such as scoping, filtering and performing batch actions on your models. Check out the [demo app](http://goodmin-sandbox.herokuapp.com) and its [source code](https://github.com/varvet/goodmin-sandbox) to get a feel for how it works.
 
-Godmin differs from tools like [ActiveAdmin](http://activeadmin.info/) and [RailsAdmin](https://github.com/sferik/rails_admin) in how admin sections are created. Rather than being DSL-based, Godmin is a set of opt-in modules and helpers that can be applied to regular Rails apps and engines. An admin section built with Godmin is just that, a regular Rails app or Rails engine, with regular routes, controllers and views. That means there is less to learn, because you already know most of it, and fewer constraints on what you can do. After all, administrators are users too, and what better way to provide them with a tailor made experience than building them a Rails app?
+Goodmin differs from tools like [ActiveAdmin](http://activeadmin.info/) and [RailsAdmin](https://github.com/sferik/rails_admin) in how admin sections are created. Rather than being DSL-based, Goodmin is a set of opt-in modules and helpers that can be applied to regular Rails apps and engines. An admin section built with Goodmin is just that, a regular Rails app or Rails engine, with regular routes, controllers and views. That means there is less to learn, because you already know most of it, and fewer constraints on what you can do. After all, administrators are users too, and what better way to provide them with a tailor made experience than building them a Rails app?
 
-![Screenshot](https://raw.githubusercontent.com/varvet/godmin/master/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/varvet/goodmin/master/screenshot.png)
 
 - [Installation](#installation)
   - [Standalone installation](#standalone-installation)
@@ -41,14 +41,14 @@ Godmin differs from tools like [ActiveAdmin](http://activeadmin.info/) and [Rail
 
 ## Installation
 
-Godmin supports two common admin scenarios:
+Goodmin supports two common admin scenarios:
 
 1. Standalone installation
 2. Engine installation
 
 If you want to set up an example app that you can play around with, run the following:
 ```sh
-rails new sandbox --skip-spring -m https://raw.githubusercontent.com/varvet/godmin/master/template.rb
+rails new sandbox --skip-spring -m https://raw.githubusercontent.com/varvet/goodmin/master/template.rb
 ```
 
 ### Standalone installation
@@ -56,16 +56,16 @@ Use for admin-only applications, or for architectures where the admin lives in i
 
 Add the gem to the application's `Gemfile`:
 ```ruby
-gem "godmin"
+gem "goodmin"
 ```
 
 Bundle, then run the install generator:
 ```sh
 $ bundle install
-$ bin/rails generate godmin:install
+$ bin/rails generate goodmin:install
 ```
 
-Godmin should be up and running at `localhost:3000`.
+Goodmin should be up and running at `localhost:3000`.
 
 ### Engine installation
 Use when the admin is part of the same codebase as the main application. E.g. you want to access the admin section at `localhost:3000/admin`.
@@ -87,47 +87,47 @@ mount Admin::Engine, at: "admin"
 
 Add the gem to the engine's gemspec, `admin/admin.gemspec`:
 ```ruby
-s.add_dependency "godmin", "~> x.x.x"
+s.add_dependency "goodmin", "~> x.x.x"
 ```
 
 Bundle, then run the install generator within the scope of the engine, i.e. note the leading `admin/`:
 ```sh
 $ bundle install
-$ admin/bin/rails generate godmin:install
+$ admin/bin/rails generate goodmin:install
 ```
 
-Godmin should be up and running at `localhost:3000/admin`
+Goodmin should be up and running at `localhost:3000/admin`
 
 ### Installation artefacts
 
-Installing Godmin does a number of things to the Rails application.
+Installing Goodmin does a number of things to the Rails application.
 
 The application controller is modified as such:
 ```ruby
 class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
+  include Goodmin::ApplicationController
 end
 ```
 
 Require statements are placed in both `app/assets/javascripts/application.js` and `app/assets/stylesheets/application.css`.
 
-If Godmin was installed inside an engine, a `require "godmin"` statement is placed in `{namespace}/lib/{namespace}.rb`.
+If Goodmin was installed inside an engine, a `require "goodmin"` statement is placed in `{namespace}/lib/{namespace}.rb`.
 
 An `app/views/shared/_navigation.html.erb` partial is created.
 
-And finally, the `app/views/layouts` folder is removed by default, so as not to interfere with the Godmin layouts. It can be added back in case you wish to override the built in layouts.
+And finally, the `app/views/layouts` folder is removed by default, so as not to interfere with the Goodmin layouts. It can be added back in case you wish to override the built in layouts.
 
 ## Getting started
 
-Godmin deals primarily with resources. A resource is something that can be administered through the Godmin user interface, often a Rails model. Let's say the application has an `Article` model with attributes such as `title`, `body` and `published`. To get going quickly, we can use a generator:
+Goodmin deals primarily with resources. A resource is something that can be administered through the Goodmin user interface, often a Rails model. Let's say the application has an `Article` model with attributes such as `title`, `body` and `published`. To get going quickly, we can use a generator:
 
 ```sh
-$ bin/rails generate godmin:resource article title published
+$ bin/rails generate goodmin:resource article title published
 ```
 
 Or for an engine install:
 ```sh
-$ admin/bin/rails generate godmin:resource article title published
+$ admin/bin/rails generate goodmin:resource article title published
 ```
 
 This does a number of things.
@@ -144,7 +144,7 @@ It inserts a `navbar_item` in the `app/views/shared/_navigation.html.erb` partia
 <%= navbar_item Article %>
 ```
 
-If Godmin was installed inside an engine, it creates a model class:
+If Goodmin was installed inside an engine, it creates a model class:
 
 ```ruby
 module Admin
@@ -157,7 +157,7 @@ It creates a controller:
 
 ```ruby
 class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 end
 ```
 
@@ -165,7 +165,7 @@ It creates a resource object:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   index do
     attribute :title
@@ -215,7 +215,7 @@ Scopes are a way of sectioning resources, useful for quick navigation, and can b
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   scope :unpublished, default: true
   scope :published
@@ -236,7 +236,7 @@ Filters offer great flexibility when it comes to searching for resources, and ca
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   filter :title
 
@@ -266,7 +266,7 @@ Batch actions can be created as follows:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   batch_action :publish
   batch_action :unpublish
@@ -289,7 +289,7 @@ If you wish to implement your own redirect after a batch action, it needs to be 
 
 ```ruby
 class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 
   private
 
@@ -299,16 +299,16 @@ class ArticlesController < ApplicationController
 end
 ```
 
-If you are using Godmin's built in authorization functionality you must [authorize your batch actions in your policy](#batch-action-authorization).
+If you are using Goodmin's built in authorization functionality you must [authorize your batch actions in your policy](#batch-action-authorization).
 
 ### Custom ordering
 
-By default, Godmin supports ordering of database columns in the index view table. However, it cannot automatically sort associations, custom attributes and so on.
-If you want to order something that Godmin doesn't support out of the box, or you just want to customize how a columns is ordered, you can implement your own ordering functionality in the resource object by creating a `order_by_<attribute>` method.
+By default, Goodmin supports ordering of database columns in the index view table. However, it cannot automatically sort associations, custom attributes and so on.
+If you want to order something that Goodmin doesn't support out of the box, or you just want to customize how a columns is ordered, you can implement your own ordering functionality in the resource object by creating a `order_by_<attribute>` method.
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   index do
     attribute :title
@@ -342,7 +342,7 @@ To change the class name of the resource from the default based on the resource 
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def resource_class
     FooArticle
@@ -354,7 +354,7 @@ To scope resources for quering and building, e.g. based on the signed in user:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   # The signed in admin user is available to all resource objects via the options hash
   def resources_relation
@@ -367,7 +367,7 @@ To add to the index page resources query, e.g. to change the default order:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def resources(params)
     super(params).order(author: :desc)
@@ -379,7 +379,7 @@ To change the way a resource is fetched for `show`, `edit`, `update` and `destro
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def find_resource(id)
     resources_relation.find_by(slug: id)
@@ -391,7 +391,7 @@ To change the way a resource is constructed for `new` and `create` actions:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def build_resource(_params)
     article = super
@@ -405,7 +405,7 @@ To change the way a resource is saved in the `create` action:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   # This method should return true or false
   def create_resource(resource)
@@ -418,7 +418,7 @@ To change the way a resource is saved in the `update` action:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   # This method should return true or false
   def update_resource(resource, params)
@@ -432,7 +432,7 @@ To change the way a resource is destroyed in the `destroy` action:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def destroy_resource(resource)
     resource.paranoid_destroy
@@ -446,7 +446,7 @@ When using the `form` block, parameters are automatically permitted based on the
 
 ```ruby
 class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 
   private
 
@@ -462,7 +462,7 @@ Sometimes you want to pass additional params to the resource object, other that 
 
 ```ruby
 class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 
   private
 
@@ -478,7 +478,7 @@ You can then access it from the resource object:
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def some_method
     options[:some_param]
@@ -494,7 +494,7 @@ For instance, to have the article controller redirect to the index page after bo
 
 ```ruby
 class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 
   private
 
@@ -508,7 +508,7 @@ Or, to have the article controller redirect to the index page after create and t
 
 ```ruby
 class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 
   private
 
@@ -526,7 +526,7 @@ If you wish to change the behaviour for every resource controller, consider crea
 
 ```ruby
 class ResourceController < ApplicationController
-  include Godmin::Resources::ResourceController
+  include Goodmin::Resources::ResourceController
 
   private
 
@@ -542,7 +542,7 @@ If you wish to change the number of resources per page, you can override the `pe
 
 ```ruby
 class ArticlesResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   def per_page
     50
@@ -556,7 +556,7 @@ The `export` block in the resource object makes it possible to mark attributes o
 
 ```ruby
 class ArticlesResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   export do
     attribute :id
@@ -583,7 +583,7 @@ If you want to add a link to the nested resource from the parent's show and edit
 
 ```ruby
 class BlogResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   has_many :blog_posts
 end
@@ -593,28 +593,28 @@ Otherwise, simply add links as you see fit using partial overrides.
 
 ## Views
 
-It's easy to override view templates and partials in Godmin, both globally and per resource. All you have to do is place a file with an identical name in your `app/views` directory. For instance, to override the `godmin/resource/index.html.erb` template for all resources, place a file under `app/views/resource/index.html.erb`. If you only wish to override it for articles, place it instead under `app/views/articles/index.html.erb`.
+It's easy to override view templates and partials in Goodmin, both globally and per resource. All you have to do is place a file with an identical name in your `app/views` directory. For instance, to override the `goodmin/resource/index.html.erb` template for all resources, place a file under `app/views/resource/index.html.erb`. If you only wish to override it for articles, place it instead under `app/views/articles/index.html.erb`.
 
 You can also inherit from the default template as such:
 ```erb
-<%= render template: "godmin/resource/show" %>
+<%= render template: "goodmin/resource/show" %>
 
 <p>Append stuff here</p>
 ```
 
 If you wish to customize the content of a table column, you can place a partial under `app/views/{resource}/columns/{column_name}.html.erb`, e.g. `app/views/articles/columns/_title.html.erb`. The resource is available to the partial through the `resource` variable.
 
-The full list of templates and partials that can be overridden [can be found here](https://github.com/varvet/godmin/tree/master/app/views/godmin).
+The full list of templates and partials that can be overridden [can be found here](https://github.com/varvet/goodmin/tree/master/app/views/goodmin).
 
 ### Forms
 
-Godmin uses a block-based DSL to define form fields in the resource object. The `form` block supports plain attribute declarations as well as richer layout components.
+Goodmin uses a block-based DSL to define form fields in the resource object. The `form` block supports plain attribute declarations as well as richer layout components.
 
 #### Basic usage
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   form do
     attribute :title
@@ -641,7 +641,7 @@ end
 
 #### Built-in form components
 
-Godmin ships with three higher-level layout components.
+Goodmin ships with three higher-level layout components.
 
 **`row` / `col`** — Bootstrap grid helpers:
 
@@ -675,13 +675,13 @@ Both `title` and `description` are optional.
 
 #### Registering custom form DSL components
 
-You can extend the form DSL with your own components by creating a class that includes `Godmin::Resources::FormComponent` and registering it with `FormBuilder.register_component`.
+You can extend the form DSL with your own components by creating a class that includes `Goodmin::Resources::FormComponent` and registering it with `FormBuilder.register_component`.
 
 **Step 1 – Create the component:**
 
 ```ruby
 class CardComponent
-  include Godmin::Resources::FormComponent
+  include Goodmin::Resources::FormComponent
 
   def initialize(children, heading:)
     super(children)
@@ -702,7 +702,7 @@ end
 **Step 2 – Register the component** (e.g. in an initializer):
 
 ```ruby
-Godmin::Resources::FormBuilder.register_component(:card, CardComponent)
+Goodmin::Resources::FormBuilder.register_component(:card, CardComponent)
 ```
 
 **Step 3 – Use it in a form block:**
@@ -720,15 +720,15 @@ Strong parameters are automatically derived from all attributes declared inside 
 
 #### Custom fields
 
-Godmin automatically maps database column types to built-in field classes (`Fields::String`, `Fields::Text`, `Fields::Boolean`, `Fields::Date`, `Fields::DateTime`, `Fields::Number`, and `Fields::Association`). When you need different rendering or behaviour for a particular attribute, you can create your own field class and tell Godmin to use it.
+Goodmin automatically maps database column types to built-in field classes (`Fields::String`, `Fields::Text`, `Fields::Boolean`, `Fields::Date`, `Fields::DateTime`, `Fields::Number`, and `Fields::Association`). When you need different rendering or behaviour for a particular attribute, you can create your own field class and tell Goodmin to use it.
 
 **Step 1 – Create the field class:**
 
-A custom field must inherit from `Godmin::Fields::Base`. Place it in `app/godmin/fields/` — Godmin automatically loads files from that directory under the `Godmin::Fields` namespace. Override `value` if you need to transform the raw attribute value, and provide ERB partials to control how the field is rendered.
+A custom field must inherit from `Goodmin::Fields::Base`. Place it in `app/goodmin/fields/` — Goodmin automatically loads files from that directory under the `Goodmin::Fields` namespace. Override `value` if you need to transform the raw attribute value, and provide ERB partials to control how the field is rendered.
 
 ```ruby
-# app/godmin/fields/color.rb
-module Godmin
+# app/goodmin/fields/color.rb
+module Goodmin
   module Fields
     class Color < Base
       # Optional: transform the value before it reaches the partial
@@ -742,10 +742,10 @@ end
 
 **Step 2 – Create the partials:**
 
-Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>` is the underscored class name (e.g. `color` for `Godmin::Fields::Color`). Each context — `_form.html.erb`, `_index.html.erb`, and `_show.html.erb` — can be overridden independently.
+Place partials under `app/views/goodmin/fields/<field_type>/` where `<field_type>` is the underscored class name (e.g. `color` for `Goodmin::Fields::Color`). Each context — `_form.html.erb`, `_index.html.erb`, and `_show.html.erb` — can be overridden independently.
 
 ```erb
-<%# app/views/godmin/fields/color/_form.html.erb %>
+<%# app/views/goodmin/fields/color/_form.html.erb %>
 <div class="form-group">
   <%= f.label field.attribute %>
   <%= f.color_field field.attribute, class: "form-control" %>
@@ -753,12 +753,12 @@ Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>
 ```
 
 ```erb
-<%# app/views/godmin/fields/color/_index.html.erb %>
+<%# app/views/goodmin/fields/color/_index.html.erb %>
 <span class="color-swatch" style="background: <%= field.value %>"><%= field.value %></span>
 ```
 
 ```erb
-<%# app/views/godmin/fields/color/_show.html.erb %>
+<%# app/views/goodmin/fields/color/_show.html.erb %>
 <span class="color-swatch" style="background: <%= field.value %>"><%= field.value %></span>
 ```
 
@@ -768,18 +768,18 @@ Pass the field class via the `field:` option when declaring an attribute in any 
 
 ```ruby
 class ArticleResource
-  include Godmin::Resources::Resource
+  include Goodmin::Resources::Resource
 
   index do
-    attribute :color, field: Godmin::Fields::Color
+    attribute :color, field: Goodmin::Fields::Color
   end
 
   show do
-    attribute :color, field: Godmin::Fields::Color
+    attribute :color, field: Goodmin::Fields::Color
   end
 
   form do
-    attribute :color, field: Godmin::Fields::Color
+    attribute :color, field: Goodmin::Fields::Color
   end
 end
 ```
@@ -791,13 +791,13 @@ You can pass arbitrary keyword arguments alongside `field:` when declaring an at
 ```ruby
 # Resource service
 index do
-  attribute :color, field: Godmin::Fields::Color, label: "Hex colour", swatch: true
+  attribute :color, field: Goodmin::Fields::Color, label: "Hex colour", swatch: true
 end
 ```
 
 ```ruby
-# app/godmin/fields/color.rb
-module Godmin
+# app/goodmin/fields/color.rb
+module Goodmin
   module Fields
     class Color < Base
       def value
@@ -810,7 +810,7 @@ end
 ```
 
 ```erb
-<%# app/views/godmin/fields/color/_index.html.erb %>
+<%# app/views/goodmin/fields/color/_index.html.erb %>
 <% if field.options[:swatch] %>
   <span class="color-swatch" style="background: <%= field.value %>"></span>
 <% end %>
@@ -819,9 +819,9 @@ end
 
 #### Custom form partials
 
-Oftentimes, the default form provided by Godmin doesn't cut it. The `godmin/resource/_form.html.erb` partial is therefore one of the most common to override per resource.
+Oftentimes, the default form provided by Goodmin doesn't cut it. The `goodmin/resource/_form.html.erb` partial is therefore one of the most common to override per resource.
 
-Godmin comes with its own FormBuilder that automatically generates bootstrapped markup. It is based on the [Rails Bootstrap Forms](https://github.com/bootstrap-ruby/rails-bootstrap-forms) FormBuilder, and all its methods are directly available. In addition it has a few convenience methods that can be leveraged.
+Goodmin comes with its own FormBuilder that automatically generates bootstrapped markup. It is based on the [Rails Bootstrap Forms](https://github.com/bootstrap-ruby/rails-bootstrap-forms) FormBuilder, and all its methods are directly available. In addition it has a few convenience methods that can be leveraged.
 
 The `input` method will automatically detect the type of field from the database and generate an appropriate form field:
 
@@ -833,7 +833,7 @@ end
 
 ### Navigation
 
-Godmin comes with built in view helpers for generating the navbar.
+Goodmin comes with built in view helpers for generating the navbar.
 
 The `navbar_item` helper generates a link in the navbar. It can be used in a number of different ways.
 
@@ -875,23 +875,23 @@ end
 
 ## Authentication
 
-Multiple authentication scenarios are supported. Godmin comes with a lightweight built in authentication solution that can be used to sign in to the admin section via the admin interface. In addition, when running an admin engine, it is possible to set up a shared authentication solution so that administrators can sign in via the main app.
+Multiple authentication scenarios are supported. Goodmin comes with a lightweight built in authentication solution that can be used to sign in to the admin section via the admin interface. In addition, when running an admin engine, it is possible to set up a shared authentication solution so that administrators can sign in via the main app.
 
 ### Built in authentication
 
 This example uses the built in authentication solution. Authentication is isolated to the admin section and administrators sign in via the admin interface.
 
-Godmin comes with a generator that creates an admin user model and enables the built in authentication:
+Goodmin comes with a generator that creates an admin user model and enables the built in authentication:
 
 ```sh
-$ bin/rails generate godmin:authentication
+$ bin/rails generate goodmin:authentication
 $ bin/rake db:migrate
 ```
 
 Please note: when installing to an admin engine, the migration needs to be moved to the main app before it can be found by `db:migrate`. Rails has a solution in place for this:
 
 ```sh
-$ admin/bin/rails generate godmin:authentication
+$ admin/bin/rails generate goodmin:authentication
 $ bin/rake admin:install:migrations
 $ bin/rake db:migrate
 ```
@@ -900,7 +900,7 @@ A model is generated:
 
 ```ruby
 class AdminUser < ActiveRecord::Base
-  include Godmin::Authentication::User
+  include Goodmin::Authentication::User
 
   def self.login_column
     :email
@@ -911,9 +911,9 @@ end
 By default the user model is called `AdminUser`. If you'd like to change this, you can pass an argument to the authentication generator:
 
 ```
-$ bin/rails generate godmin:authentication SuperUser
+$ bin/rails generate goodmin:authentication SuperUser
 or for an engine:
-$ admin/bin/rails generate godmin:authentication SuperUser
+$ admin/bin/rails generate goodmin:authentication SuperUser
 ```
 
 By default the model is generated with an `email` field as the login column. This can changed in the migration prior to migrating if, for instance, a `username` column is more appropriate.
@@ -928,7 +928,7 @@ Along with a sessions controller:
 
 ```ruby
 class SessionsController < ApplicationController
-  include Godmin::Authentication::SessionsController
+  include Goodmin::Authentication::SessionsController
 end
 ```
 
@@ -936,8 +936,8 @@ Finally, the application controller is modified:
 
 ```ruby
 class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
-  include Godmin::Authentication
+  include Goodmin::ApplicationController
+  include Goodmin::Authentication
 
   def admin_user_class
     AdminUser
@@ -956,8 +956,8 @@ There is no need to run a generator in this instance. Simply add the authenticat
 ```ruby
 module Admin
   class ApplicationController < ActionController::Base
-    include Godmin::ApplicationController
-    include Godmin::Authentication
+    include Goodmin::ApplicationController
+    include Goodmin::Authentication
   end
 end
 ```
@@ -967,8 +967,8 @@ Provided you have `User` model set up with Devise in the main application, overr
 ```ruby
 module Admin
   class ApplicationController < ActionController::Base
-    include Godmin::ApplicationController
-    include Godmin::Authentication
+    include Goodmin::ApplicationController
+    include Goodmin::Authentication
 
     def authenticate
       authenticate_user!
@@ -999,15 +999,15 @@ end
 
 ## Authorization
 
-In order to enable authorization, authentication must first be enabled. See the previous section. The Godmin authorization system uses [Pundit](https://github.com/elabs/pundit).
+In order to enable authorization, authentication must first be enabled. See the previous section. The Goodmin authorization system uses [Pundit](https://github.com/elabs/pundit).
 
 Add the authorization module to the application controller:
 
 ```ruby
 class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
-  include Godmin::Authentication
-  include Godmin::Authorization
+  include Goodmin::ApplicationController
+  include Goodmin::Authentication
+  include Goodmin::Authorization
 
   ...
 end
@@ -1016,20 +1016,20 @@ end
 Policies can be generated using the following command:
 
 ```sh
-$ bin/rails generate godmin:policy article
+$ bin/rails generate goodmin:policy article
 ```
 
 This file `app/policies/article_policy.rb` will be created:
 
 ```ruby
-class ArticlePolicy < Godmin::Authorization::Policy
+class ArticlePolicy < Goodmin::Authorization::Policy
 end
 ```
 
 Permissions are specified by implementing methods on this class. Two methods are available to the methods, `user` and `record`, the signed in user and the record being authorized. An implemented policy can look something like this:
 
 ```ruby
-class ArticlePolicy < Godmin::Authorization::Policy
+class ArticlePolicy < Goodmin::Authorization::Policy
   def index?
     true
   end
@@ -1060,13 +1060,13 @@ That is, everyone can list and view articles, only editors can create them, and 
 
 ### Handle unauthorized access
 
-When a user is not authorized to access a resource, a `Pundit::NotAuthorizedError` is raised. By default this error is rescued by Godmin and turned into a status code `403 Forbidden` response. If you want to change this behaviour you can rescue the error yourself in the appropriate `ApplicationController`:
+When a user is not authorized to access a resource, a `Pundit::NotAuthorizedError` is raised. By default this error is rescued by Goodmin and turned into a status code `403 Forbidden` response. If you want to change this behaviour you can rescue the error yourself in the appropriate `ApplicationController`:
 
 ```ruby
 class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
-  include Godmin::Authentication
-  include Godmin::Authorization
+  include Goodmin::ApplicationController
+  include Goodmin::Authentication
+  include Goodmin::Authorization
 
   # Renders 404 page and returns status code 404.
   rescue_from Pundit::NotAuthorizedError do
@@ -1089,10 +1089,10 @@ end
 
 ### Batch action authorization
 
-Batch actions must be authorized in your policy if you are using Godmin's built in authorization functionality. The policy method is called with the relation containing all records to be processed.
+Batch actions must be authorized in your policy if you are using Goodmin's built in authorization functionality. The policy method is called with the relation containing all records to be processed.
 
 ```ruby
-class ArticlePolicy < Godmin::Authorization::Policy
+class ArticlePolicy < Goodmin::Authorization::Policy
   def batch_action_destroy?
     record.all? { |r| r.user_id == user.id }
   end
@@ -1111,7 +1111,7 @@ end
 
 ### Authorization in Engines
 
-When Godmin is installed as an engine, it expects policies to be defined
+When Goodmin is installed as an engine, it expects policies to be defined
 within the engine: eg. `Admin::ArticlePolicy` defined in
 `admin/app/policies/article_policy.rb`.
 
@@ -1156,12 +1156,12 @@ end
 
 ## Localization
 
-Godmin supports localization out of the box. For a list of translatable strings, [look here](https://github.com/varvet/godmin/blob/master/config/locales/en.yml).
+Goodmin supports localization out of the box. For a list of translatable strings, [look here](https://github.com/varvet/goodmin/blob/master/config/locales/en.yml).
 
-Strings can be translated both globally and per resource, similar to how views work. For instance, to translate the `godmin.batch_actions.buttons.select_all` string globally:
+Strings can be translated both globally and per resource, similar to how views work. For instance, to translate the `goodmin.batch_actions.buttons.select_all` string globally:
 
 ```yml
-godmin:
+goodmin:
   batch_actions:
     buttons:
       select_all: {translation}
@@ -1170,7 +1170,7 @@ godmin:
 Or, translate for a specific resource:
 
 ```yml
-godmin:
+goodmin:
   article:
     batch_actions:
       buttons:
@@ -1180,7 +1180,7 @@ godmin:
 In addition, all scopes, filters and batch actions that are added, can be localized:
 
 ```yml
-godmin:
+goodmin:
   article:
     batch_actions:
       labels:
@@ -1195,13 +1195,13 @@ godmin:
         published: {translation}
 ```
 
-Godmin comes with built in support for English and Swedish.
+Goodmin comes with built in support for English and Swedish.
 
 There is a view helper available named `translate_scoped` that can be used in overridden views. Please see the source code for information on how to use it.
 
 ## JavaScript
 
-Godmin comes with a small set of JavaScript components and APIs.
+Goodmin comes with a small set of JavaScript components and APIs.
 
 ### Datetimepickers
 
@@ -1215,15 +1215,15 @@ f.datetime_field :date
 If the field is added post page render, it can be initialized manually:
 
 ```js
-Godmin.Datetimepickers.initializeDatepicker($el);
-Godmin.Datetimepickers.initializeTimepicker($el);
-Godmin.Datetimepickers.initializeDatetimepicker($el);
+Goodmin.Datetimepickers.initializeDatepicker($el);
+Goodmin.Datetimepickers.initializeTimepicker($el);
+Goodmin.Datetimepickers.initializeDatetimepicker($el);
 ```
 
 Additional options can be passed down to bootstrap-datetimepicker:
 
 ```js
-Godmin.Datetimepickers.initializeDatetimepicker($el, {
+Goodmin.Datetimepickers.initializeDatetimepicker($el, {
   useMinutes: false,
   useSeconds: false
 });
@@ -1234,7 +1234,7 @@ If you wish to translate the datetimepicker, change `moment/en-gb` in your `app/
 ```js
 //= require moment
 //= require moment/{locale} // e.g. moment/sv
-//= require godmin
+//= require goodmin
 ```
 
 Please note that the datepickers default to en-GB, not en-US, because Rails cannot automatically parse en-US dates.
@@ -1242,14 +1242,14 @@ Please note that the datepickers default to en-GB, not en-US, because Rails cann
 To use an alternative format, use the format option.
 
 ```js
-Godmin.Datetimepickers.initializeDatepicker($elems, {
+Goodmin.Datetimepickers.initializeDatepicker($elems, {
   format: 'YYYY-MM-DD'
 });
 ```
 
 ### Stimulus controllers
 
-Godmin uses [Stimulus](https://stimulus.hotwired.dev/) and maintains its own importmap instance (`Godmin.importmap`) separate from your application's default importmap. Controllers are auto-discovered via `eagerLoadControllersFrom`, meaning any module pinned under the `controllers/` prefix in `Godmin.importmap` is automatically registered as a Stimulus controller.
+Goodmin uses [Stimulus](https://stimulus.hotwired.dev/) and maintains its own importmap instance (`Goodmin.importmap`) separate from your application's default importmap. Controllers are auto-discovered via `eagerLoadControllersFrom`, meaning any module pinned under the `controllers/` prefix in `Goodmin.importmap` is automatically registered as a Stimulus controller.
 
 #### Registering a controller from a standalone app
 
@@ -1266,15 +1266,15 @@ export default class extends Controller {
 }
 ```
 
-Propshaft serves `app/javascript` automatically in a Rails app, so you only need to pin the controller in `Godmin.importmap`. Add an initializer:
+Propshaft serves `app/javascript` automatically in a Rails app, so you only need to pin the controller in `Goodmin.importmap`. Add an initializer:
 
 ```ruby
-# config/initializers/godmin.rb
-Godmin.importmap.draw(Rails.root.join("config/godmin_importmap.rb"))
+# config/initializers/goodmin.rb
+Goodmin.importmap.draw(Rails.root.join("config/goodmin_importmap.rb"))
 ```
 
 ```ruby
-# config/godmin_importmap.rb
+# config/goodmin_importmap.rb
 pin "controllers/my_controller"
 ```
 
@@ -1286,15 +1286,15 @@ For an engine, you must register paths during the initialization phase (not in `
 
 ```ruby
 # lib/my_engine/engine.rb
-initializer "my_engine.importmap", after: "godmin.importmap" do |app|
+initializer "my_engine.importmap", after: "goodmin.importmap" do |app|
   app.config.assets.paths << MyEngine::Engine.root.join("app/javascript")
-  Godmin.importmap.draw MyEngine::Engine.root.join("config/godmin_importmap.rb")
-  Godmin.importmap.cache_sweeper watches: MyEngine::Engine.root.join("app/javascript")
+  Goodmin.importmap.draw MyEngine::Engine.root.join("config/goodmin_importmap.rb")
+  Goodmin.importmap.cache_sweeper watches: MyEngine::Engine.root.join("app/javascript")
 end
 ```
 
 ```ruby
-# config/godmin_importmap.rb (inside your engine)
+# config/goodmin_importmap.rb (inside your engine)
 pin_all_from MyEngine::Engine.root.join("app/javascript/controllers"),
              under: "controllers"
 ```
@@ -1331,13 +1331,13 @@ f.text_field :tag_list, data: { behavior: "select-box", add_label: "Create:" }
 If the field is added post page render, it can be initialized manually:
 
 ```js
-Godmin.SelectBoxes.initializeSelectBox($el);
+Goodmin.SelectBoxes.initializeSelectBox($el);
 ```
 
 Additional options can be passed down to selectize:
 
 ```js
-Godmin.SelectBoxes.initializeSelectBox($el, {
+Goodmin.SelectBoxes.initializeSelectBox($el, {
 	create: true
 });
 ```
@@ -1346,13 +1346,13 @@ Godmin.SelectBoxes.initializeSelectBox($el, {
 
 Some additional features are available as plugins:
 
-- [Godmin Uploads](https://github.com/varvet/godmin-uploads)
-- [Godmin Tags](https://github.com/varvet/godmin-tags)
-- [Godmin Redactor](https://github.com/varvet/godmin-redactor)
+- [Goodmin Uploads](https://github.com/varvet/goodmin-uploads)
+- [Goodmin Tags](https://github.com/varvet/goodmin-tags)
+- [Goodmin Redactor](https://github.com/varvet/goodmin-redactor)
 
 ## Contributors
 
-https://github.com/varvet/godmin/graphs/contributors
+https://github.com/varvet/goodmin/graphs/contributors
 
 ## License
 

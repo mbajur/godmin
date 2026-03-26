@@ -1,10 +1,10 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class AttributeTest < ActiveSupport::TestCase
     module TestScope
       class ProfileResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         form do
           attribute :bio
@@ -14,12 +14,12 @@ module Godmin
 
       class Profile
         def self.name
-          "Godmin::AttributeTest::TestScope::Profile"
+          "Goodmin::AttributeTest::TestScope::Profile"
         end
       end
 
       class ArticleResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
       end
 
       class Article

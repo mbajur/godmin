@@ -1,6 +1,6 @@
 module Fakes
   class ArticleService
-    include Godmin::Resources::ResourceService
+    include Goodmin::Resources::ResourceService
 
     attr_accessor :called_methods
 

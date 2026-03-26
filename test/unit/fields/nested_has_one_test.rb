@@ -1,11 +1,11 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class NestedHasOneFieldTest < ActiveSupport::TestCase
     # Minimal fake models and resources used exclusively in this test
     module TestScope
       class ProfileResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
 
         index do
           attribute :bio
@@ -20,7 +20,7 @@ module Godmin
 
       class Profile
         def self.name
-          "Godmin::NestedHasOneFieldTest::TestScope::Profile"
+          "Goodmin::NestedHasOneFieldTest::TestScope::Profile"
         end
       end
 
@@ -41,7 +41,7 @@ module Godmin
       end
 
       class ArticleResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
       end
     end
 
@@ -78,9 +78,9 @@ module Godmin
     end
 
     def test_partial_paths
-      assert_equal "godmin/fields/nested_has_one/form", Fields::NestedHasOne.partial_form
-      assert_equal "godmin/fields/nested_has_one/index", Fields::NestedHasOne.partial_index
-      assert_equal "godmin/fields/nested_has_one/show", Fields::NestedHasOne.partial_show
+      assert_equal "goodmin/fields/nested_has_one/form", Fields::NestedHasOne.partial_form
+      assert_equal "goodmin/fields/nested_has_one/index", Fields::NestedHasOne.partial_index
+      assert_equal "goodmin/fields/nested_has_one/show", Fields::NestedHasOne.partial_show
     end
   end
 end

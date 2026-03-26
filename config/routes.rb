@@ -1,3 +1,3 @@
-Godmin::Engine.routes.draw do
+Goodmin::Engine.routes.draw do
   root to: "application#welcome"
 end

@@ -1,14 +1,14 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   module Helpers
     class FiltersTest < ActionView::TestCase
-      include Godmin::Helpers::Filters
-      include Godmin::Helpers::Translations
+      include Goodmin::Helpers::Filters
+      include Goodmin::Helpers::Translations
 
       def test_filter_form_uses_filter_form_builder
         filter_form url: "/" do |f|
-          assert f.is_a? Godmin::FormBuilders::FilterFormBuilder
+          assert f.is_a? Goodmin::FormBuilders::FilterFormBuilder
         end
       end
 

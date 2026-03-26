@@ -1,5 +1,5 @@
 class AdminUser < ActiveRecord::Base
-  include Godmin::Authentication::User
+  include Goodmin::Authentication::User
 
   def self.login_column
     :email

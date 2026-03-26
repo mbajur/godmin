@@ -1,6 +1,6 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   module Resource
     class FiltersTest < ActiveSupport::TestCase
       def setup

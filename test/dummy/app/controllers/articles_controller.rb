@@ -1,4 +1,4 @@
-class ArticlesController < Godmin::ResourceController
+class ArticlesController < Goodmin::ResourceController
 
   private
 

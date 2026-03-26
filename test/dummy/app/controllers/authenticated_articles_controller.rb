@@ -1,11 +1,11 @@
 class AuthenticatedArticlesController < ArticlesController
-  include Godmin::Authentication
+  include Goodmin::Authentication
 
   def admin_user_class
     AdminUser
   end
 
   def resource_service_class
-    Godmin::Resources::ArticleResource
+    Goodmin::Resources::ArticleResource
   end
 end

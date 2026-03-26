@@ -1,5 +1,5 @@
 class CommentService
-  include Godmin::Resources::ResourceService
+  include Goodmin::Resources::ResourceService
 
   index do
     attribute :id

@@ -1,10 +1,10 @@
 require "test_helper"
 
-module Godmin
+module Goodmin
   class EnumFieldTest < ActiveSupport::TestCase
     module TestScope
       class ArticleResource
-        include Godmin::Resources::Resource
+        include Goodmin::Resources::Resource
       end
 
       class Article
