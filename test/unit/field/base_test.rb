@@ -67,16 +67,5 @@ module Godmin
     ensure
       I18n.backend.reload!
     end
-
-    def test_partial_paths_strip_field_suffix_from_custom_field_class
-      custom_field_class = Class.new(Field::Base) do
-        def self.name
-          "Godmin::Fields::TestField"
-        end
-      end
-      assert_equal "godmin/fields/test/index", custom_field_class.partial_index
-      assert_equal "godmin/fields/test/show", custom_field_class.partial_show
-      assert_equal "godmin/fields/test/form", custom_field_class.partial_form
-    end
   end
 end
