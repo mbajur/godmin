@@ -3,17 +3,16 @@ require "action_view/template/resolver"
 
 module Godmin
   class Resolver < ::ActionView::FileSystemResolver
-    def self.resolvers(controller_path, engine_wrapper)
+    def self.resolvers(controller_path)
       [
-        EngineResolver.new(controller_path, engine_wrapper),
-        GodminResolver.new(controller_path, engine_wrapper)
+        EngineResolver.new(controller_path),
+        GodminResolver.new(controller_path)
       ]
     end
 
-    def initialize(path, controller_path, engine_wrapper)
+    def initialize(path, controller_path)
       super(path)
       @controller_path = controller_path
-      @engine_wrapper = engine_wrapper
     end
 
     # This function is for Rails 6 and up since the `find_templates` function
@@ -45,14 +44,9 @@ module Godmin
     end
   end
 
-  # Matches templates such as:
-  #
-  # { name: index, prefix: articles } => app/views/resource/index
-  # { name: form, prefix: articles }  => app/views/resource/_form
-  # { name: title, prefix: columns }  => app/views/resource/columns/_title
   class EngineResolver < Resolver
-    def initialize(controller_path, engine_wrapper)
-      super(File.join(engine_wrapper.root, "app/views"), controller_path, engine_wrapper)
+    def initialize(controller_path)
+      super(File.join(Rails.root, "app/views"), controller_path)
     end
 
     def template_paths(prefix)
@@ -62,19 +56,14 @@ module Godmin
     end
 
     def resource_path_for_engine(prefix)
-      prefix.sub(/\A#{@controller_path}/, File.join(@engine_wrapper.namespaced_path, "resource")).sub(/\A\//, "")
+      dir = File.dirname(prefix)
+      dir == "." ? "resource" : "#{dir}/resource"
     end
   end
 
-  # Matches templates such as:
-  #
-  # { name: index, prefix: articles }      => godmin/app/views/godmin/resource/index
-  # { name: form, prefix: articles }       => godmin/app/views/godmin/resource/_form
-  # { name: welcome, prefix: application } => godmin/app/views/godmin/application/welcome
-  # { name: navigation, prefix: shared }   => godmin/app/views/godmin/shared/navigation
   class GodminResolver < Resolver
-    def initialize(controller_path, engine_wrapper)
-      super(File.join(Godmin::Engine.root, "app/views/godmin"), controller_path, engine_wrapper)
+    def initialize(controller_path)
+      super(File.join(Godmin::Engine.root, "app/views/godmin"), controller_path)
     end
 
     def template_paths(prefix)
@@ -85,11 +74,11 @@ module Godmin
     end
 
     def default_path_for_godmin(prefix)
-      prefix.sub(/\A#{File.join(@engine_wrapper.namespaced_path)}/, "").sub(/\A\//, "")
+      File.basename(prefix)
     end
 
     def resource_path_for_godmin(prefix)
-      prefix.sub(/\A#{@controller_path}/, "resource").sub(/\A\//, "")
+      "resource"
     end
   end
 end
