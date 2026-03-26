@@ -30,10 +30,12 @@ module Godmin
 
       assert_equal [
         "godmin/resource/columns",
+        "godmin/resource",
         "godmin/shared/columns",
         "godmin/shared",
         "godmin/application",
         "resource/columns",
+        "resource",
         "shared/columns",
         "shared",
         "application"
@@ -45,6 +47,7 @@ module Godmin
 
       assert_equal [
         "godmin/resolver_test/admin/resource/columns",
+        "godmin/resolver_test/admin/resource",
         "godmin/resolver_test/admin/shared/columns",
         "godmin/resolver_test/admin/shared",
         "godmin/resolver_test/admin/application"
