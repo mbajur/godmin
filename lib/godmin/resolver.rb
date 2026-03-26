@@ -56,8 +56,10 @@ module Godmin
     end
 
     def resource_path_for_engine(prefix)
-      dir = File.dirname(prefix)
-      dir == "." ? "resource" : "#{dir}/resource"
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      parts = @controller_path.split("/")
+      resource_base = parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/resource" : "resource"
+      sub_path.present? ? "#{resource_base}/#{sub_path}" : resource_base
     end
   end
 
@@ -74,11 +76,14 @@ module Godmin
     end
 
     def default_path_for_godmin(prefix)
-      File.basename(prefix)
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      base = File.basename(@controller_path)
+      sub_path.present? ? "#{base}/#{sub_path}" : base
     end
 
     def resource_path_for_godmin(prefix)
-      "resource"
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      sub_path.present? ? "resource/#{sub_path}" : "resource"
     end
   end
 end
