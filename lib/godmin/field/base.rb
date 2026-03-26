@@ -43,7 +43,7 @@ module Godmin
       end
 
       private_class_method def self.field_type
-        name.demodulize.underscore
+        name.demodulize.delete_suffix("Field").underscore
       end
 
       private
