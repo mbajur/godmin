@@ -19,4 +19,14 @@ class NavigationOverridingTest < ActionDispatch::IntegrationTest
     assert page.has_content? "shared-nav-marker"
     assert page.has_no_content? "application-nav-marker"
   end
+
+  def test_shared_navigation_takes_priority_over_application_navigation
+    add_template "app/views/godmin/shared/_navigation.html.erb", "shared-nav-marker"
+    remove_template "app/views/godmin/application/_navigation.html.erb"
+
+    visit articles_path
+
+    assert page.has_content? "shared-nav-marker"
+    assert page.has_no_content? "application-nav-marker"
+  end
 end
