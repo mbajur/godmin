@@ -67,13 +67,20 @@ module Godmin
     end
 
     def template_paths(prefix)
-      paths = [resource_path_for_engine(prefix), shared_path_for_engine(prefix)]
+      application_path = application_path_for_engine
+      paths = [resource_path_for_engine(prefix), shared_path_for_engine(prefix), application_path]
       return paths if @controller_path.split("/").length > 1
 
       [
         "godmin/#{resource_path_for_engine(prefix)}",
-        "godmin/#{shared_path_for_engine(prefix)}"
+        "godmin/#{shared_path_for_engine(prefix)}",
+        "godmin/#{application_path}"
       ] + paths
+    end
+
+    def application_path_for_engine
+      parts = @controller_path.split("/")
+      parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/application" : "application"
     end
 
     def resource_path_for_engine(prefix)

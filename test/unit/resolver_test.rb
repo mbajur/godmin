@@ -8,8 +8,10 @@ module Godmin
       assert_equal [
         "godmin/resource",
         "godmin/shared",
+        "godmin/application",
         "resource",
-        "shared"
+        "shared",
+        "application"
       ], resolver.template_paths("articles")
     end
 
@@ -18,7 +20,8 @@ module Godmin
 
       assert_equal [
         "godmin/resolver_test/admin/resource",
-        "godmin/resolver_test/admin/shared"
+        "godmin/resolver_test/admin/shared",
+        "godmin/resolver_test/admin/application"
       ], resolver.template_paths("godmin/resolver_test/admin/articles")
     end
 
@@ -28,8 +31,10 @@ module Godmin
       assert_equal [
         "godmin/resource/columns",
         "godmin/shared/columns",
+        "godmin/application",
         "resource/columns",
-        "shared/columns"
+        "shared/columns",
+        "application"
       ], resolver.template_paths("articles/columns")
     end
 
@@ -38,7 +43,8 @@ module Godmin
 
       assert_equal [
         "godmin/resolver_test/admin/resource/columns",
-        "godmin/resolver_test/admin/shared/columns"
+        "godmin/resolver_test/admin/shared/columns",
+        "godmin/resolver_test/admin/application"
       ], resolver.template_paths("godmin/resolver_test/admin/articles/columns")
     end
 
