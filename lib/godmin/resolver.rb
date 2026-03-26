@@ -68,14 +68,23 @@ module Godmin
 
     def template_paths(prefix)
       application_path = application_path_for_engine
-      paths = [resource_path_for_engine(prefix), shared_path_for_engine(prefix), application_path]
+      resource_path = resource_path_for_engine(prefix)
+      shared_path = shared_path_for_engine(prefix)
+      # Always include the base shared path (without any prefix sub-path) before application_path.
+      # This ensures app/views/godmin/shared overrides are found even when Rails invokes the
+      # resolver with a non-controller prefix (e.g. "layouts/godmin" from the layout file),
+      # where the prefix-specific shared path won't match the user's shared partial.
+      base_shared_path = shared_path_for_engine(@controller_path)
+
+      paths = [resource_path, shared_path, base_shared_path, application_path].uniq
       return paths if @controller_path.split("/").length > 1
 
       [
-        "godmin/#{resource_path_for_engine(prefix)}",
-        "godmin/#{shared_path_for_engine(prefix)}",
+        "godmin/#{resource_path}",
+        "godmin/#{shared_path}",
+        "godmin/#{base_shared_path}",
         "godmin/#{application_path}"
-      ] + paths
+      ].uniq + paths
     end
 
     def application_path_for_engine
