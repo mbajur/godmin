@@ -74,6 +74,8 @@ module Godmin
       # This ensures app/views/godmin/shared overrides are found even when Rails invokes the
       # resolver with a non-controller prefix (e.g. "layouts/godmin" from the layout file),
       # where the prefix-specific shared path won't match the user's shared partial.
+      # Using @controller_path as the prefix argument produces a sub_path of "" (no suffix),
+      # giving us the plain namespace-scoped shared directory (e.g. "shared" or "admin/shared").
       base_shared_path = shared_path_for_engine(@controller_path)
 
       paths = [resource_path, shared_path, base_shared_path, application_path].uniq
