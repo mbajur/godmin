@@ -68,7 +68,8 @@ module Godmin
 
     def template_paths(prefix)
       [
-        resource_path_for_engine(prefix)
+        resource_path_for_engine(prefix),
+        shared_path_for_engine(prefix)
       ]
     end
 
@@ -77,6 +78,13 @@ module Godmin
       parts = @controller_path.split("/")
       resource_base = parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/resource" : "resource"
       sub_path.present? ? "#{resource_base}/#{sub_path}" : resource_base
+    end
+
+    def shared_path_for_engine(prefix)
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      parts = @controller_path.split("/")
+      shared_base = parts.length > 1 ? "#{parts.first(parts.length - 1).join("/")}/shared" : "shared"
+      sub_path.present? ? "#{shared_base}/#{sub_path}" : shared_base
     end
   end
 
@@ -88,7 +96,8 @@ module Godmin
     def template_paths(prefix)
       [
         default_path_for_godmin(prefix),
-        resource_path_for_godmin(prefix)
+        resource_path_for_godmin(prefix),
+        shared_path_for_godmin(prefix)
       ]
     end
 
@@ -101,6 +110,11 @@ module Godmin
     def resource_path_for_godmin(prefix)
       sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
       sub_path.present? ? "resource/#{sub_path}" : "resource"
+    end
+
+    def shared_path_for_godmin(prefix)
+      sub_path = prefix.delete_prefix(@controller_path).delete_prefix("/")
+      sub_path.present? ? "shared/#{sub_path}" : "shared"
     end
   end
 end
