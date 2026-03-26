@@ -4,10 +4,27 @@ require "action_view/template/resolver"
 module Godmin
   class Resolver < ::ActionView::FileSystemResolver
     def self.resolvers(controller_path)
+      engine_root = engine_root_for(controller_path)
       [
-        EngineResolver.new(controller_path),
+        EngineResolver.new(controller_path, engine_root),
         GodminResolver.new(controller_path)
       ]
+    end
+
+    def self.engine_root_for(controller_path)
+      parts = controller_path.split("/")
+      return Rails.application.root if parts.length < 2
+
+      namespace_path = parts.first(parts.length - 1).join("/")
+
+      engine = Rails::Engine.subclasses.find do |e|
+        next unless e.railtie_namespace
+        e.railtie_namespace.name.underscore.gsub("::", "/") == namespace_path
+      rescue NameError, NoMethodError
+        nil
+      end
+
+      engine&.root || Rails.application.root
     end
 
     def initialize(path, controller_path)
@@ -45,8 +62,8 @@ module Godmin
   end
 
   class EngineResolver < Resolver
-    def initialize(controller_path)
-      super(File.join(Rails.root, "app/views"), controller_path)
+    def initialize(controller_path, engine_root = Rails.application.root)
+      super(File.join(engine_root, "app/views"), controller_path)
     end
 
     def template_paths(prefix)

@@ -12,6 +12,7 @@ module Godmin
     before_action :set_resource_class
     before_action :set_resource_parents
     before_action :set_resources, only: :index
+    before_action :handle_batch_action, only: :update, if: -> { params[:batch_action].present? }
     before_action :set_resource, only: [:show, :new, :edit, :create, :update, :destroy]
 
     def index
@@ -194,6 +195,22 @@ module Godmin
 
     def redirect_flash_message
       translate_scoped("flash.#{action_name}", resource: @resource.class.model_name.human)
+    end
+
+    def handle_batch_action
+      action = params[:batch_action].to_sym
+      ids = params[:id].to_s.split(",")
+      records = @resource_class.where(id: ids)
+
+      @resource_service.batch_action(action, records)
+
+      redirect_path = if respond_to?("redirect_after_batch_action_#{action}", true)
+        send("redirect_after_batch_action_#{action}")
+      else
+        [*@resource_parents, @resource_class.model_name.route_key.to_sym]
+      end
+
+      redirect_to redirect_path
     end
 
     private
