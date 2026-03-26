@@ -31,9 +31,11 @@ module Godmin
       assert_equal [
         "godmin/resource/columns",
         "godmin/shared/columns",
+        "godmin/shared",
         "godmin/application",
         "resource/columns",
         "shared/columns",
+        "shared",
         "application"
       ], resolver.template_paths("articles/columns")
     end
@@ -44,6 +46,7 @@ module Godmin
       assert_equal [
         "godmin/resolver_test/admin/resource/columns",
         "godmin/resolver_test/admin/shared/columns",
+        "godmin/resolver_test/admin/shared",
         "godmin/resolver_test/admin/application"
       ], resolver.template_paths("godmin/resolver_test/admin/articles/columns")
     end
