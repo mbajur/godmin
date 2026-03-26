@@ -6,6 +6,6 @@ class AuthenticatedArticlesController < ArticlesController
   end
 
   def resource_service_class
-    ArticleResource
+    Godmin::Resources::ArticleResource
   end
 end

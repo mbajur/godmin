@@ -38,21 +38,25 @@ module Godmin
         assert_match expected_content, content
       end
 
-      assert_file "app/resources/foo_resource.rb" do |content|
+      assert_file "app/godmin/resources/foo_resource.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          class FooResource
-            include Godmin::Resources::Resource
+          module Godmin
+            module Resources
+              class FooResource
+                include Godmin::Resources::Resource
 
-            index do
-              attribute :bar
-            end
+                index do
+                  attribute :bar
+                end
 
-            show do
-              attribute :bar
-            end
+                show do
+                  attribute :bar
+                end
 
-            form do
-              attribute :bar
+                form do
+                  attribute :bar
+                end
+              end
             end
           end
         CONTENT
@@ -80,22 +84,24 @@ module Godmin
         assert_match expected_content, content
       end
 
-      assert_file "fakemin/app/resources/fakemin/foo_resource.rb" do |content|
+      assert_file "fakemin/app/godmin/resources/foo_resource.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          module Fakemin
-            class FooResource
-              include Godmin::Resources::Resource
+          module Godmin
+            module Resources
+              class FooResource
+                include Godmin::Resources::Resource
 
-              index do
-                attribute :bar
-              end
+                index do
+                  attribute :bar
+                end
 
-              show do
-                attribute :bar
-              end
+                show do
+                  attribute :bar
+                end
 
-              form do
-                attribute :bar
+                form do
+                  attribute :bar
+                end
               end
             end
           end

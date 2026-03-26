@@ -2,6 +2,14 @@ module Godmin
   class Engine < ::Rails::Engine
     isolate_namespace Godmin
 
+    initializer "godmin.autoload_paths", before: :set_autoload_paths do |app|
+      godmin_app_dir = app.root.join("app/godmin")
+      if godmin_app_dir.exist?
+        Rails.autoloaders.main.push_dir(godmin_app_dir, namespace: Godmin)
+        app.config.eager_load_paths << godmin_app_dir.to_s
+      end
+    end
+
     initializer "godmin.assets" do |app|
       if app.config.respond_to?(:assets)
         app.config.assets.paths << root.join("app/assets/stylesheets")

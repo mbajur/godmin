@@ -26,6 +26,6 @@ class Godmin::ResourceGenerator < Godmin::Generators::NamedBase
   end
 
   def create_resource
-    template "resource.rb", File.join("app/resources", class_path, "#{file_name}_resource.rb")
+    template "resource.rb", File.join("app/godmin/resources", "#{file_name}_resource.rb")
   end
 end

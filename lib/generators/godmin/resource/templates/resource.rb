@@ -1,23 +1,25 @@
-<% module_namespacing do -%>
-class <%= class_name %>Resource
-  include Godmin::Resources::Resource
+module Godmin
+  module Resources
+    class <%= class_name %>Resource
+      include Godmin::Resources::Resource
 
-  index do
+      index do
 <% @attributes.each do |x| -%>
-    attribute :<%= x %>
+        attribute :<%= x %>
 <% end -%>
-  end
+      end
 
-  show do
+      show do
 <% @attributes.each do |x| -%>
-    attribute :<%= x %>
+        attribute :<%= x %>
 <% end -%>
-  end
+      end
 
-  form do
+      form do
 <% @attributes.each do |x| -%>
-    attribute :<%= x %>
+        attribute :<%= x %>
 <% end -%>
+      end
+    end
   end
 end
-<% end -%>
