@@ -23,7 +23,7 @@ module Godmin
     end
 
     def build_field(**options)
-      Field::Password.new(
+      Fields::Password.new(
         attribute: :password,
         record: TestScope::Article.new,
         resource_service: TestScope::ArticleResource.new,

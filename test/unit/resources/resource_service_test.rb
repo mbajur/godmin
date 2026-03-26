@@ -39,12 +39,12 @@ module Godmin
         include Godmin::Resources::Resource
 
         index do
-          attribute :title, field: Field::Text
+          attribute :title, field: Fields::Text
         end
       end
       attrs = klass.attrs_for_index
       assert_equal :title, attrs.first.name
-      assert_equal Field::Text, attrs.first.field_class
+      assert_equal Fields::Text, attrs.first.field_class
     end
 
     def test_attribute_with_extra_options
@@ -53,7 +53,7 @@ module Godmin
         include Godmin::Resources::Resource
 
         index do
-          attribute :title, field: Field::Text, value: val, label: "My Label"
+          attribute :title, field: Fields::Text, value: val, label: "My Label"
         end
       end
       attr = klass.attrs_for_index.first

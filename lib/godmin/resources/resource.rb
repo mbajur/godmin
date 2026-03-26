@@ -38,7 +38,7 @@ module Godmin
       end
 
       def resource_class
-        self.class.name.chomp("Resource").constantize
+        self.class.name.delete_prefix("Godmin::Resources::").chomp("Resource").constantize
       end
 
       def resources_relation

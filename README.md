@@ -720,28 +720,32 @@ Strong parameters are automatically derived from all attributes declared inside 
 
 #### Custom fields
 
-Godmin automatically maps database column types to built-in field classes (`Field::String`, `Field::Text`, `Field::Boolean`, `Field::Date`, `Field::DateTime`, `Field::Number`, and `Field::Association`). When you need different rendering or behaviour for a particular attribute, you can create your own field class and tell Godmin to use it.
+Godmin automatically maps database column types to built-in field classes (`Fields::String`, `Fields::Text`, `Fields::Boolean`, `Fields::Date`, `Fields::DateTime`, `Fields::Number`, and `Fields::Association`). When you need different rendering or behaviour for a particular attribute, you can create your own field class and tell Godmin to use it.
 
 **Step 1 – Create the field class:**
 
-A custom field must inherit from `Godmin::Field::Base`. Override `value` if you need to transform the raw attribute value, and provide ERB partials to control how the field is rendered.
+A custom field must inherit from `Godmin::Fields::Base`. Place it in `app/godmin/fields/` — Godmin automatically loads files from that directory under the `Godmin::Fields` namespace. Override `value` if you need to transform the raw attribute value, and provide ERB partials to control how the field is rendered.
 
 ```ruby
-# app/fields/color_field.rb
-class ColorField < Godmin::Field::Base
-  # Optional: transform the value before it reaches the partial
-  def value
-    record.public_send(attribute).to_s.upcase
+# app/godmin/fields/color.rb
+module Godmin
+  module Fields
+    class Color < Base
+      # Optional: transform the value before it reaches the partial
+      def value
+        record.public_send(attribute).to_s.upcase
+      end
+    end
   end
 end
 ```
 
 **Step 2 – Create the partials:**
 
-Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>` is the underscored class name (e.g. `color_field` for `ColorField`). Each context — `_form.html.erb`, `_index.html.erb`, and `_show.html.erb` — can be overridden independently.
+Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>` is the underscored class name (e.g. `color` for `Godmin::Fields::Color`). Each context — `_form.html.erb`, `_index.html.erb`, and `_show.html.erb` — can be overridden independently.
 
 ```erb
-<%# app/views/godmin/fields/color_field/_form.html.erb %>
+<%# app/views/godmin/fields/color/_form.html.erb %>
 <div class="form-group">
   <%= f.label field.attribute %>
   <%= f.color_field field.attribute, class: "form-control" %>
@@ -749,12 +753,12 @@ Place partials under `app/views/godmin/fields/<field_type>/` where `<field_type>
 ```
 
 ```erb
-<%# app/views/godmin/fields/color_field/_index.html.erb %>
+<%# app/views/godmin/fields/color/_index.html.erb %>
 <span class="color-swatch" style="background: <%= field.value %>"><%= field.value %></span>
 ```
 
 ```erb
-<%# app/views/godmin/fields/color_field/_show.html.erb %>
+<%# app/views/godmin/fields/color/_show.html.erb %>
 <span class="color-swatch" style="background: <%= field.value %>"><%= field.value %></span>
 ```
 
@@ -767,15 +771,15 @@ class ArticleResource
   include Godmin::Resources::Resource
 
   index do
-    attribute :color, field: ColorField
+    attribute :color, field: Godmin::Fields::Color
   end
 
   show do
-    attribute :color, field: ColorField
+    attribute :color, field: Godmin::Fields::Color
   end
 
   form do
-    attribute :color, field: ColorField
+    attribute :color, field: Godmin::Fields::Color
   end
 end
 ```
@@ -787,22 +791,26 @@ You can pass arbitrary keyword arguments alongside `field:` when declaring an at
 ```ruby
 # Resource service
 index do
-  attribute :color, field: ColorField, label: "Hex colour", swatch: true
+  attribute :color, field: Godmin::Fields::Color, label: "Hex colour", swatch: true
 end
 ```
 
 ```ruby
-# app/fields/color_field.rb
-class ColorField < Godmin::Field::Base
-  def value
-    # options[:swatch] is true/false, etc.
-    record.public_send(attribute).to_s.upcase
+# app/godmin/fields/color.rb
+module Godmin
+  module Fields
+    class Color < Base
+      def value
+        # options[:swatch] is true/false, etc.
+        record.public_send(attribute).to_s.upcase
+      end
+    end
   end
 end
 ```
 
 ```erb
-<%# app/views/godmin/fields/color_field/_index.html.erb %>
+<%# app/views/godmin/fields/color/_index.html.erb %>
 <% if field.options[:swatch] %>
   <span class="color-swatch" style="background: <%= field.value %>"></span>
 <% end %>

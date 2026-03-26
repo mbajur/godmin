@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class NestedHasOne < Base
       def associated_record
         @associated_record ||= begin

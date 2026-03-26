@@ -24,21 +24,21 @@ module Godmin
         return field_class if field_class
 
         if record.class.respond_to?(:reflect_on_association) && (reflection = record.class.reflect_on_association(name))
-          reflection.macro == :has_one ? Field::NestedHasOne : Field::Association
+          reflection.macro == :has_one ? Fields::NestedHasOne : Fields::Association
         elsif record.class.respond_to?(:defined_enums) && record.class.defined_enums.key?(name.to_s)
-          Field::Enum
+          Fields::Enum
         elsif record.class.respond_to?(:has_attribute?) && record.class.has_attribute?(name.to_s)
           column = record.class.column_for_attribute(name)
           case column.type
-          when :text then Field::Text
-          when :boolean then Field::Boolean
-          when :date then Field::Date
-          when :datetime, :timestamp then Field::DateTime
-          when :integer, :float, :decimal then Field::Number
-          else Field::String
+          when :text then Fields::Text
+          when :boolean then Fields::Boolean
+          when :date then Fields::Date
+          when :datetime, :timestamp then Fields::DateTime
+          when :integer, :float, :decimal then Fields::Number
+          else Fields::String
           end
         else
-          Field::String
+          Fields::String
         end
       end
     end

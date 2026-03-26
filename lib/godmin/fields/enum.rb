@@ -1,8 +1,8 @@
 module Godmin
-  module Field
+  module Fields
     class Enum < Select
       def self.partial_form
-        Field::Select.partial_form
+        Fields::Select.partial_form
       end
 
       def collection

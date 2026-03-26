@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class Boolean < Base
     end
   end

@@ -1,24 +1,24 @@
 module Godmin
   module ServiceLocator
-    # Find the resource class for a given model class. Checks the namespace of
-    # +context_resource_class+ first (supporting namespaced admin setups such as
-    # Admin::MuseumResource), then falls back to a top-level constant.
-    #
-    # For example, if context_resource_class is Admin::UserResource and
-    # klass is Museum, this tries Admin::MuseumResource before MuseumResource.
+    # Find the resource class for a given model class. Uses only the simple class
+    # name (the last segment after "::") to build the resource class name, then
+    # checks the namespace of +context_service_class+ first (e.g.
+    # Godmin::Resources::MuseumResource when context is
+    # Godmin::Resources::UserResource), then falls back to Godmin::Resources.
     def self.find_service_class_for(klass, context_service_class:)
       return nil unless klass
 
       klass_name = klass.is_a?(String) ? klass : klass.name
       return nil unless klass_name
 
-      resource_name = "#{klass_name}Resource"
+      simple_name = klass_name.split("::").last
+      resource_name = "#{simple_name}Resource"
       namespace = context_service_class&.name&.deconstantize
 
       if namespace.present?
-        "#{namespace}::#{resource_name}".safe_constantize || resource_name.safe_constantize
+        "#{namespace}::#{resource_name}".safe_constantize || "Godmin::Resources::#{resource_name}".safe_constantize
       else
-        resource_name.safe_constantize
+        "Godmin::Resources::#{resource_name}".safe_constantize
       end
     end
   end

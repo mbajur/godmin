@@ -92,7 +92,8 @@ module Godmin
     end
 
     def resource_service_class
-      "#{controller_path.singularize}_resource".classify.constantize
+      resource_name = controller_path.split("/").last.singularize.classify
+      "Godmin::Resources::#{resource_name}Resource".constantize
     end
 
     def resource_service

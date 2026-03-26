@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class Base
       attr_reader :attribute, :record, :resource_service, :options
 

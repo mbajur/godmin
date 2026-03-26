@@ -26,8 +26,11 @@ module Godmin
       system! "cd #{destination_root} && bin/rails generate godmin:install --quiet"
       system! "cd #{destination_root} && bin/rails generate godmin:resource foo bar --quiet"
 
+      assert_file "config/routes.rb", /mount Godmin::Engine/
       assert_file "config/routes.rb", /resources :foos/
-      assert_file "app/views/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+      assert_file "app/views/godmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+
+      assert_file "app/controllers/application_controller.rb", /class ApplicationController < Godmin::ApplicationController/
 
       assert_file "app/controllers/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
@@ -38,21 +41,25 @@ module Godmin
         assert_match expected_content, content
       end
 
-      assert_file "app/resources/foo_resource.rb" do |content|
+      assert_file "app/godmin/resources/foo_resource.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          class FooResource
-            include Godmin::Resources::Resource
+          module Godmin
+            module Resources
+              class FooResource
+                include Godmin::Resources::Resource
 
-            index do
-              attribute :bar
-            end
+                index do
+                  attribute :bar
+                end
 
-            show do
-              attribute :bar
-            end
+                show do
+                  attribute :bar
+                end
 
-            form do
-              attribute :bar
+                form do
+                  attribute :bar
+                end
+              end
             end
           end
         CONTENT
@@ -67,7 +74,7 @@ module Godmin
       system! "cd #{destination_root} && fakemin/bin/rails generate godmin:resource foo bar --quiet"
 
       assert_file "fakemin/config/routes.rb", /resources :foos/
-      assert_file "fakemin/app/views/fakemin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+      assert_file "fakemin/app/views/godmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
       assert_file "fakemin/app/controllers/fakemin/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
@@ -80,22 +87,24 @@ module Godmin
         assert_match expected_content, content
       end
 
-      assert_file "fakemin/app/resources/fakemin/foo_resource.rb" do |content|
+      assert_file "fakemin/app/godmin/resources/foo_resource.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          module Fakemin
-            class FooResource
-              include Godmin::Resources::Resource
+          module Godmin
+            module Resources
+              class FooResource
+                include Godmin::Resources::Resource
 
-              index do
-                attribute :bar
-              end
+                index do
+                  attribute :bar
+                end
 
-              show do
-                attribute :bar
-              end
+                show do
+                  attribute :bar
+                end
 
-              form do
-                attribute :bar
+                form do
+                  attribute :bar
+                end
               end
             end
           end

@@ -1,5 +1,5 @@
 module Godmin
-  module Field
+  module Fields
     class Select < Base
       def collection
         col = options[:collection]

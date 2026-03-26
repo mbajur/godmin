@@ -48,7 +48,7 @@ module Godmin
     def setup
       @record = TestScope::Article.new
       @resource_service = TestScope::ArticleResource.new
-      @field = Field::NestedHasOne.new(
+      @field = Fields::NestedHasOne.new(
         attribute: :profile,
         record: @record,
         resource_service: @resource_service
@@ -69,7 +69,7 @@ module Godmin
     end
 
     def test_nested_attributes_returns_empty_when_no_service
-      field = Field::NestedHasOne.new(
+      field = Fields::NestedHasOne.new(
         attribute: :missing,
         record: TestScope::Article.new,
         resource_service: @resource_service
@@ -78,9 +78,9 @@ module Godmin
     end
 
     def test_partial_paths
-      assert_equal "godmin/fields/nested_has_one/form", Field::NestedHasOne.partial_form
-      assert_equal "godmin/fields/nested_has_one/index", Field::NestedHasOne.partial_index
-      assert_equal "godmin/fields/nested_has_one/show", Field::NestedHasOne.partial_show
+      assert_equal "godmin/fields/nested_has_one/form", Fields::NestedHasOne.partial_form
+      assert_equal "godmin/fields/nested_has_one/index", Fields::NestedHasOne.partial_index
+      assert_equal "godmin/fields/nested_has_one/show", Fields::NestedHasOne.partial_show
     end
   end
 end

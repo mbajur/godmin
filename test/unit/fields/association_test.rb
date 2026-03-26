@@ -48,7 +48,7 @@ module Godmin
     end
 
     def build_field
-      Field::Association.new(
+      Fields::Association.new(
         attribute: :museum,
         record: TestScope::User.new,
         resource_service: TestScope::UserResource.new
