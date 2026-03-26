@@ -44,15 +44,7 @@ module Godmin
 
       # A minimal controller object that exposes resource_params_defaults
       # without needing the full ActionController stack.
-      class FakeController
-        # Stub ActionController class-level hooks so including
-        # ResourceController does not raise NoMethodError.
-        def self.helper(*); end
-        def self.before_action(*); end
-        def self.prepend_before_action(*); end
-
-        include Godmin::Resources::ResourceController
-
+      class FakeController < Godmin::ResourceController
         # Expose the protected method for testing
         public :resource_params_defaults
 

@@ -1,5 +1,4 @@
-class ArticlesController < ApplicationController
-  include Godmin::Resources::ResourceController
+class ArticlesController < Godmin::ResourceController
 
   private
 

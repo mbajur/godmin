@@ -1,3 +1,2 @@
-class MagazinesController < ApplicationController
-  include Godmin::Resources::ResourceController
+class MagazinesController < Godmin::ResourceController
 end
