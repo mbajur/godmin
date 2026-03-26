@@ -36,7 +36,7 @@ module Godmin
     # policy that always returns true.
     def policy(resource)
       if authorization_enabled?
-        super(resource)
+        controller.policy(resource)
       else
         Authorization::Policy.new(nil, nil, default: true)
       end
