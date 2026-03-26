@@ -1,19 +1,14 @@
 # Godmin
 
 [![Gem Version](http://img.shields.io/gem/v/godmin.svg)](https://rubygems.org/gems/godmin)
-[![Build Status](https://img.shields.io/travis/varvet/godmin/master.svg)](https://travis-ci.org/varvet/godmin)
-[![Code Climate](https://api.codeclimate.com/v1/badges/d8e5c7c54c1dba073689/maintainability)](https://codeclimate.com/github/varvet/godmin)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d8e5c7c54c1dba073689/test_coverage)](https://codeclimate.com/github/varvet/godmin)
 
-Godmin is an admin framework for Rails 5+. Use it to build dedicated admin sections for your apps, or stand alone admin apps such as internal tools. It has support for common features such as scoping, filtering and performing batch actions on your models. Check out the [demo app](http://godmin-sandbox.herokuapp.com) and its [source code](https://github.com/varvet/godmin-sandbox) to get a feel for how it works.
+Godmin is an admin framework for Rails 7+. Use it to build dedicated admin sections for your apps, or stand-alone admin apps such as internal tools. It has support for common features such as scoping, filtering and performing batch actions on your models.
 
-Godmin differs from tools like [ActiveAdmin](http://activeadmin.info/) and [RailsAdmin](https://github.com/sferik/rails_admin) in how admin sections are created. Rather than being DSL-based, Godmin is a set of opt-in modules and helpers that can be applied to regular Rails apps and engines. An admin section built with Godmin is just that, a regular Rails app or Rails engine, with regular routes, controllers and views. That means there is less to learn, because you already know most of it, and fewer constraints on what you can do. After all, administrators are users too, and what better way to provide them with a tailor made experience than building them a Rails app?
-
-![Screenshot](https://raw.githubusercontent.com/varvet/godmin/master/screenshot.png)
+Godmin differs from tools like [ActiveAdmin](http://activeadmin.info/) and [RailsAdmin](https://github.com/sferik/rails_admin) in how admin sections are created. Rather than being DSL-based, Godmin is a set of opt-in modules and helpers that can be applied to regular Rails apps. An admin section built with Godmin is just that — a regular Rails app with regular routes, controllers and views. That means there is less to learn, because you already know most of it, and fewer constraints on what you can do.
 
 - [Installation](#installation)
   - [Standalone installation](#standalone-installation)
-  - [Engine installation](#engine-installation)
+  - [Mounted installation](#mounted-installation)
   - [Installation artefacts](#installation-artefacts)
 - [Getting started](#getting-started)
 - [Resources](#resources)
@@ -41,81 +36,84 @@ Godmin differs from tools like [ActiveAdmin](http://activeadmin.info/) and [Rail
 
 ## Installation
 
-Godmin supports two common admin scenarios:
+Add the gem to your application's `Gemfile`:
 
-1. Standalone installation
-2. Engine installation
-
-If you want to set up an example app that you can play around with, run the following:
-```sh
-rails new sandbox --skip-spring -m https://raw.githubusercontent.com/varvet/godmin/master/template.rb
-```
-
-### Standalone installation
-Use for admin-only applications, or for architectures where the admin lives in its own app. E.g. you want to access the admin section at `localhost:3000`.
-
-Add the gem to the application's `Gemfile`:
 ```ruby
 gem "godmin"
 ```
 
-Bundle, then run the install generator:
+Run `bundle install`, then run the install generator:
+
 ```sh
-$ bundle install
 $ bin/rails generate godmin:install
+```
+
+Godmin ships as a mountable Rails engine with `isolate_namespace Godmin`. There are two common setups:
+
+### Standalone installation
+
+Use for admin-only applications where the entire Rails app is the admin interface (e.g. access at `localhost:3000`).
+
+The install generator makes your `ApplicationController` inherit from `Godmin::ApplicationController`:
+
+```ruby
+class ApplicationController < Godmin::ApplicationController
+end
+```
+
+Add your resources to `config/routes.rb` as normal:
+
+```ruby
+Rails.application.routes.draw do
+  resources :articles
+  root to: "application#welcome"
+end
 ```
 
 Godmin should be up and running at `localhost:3000`.
 
-### Engine installation
-Use when the admin is part of the same codebase as the main application. E.g. you want to access the admin section at `localhost:3000/admin`.
+### Mounted installation
 
-Generate a [mountable engine](http://guides.rubyonrails.org/engines.html):
-```sh
-$ bin/rails plugin new admin --mountable
-```
+Use when the admin is part of the same codebase as the main application (e.g. access at `localhost:3000/admin`).
 
-Add the engine to the application's `Gemfile`:
+The install generator adds the following to the host app's `config/routes.rb`:
+
 ```ruby
-gem "admin", path: "admin"
+mount Godmin::Engine, at: "/admin"
 ```
 
-Mount the engine in the application's `config/routes.rb`:
+Godmin automatically autoloads files placed in `app/godmin/` of the host application under the `Godmin::` namespace. Place your admin resources, controllers and other Godmin-specific files there:
+
+```
+app/
+  godmin/
+    resources/
+      article_resource.rb     # → Godmin::Resources::ArticleResource
+    controllers/
+      articles_controller.rb  # → Godmin::ArticlesController
+```
+
+To add resource routes inside the mounted engine, reopen the engine's routes in `config/routes.rb`:
+
 ```ruby
-mount Admin::Engine, at: "admin"
-```
-
-Add the gem to the engine's gemspec, `admin/admin.gemspec`:
-```ruby
-s.add_dependency "godmin", "~> x.x.x"
-```
-
-Bundle, then run the install generator within the scope of the engine, i.e. note the leading `admin/`:
-```sh
-$ bundle install
-$ admin/bin/rails generate godmin:install
-```
-
-Godmin should be up and running at `localhost:3000/admin`
-
-### Installation artefacts
-
-Installing Godmin does a number of things to the Rails application.
-
-The application controller is modified as such:
-```ruby
-class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
+Godmin::Engine.routes.draw do
+  resources :articles
 end
 ```
 
-Require statements are placed in both `app/assets/javascripts/application.js` and `app/assets/stylesheets/application.css`.
+Godmin should be up and running at `localhost:3000/admin`.
 
-If Godmin was installed inside an engine, a `require "godmin"` statement is placed in `{namespace}/lib/{namespace}.rb`.
+### Installation artefacts
 
-An `app/views/shared/_navigation.html.erb` partial is created.
+Running `bin/rails generate godmin:install` does the following:
 
-And finally, the `app/views/layouts` folder is removed by default, so as not to interfere with the Godmin layouts. It can be added back in case you wish to override the built in layouts.
+**Standalone install:**
+- Modifies `ApplicationController` to inherit from `Godmin::ApplicationController`
+- Creates `app/views/godmin/shared/_navigation.html.erb` for your navigation links
+
+**Mounted install:**
+- Adds `mount Godmin::Engine, at: "/admin"` to `config/routes.rb`
+- Creates `app/views/godmin/shared/_navigation.html.erb` for your navigation links
 
 ## Getting started
 
@@ -125,32 +123,18 @@ Godmin deals primarily with resources. A resource is something that can be admin
 $ bin/rails generate godmin:resource article title published
 ```
 
-Or for an engine install:
-```sh
-$ admin/bin/rails generate godmin:resource article title published
-```
-
 This does a number of things.
 
-It inserts a route in the `config/routes.rb` file:
+It inserts a route in `config/routes.rb`:
 
 ```ruby
 resources :articles
 ```
 
-It inserts a `navbar_item` in the `app/views/shared/_navigation.html.erb` partial:
+It appends a `navbar_item` to `app/views/godmin/shared/_navigation.html.erb`:
 
 ```erb
 <%= navbar_item Article %>
-```
-
-If Godmin was installed inside an engine, it creates a model class:
-
-```ruby
-module Admin
-  class Article < ::Article
-  end
-end
 ```
 
 It creates a controller:
@@ -161,25 +145,29 @@ class ArticlesController < ApplicationController
 end
 ```
 
-It creates a resource object:
+It creates a resource object at `app/godmin/resources/article_resource.rb`:
 
 ```ruby
-class ArticleResource
-  include Godmin::Resources::Resource
+module Godmin
+  module Resources
+    class ArticleResource
+      include Godmin::Resources::Resource
 
-  index do
-    attribute :title
-    attribute :published
-  end
+      index do
+        attribute :title
+        attribute :published
+      end
 
-  show do
-    attribute :title
-    attribute :published
-  end
+      show do
+        attribute :title
+        attribute :published
+      end
 
-  form do
-    attribute :title
-    attribute :published
+      form do
+        attribute :title
+        attribute :published
+      end
+    end
   end
 end
 ```
@@ -885,15 +873,7 @@ Godmin comes with a generator that creates an admin user model and enables the b
 
 ```sh
 $ bin/rails generate godmin:authentication
-$ bin/rake db:migrate
-```
-
-Please note: when installing to an admin engine, the migration needs to be moved to the main app before it can be found by `db:migrate`. Rails has a solution in place for this:
-
-```sh
-$ admin/bin/rails generate godmin:authentication
-$ bin/rake admin:install:migrations
-$ bin/rake db:migrate
+$ bin/rails db:migrate
 ```
 
 A model is generated:
@@ -910,13 +890,11 @@ end
 
 By default the user model is called `AdminUser`. If you'd like to change this, you can pass an argument to the authentication generator:
 
-```
+```sh
 $ bin/rails generate godmin:authentication SuperUser
-or for an engine:
-$ admin/bin/rails generate godmin:authentication SuperUser
 ```
 
-By default the model is generated with an `email` field as the login column. This can changed in the migration prior to migrating if, for instance, a `username` column is more appropriate.
+By default the model is generated with an `email` field as the login column. This can be changed in the migration prior to migrating if, for instance, a `username` column is more appropriate.
 
 The following route is generated:
 
@@ -935,8 +913,7 @@ end
 Finally, the application controller is modified:
 
 ```ruby
-class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
+class ApplicationController < Godmin::ApplicationController
   include Godmin::Authentication
 
   def admin_user_class
@@ -949,38 +926,32 @@ Authentication is now required when visiting the admin section.
 
 ### Shared authentication
 
-This example uses [Devise](https://github.com/plataformatec/devise) to set up a shared authentication solution between the main app and an admin engine. Administrators sign in and out via the main application.
+This example uses [Devise](https://github.com/plataformatec/devise) to set up a shared authentication solution. Administrators sign in and out via the main application.
 
-There is no need to run a generator in this instance. Simply add the authentication module to the admin application controller like so:
+There is no need to run a generator in this instance. Simply add the authentication module to the application controller:
 
 ```ruby
-module Admin
-  class ApplicationController < ActionController::Base
-    include Godmin::ApplicationController
-    include Godmin::Authentication
-  end
+class ApplicationController < Godmin::ApplicationController
+  include Godmin::Authentication
 end
 ```
 
-Provided you have `User` model set up with Devise in the main application, override the following three methods in the admin application controller:
+Provided you have a `User` model set up with Devise in the main application, override the following three methods in the application controller:
 
 ```ruby
-module Admin
-  class ApplicationController < ActionController::Base
-    include Godmin::ApplicationController
-    include Godmin::Authentication
+class ApplicationController < Godmin::ApplicationController
+  include Godmin::Authentication
 
-    def authenticate
-      authenticate_user!
-    end
+  def authenticate
+    authenticate_user!
+  end
 
-    def admin_user
-      current_user
-    end
+  def admin_user
+    current_user
+  end
 
-    def admin_user_signed_in?
-      user_signed_in?
-    end
+  def admin_user_signed_in?
+    user_signed_in?
   end
 end
 ```
@@ -1004,12 +975,9 @@ In order to enable authorization, authentication must first be enabled. See the 
 Add the authorization module to the application controller:
 
 ```ruby
-class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
+class ApplicationController < Godmin::ApplicationController
   include Godmin::Authentication
   include Godmin::Authorization
-
-  ...
 end
 ```
 
@@ -1063,8 +1031,7 @@ That is, everyone can list and view articles, only editors can create them, and 
 When a user is not authorized to access a resource, a `Pundit::NotAuthorizedError` is raised. By default this error is rescued by Godmin and turned into a status code `403 Forbidden` response. If you want to change this behaviour you can rescue the error yourself in the appropriate `ApplicationController`:
 
 ```ruby
-class ApplicationController < ActionController::Base
-  include Godmin::ApplicationController
+class ApplicationController < Godmin::ApplicationController
   include Godmin::Authentication
   include Godmin::Authorization
 
@@ -1106,51 +1073,6 @@ If you want to disable authorization for a single controller or controller actio
 ```ruby
 class ArticlesController < ApplicationController
   prepend_before_action :disable_authorization
-end
-```
-
-### Authorization in Engines
-
-When Godmin is installed as an engine, it expects policies to be defined
-within the engine: eg. `Admin::ArticlePolicy` defined in
-`admin/app/policies/article_policy.rb`.
-
-If your admin application is itself broken up into several engines, then
-either
-
-1. the policies for those engines need to live in the main engine, or
-2. those engines need to be namespaced under the namespace of the main engine.
-
-Here is one example of a directory structure for approach 2:
-
-```
-admin
-  ├── app
-  │   └── policies
-  │       └── admin
-  │           └── article_policy.rb
-  └── engines
-      └── content
-          └── policies
-              └── admin
-                  └── content
-                      └── text_block_policy.rb
-app
-  └── models
-      └── article.rb
-engines
-  └── content
-        └── models
-            └── content
-                └── text_block.rb
-```
-```ruby
-# admin/engines/content/policies/admin/content/text_block_policy.rb
-module Admin
-  module Content
-    class TextBlockPolicy < ::Admin::ApplicationPolicy
-    end
-  end
 end
 ```
 

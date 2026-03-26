@@ -26,8 +26,11 @@ module Godmin
       system! "cd #{destination_root} && bin/rails generate godmin:install --quiet"
       system! "cd #{destination_root} && bin/rails generate godmin:resource foo bar --quiet"
 
+      assert_file "config/routes.rb", /mount Godmin::Engine/
       assert_file "config/routes.rb", /resources :foos/
-      assert_file "app/views/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+      assert_file "app/views/godmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+
+      assert_file "app/controllers/application_controller.rb", /class ApplicationController < Godmin::ApplicationController/
 
       assert_file "app/controllers/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
@@ -71,7 +74,7 @@ module Godmin
       system! "cd #{destination_root} && fakemin/bin/rails generate godmin:resource foo bar --quiet"
 
       assert_file "fakemin/config/routes.rb", /resources :foos/
-      assert_file "fakemin/app/views/fakemin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
+      assert_file "fakemin/app/views/godmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
       assert_file "fakemin/app/controllers/fakemin/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc

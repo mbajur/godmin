@@ -2,23 +2,31 @@ require "godmin/generators/base"
 
 class Godmin::InstallGenerator < Godmin::Generators::Base
   def create_routes
-    inject_into_file "config/routes.rb", before: /^end/ do
-      <<-END.strip_heredoc.indent(2)
-        root to: "application#welcome"
-      END
+    if namespaced?
+      inject_into_file "config/routes.rb", before: /^end/ do
+        <<-END.strip_heredoc.indent(2)
+          root to: "application#welcome"
+        END
+      end
+    else
+      inject_into_file "config/routes.rb", before: /^end/ do
+        <<-END.strip_heredoc.indent(2)
+          mount Godmin::Engine, at: "/admin"
+        END
+      end
     end
   end
 
   def create_navigation
-    create_file File.join("app/views", namespaced_path, "shared/_navigation.html.erb")
+    create_file "app/views/godmin/shared/_navigation.html.erb"
   end
 
   def modify_application_controller
-    inject_into_file File.join("app/controllers", namespaced_path, "application_controller.rb"), after: "ActionController::Base\n" do
-      <<-END.strip_heredoc.indent(namespace ? 4 : 2)
-        include Godmin::ApplicationController
-      END
-    end
+    return if namespaced?
+
+    gsub_file "app/controllers/application_controller.rb",
+      /class ApplicationController < ActionController::Base/,
+      "class ApplicationController < Godmin::ApplicationController"
   end
 
   def require_library_if_namespaced
@@ -29,9 +37,5 @@ class Godmin::InstallGenerator < Godmin::Generators::Base
         require "godmin"
       END
     end
-  end
-
-  def remove_layouts
-    remove_dir "app/views/layouts"
   end
 end
