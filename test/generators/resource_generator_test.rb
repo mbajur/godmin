@@ -41,7 +41,7 @@ module Goodmin
         assert_match expected_content, content
       end
 
-      assert_file "app/controllers/foos_controller.rb" do |content|
+      assert_file "app/controllers/goodmin/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
           class FoosController < Goodmin::BaseController
             include Goodmin::Resources::ResourceController
