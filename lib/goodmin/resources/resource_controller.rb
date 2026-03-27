@@ -156,14 +156,22 @@ module Goodmin
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
-          elsif association && nested_attributes_accepted?(attribute.name)
+          elsif association && nested_has_many_form?(attribute, association)
             { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
           elsif association && (many_to_many_association?(association) || has_many_association?(association))
             { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
+          elsif association && nested_attributes_accepted?(attribute.name)
+            { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
           else
             attribute.name
           end
         end
+      end
+
+      def nested_has_many_form?(attribute, association)
+        attribute.field_class == Goodmin::Fields::NestedHasMany &&
+          has_many_association?(association) &&
+          nested_attributes_accepted?(attribute.name)
       end
 
       def nested_attributes_accepted?(attribute_name)

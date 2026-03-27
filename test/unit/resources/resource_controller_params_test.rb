@@ -66,7 +66,7 @@ module Goodmin
           attribute :name
           attribute :editor
           attribute :profile
-          attribute :comments
+          attribute :comments, field: Goodmin::Fields::NestedHasMany
         end
       end
 
