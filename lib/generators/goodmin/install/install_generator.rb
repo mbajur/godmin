@@ -21,12 +21,8 @@ class Goodmin::InstallGenerator < Goodmin::Generators::Base
     create_file "app/views/goodmin/shared/_navigation.html.erb"
   end
 
-  def modify_application_controller
-    return if namespaced?
-
-    gsub_file "app/controllers/application_controller.rb",
-      /class ApplicationController < ActionController::Base/,
-      "class ApplicationController < Goodmin::ApplicationController"
+  def create_base_controller
+    template "base_controller.rb", "app/controllers/goodmin/base_controller.rb"
   end
 
   def require_library_if_namespaced

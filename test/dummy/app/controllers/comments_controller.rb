@@ -1,2 +1,3 @@
-class CommentsController < Goodmin::ResourceController
+class CommentsController < ApplicationController
+  include Goodmin::Resources::ResourceController
 end

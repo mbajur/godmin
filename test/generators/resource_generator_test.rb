@@ -30,11 +30,20 @@ module Goodmin
       assert_file "config/routes.rb", /resources :foos/
       assert_file "app/views/goodmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
-      assert_file "app/controllers/application_controller.rb", /class ApplicationController < Goodmin::ApplicationController/
+      assert_file "app/controllers/goodmin/base_controller.rb" do |content|
+        expected_content = <<-CONTENT.strip_heredoc
+          module Goodmin
+            class BaseController < ActionController::Base
+              include Goodmin::ApplicationController
+            end
+          end
+        CONTENT
+        assert_match expected_content, content
+      end
 
       assert_file "app/controllers/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
-          class FoosController < ApplicationController
+          class FoosController < Goodmin::BaseController
             include Goodmin::Resources::ResourceController
           end
         CONTENT
@@ -76,10 +85,21 @@ module Goodmin
       assert_file "fakemin/config/routes.rb", /resources :foos/
       assert_file "fakemin/app/views/goodmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
+      assert_file "fakemin/app/controllers/goodmin/base_controller.rb" do |content|
+        expected_content = <<-CONTENT.strip_heredoc
+          module Goodmin
+            class BaseController < ActionController::Base
+              include Goodmin::ApplicationController
+            end
+          end
+        CONTENT
+        assert_match expected_content, content
+      end
+
       assert_file "fakemin/app/controllers/fakemin/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
           module Fakemin
-            class FoosController < ApplicationController
+            class FoosController < Goodmin::BaseController
               include Goodmin::Resources::ResourceController
             end
           end

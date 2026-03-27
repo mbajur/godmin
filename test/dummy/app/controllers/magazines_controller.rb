@@ -1,2 +1,3 @@
-class MagazinesController < Goodmin::ResourceController
+class MagazinesController < ApplicationController
+  include Goodmin::Resources::ResourceController
 end
