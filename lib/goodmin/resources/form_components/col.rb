@@ -3,7 +3,7 @@ module Goodmin
     module FormComponents
       # Renders a Bootstrap grid column wrapping its child form nodes.
       #
-      # Accepts an optional +size+ keyword argument (default: 12) which maps to
+      # Accepts an optional +size+ keyword argument (default: 6) which maps to
       # the Bootstrap col-md-* class.
       #
       # Usage in a form block:
@@ -17,7 +17,7 @@ module Goodmin
       class Col
         include FormComponent
 
-        def initialize(children, size: 12)
+        def initialize(children, size: 6)
           super(children)
           @size = size
         end
