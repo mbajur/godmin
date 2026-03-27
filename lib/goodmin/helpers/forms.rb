@@ -2,8 +2,9 @@ module Goodmin
   module Helpers
     module Forms
       def form_for(record, options = {}, &block)
+        url = singleton_resource? ? resource_url_array : [*@resource_parents, record]
         super(record, {
-          url: [*@resource_parents, record]
+          url: url
         }.merge(options), &block)
       end
 

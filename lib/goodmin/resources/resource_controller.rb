@@ -20,6 +20,8 @@ module Goodmin
         before_action :set_resource_parents
         before_action :set_resources, only: :index
         before_action :set_resource, only: [:show, :new, :edit, :create, :update, :destroy]
+
+        helper_method :singleton_resource?, :resource_url_array, :resources_url_array
       end
 
       def index
@@ -134,7 +136,16 @@ module Goodmin
       end
 
       def resource
-        if params[:id]
+        if singleton_resource?
+          case action_name
+          when "create"
+            @resource_service.build_resource(resource_params)
+          when "new"
+            @resource_service.build_resource(nil)
+          else
+            @resource_service.find_singleton_resource
+          end
+        elsif params[:id]
           @resource_service.find_resource(params[:id])
         else
           case action_name
@@ -202,15 +213,30 @@ module Goodmin
       end
 
       def redirect_after_save
-        [*@resource_parents, @resource]
+        resource_url_array
       end
 
       def redirect_after_destroy
-        [*@resource_parents, resource_class.model_name.route_key.to_sym]
+        resources_url_array
       end
 
       def redirect_flash_message
         translate_scoped("flash.#{action_name}", resource: @resource.class.model_name.human)
+      end
+
+      def singleton_resource?
+        @resource_service.class.singleton
+      end
+
+      def resource_url_array(action: nil)
+        base = singleton_resource? ? resource_class.model_name.singular_route_key.to_sym : @resource
+        [action, *@resource_parents, base].compact
+      end
+
+      def resources_url_array
+        return resource_url_array if singleton_resource?
+
+        [*@resource_parents, resource_class.model_name.route_key.to_sym]
       end
     end
   end

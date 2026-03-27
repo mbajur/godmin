@@ -74,6 +74,10 @@ module Goodmin
         resources_relation.find(id)
       end
 
+      def find_singleton_resource
+        resources_relation.first
+      end
+
       def build_resource(params)
         resources_relation.new(params)
       end
@@ -183,6 +187,11 @@ module Goodmin
 
         def attrs_for_export
           @attrs_for_export || []
+        end
+
+        def singleton(value = nil)
+          @singleton = value unless value.nil?
+          @singleton || false
         end
 
         def association_option_text(attribute, method_name)
