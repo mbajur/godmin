@@ -21,7 +21,8 @@ module Goodmin
       HTML_TAGS.each do |tag|
         define_method(tag) do |**html_attrs, &block|
           child_builder = FormBuilder.new
-          child_builder.instance_eval(&block) if block
+          result = child_builder.instance_eval(&block) if block
+          child_builder.nodes << TextNode.new(result) if result.is_a?(String) && child_builder.nodes.empty?
           @nodes << HtmlNode.new(tag, html_attrs, child_builder.nodes)
         end
       end
@@ -49,6 +50,7 @@ module Goodmin
           when AttributeNode then [node.attribute]
           when HtmlNode then extract_attributes(node.children)
           when ComponentNode then node.component.attributes
+          when TextNode then []
           end
         end
       end
@@ -82,6 +84,14 @@ module Goodmin
         @tag = tag
         @html_attrs = html_attrs
         @children = children
+      end
+    end
+
+    class TextNode
+      attr_reader :text
+
+      def initialize(text)
+        @text = text
       end
     end
 

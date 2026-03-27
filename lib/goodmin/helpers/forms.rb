@@ -35,6 +35,8 @@ module Goodmin
           end
         when Resources::ComponentNode
           node.component.render(self, f)
+        when Resources::TextNode
+          node.text
         end
       end
     end

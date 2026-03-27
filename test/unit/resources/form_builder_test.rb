@@ -114,6 +114,54 @@ module Goodmin
       assert_equal "span", article_node.children.last.tag
     end
 
+    def test_text_node_from_string_in_block
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        div { "hello world" }
+      end
+
+      assert_equal 1, builder.nodes.length
+      node = builder.nodes.first
+      assert_kind_of Resources::HtmlNode, node
+      assert_equal "div", node.tag
+      assert_equal 1, node.children.length
+      assert_kind_of Resources::TextNode, node.children.first
+      assert_equal "hello world", node.children.first.text
+    end
+
+    def test_text_node_alongside_other_nodes
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        div do
+          attribute :title
+          span { "extra text" }
+        end
+      end
+
+      div_node = builder.nodes.first
+      assert_equal 2, div_node.children.length
+      assert_kind_of Resources::AttributeNode, div_node.children.first
+      span_node = div_node.children.last
+      assert_kind_of Resources::HtmlNode, span_node
+      assert_equal 1, span_node.children.length
+      assert_kind_of Resources::TextNode, span_node.children.first
+      assert_equal "extra text", span_node.children.first.text
+    end
+
+    def test_text_node_excluded_from_attributes
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        div do
+          attribute :title
+          span { "label text" }
+        end
+      end
+
+      attrs = builder.attributes
+      assert_equal 1, attrs.length
+      assert_equal :title, attrs.first.name
+    end
+
     def test_attribute_with_custom_field
       builder = Resources::FormBuilder.new
       builder.instance_eval do
