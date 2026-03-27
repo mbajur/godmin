@@ -39,7 +39,7 @@ module Goodmin
         include Goodmin::Resources::Resource
 
         index do
-          attribute :title, field: Fields::Text
+          attribute :title, as: Fields::Text
         end
       end
       attrs = klass.attrs_for_index
@@ -53,7 +53,7 @@ module Goodmin
         include Goodmin::Resources::Resource
 
         index do
-          attribute :title, field: Fields::Text, value: val, label: "My Label"
+          attribute :title, as: Fields::Text, value: val, label: "My Label"
         end
       end
       attr = klass.attrs_for_index.first

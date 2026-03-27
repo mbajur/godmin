@@ -19,8 +19,8 @@ module Goodmin
           @attributes = []
         end
 
-        def attribute(name, field: nil)
-          @attributes << Attribute.new(name, field_class: field)
+        def attribute(name, as: nil)
+          @attributes << Attribute.new(name, field_class: as)
         end
       end
 

@@ -14,8 +14,8 @@ module Goodmin
         @nodes = []
       end
 
-      def attribute(name, field: nil, **options)
-        @nodes << AttributeNode.new(Attribute.new(name, field_class: field, **options))
+      def attribute(name, as: nil, **options)
+        @nodes << AttributeNode.new(Attribute.new(name, field_class: as, **options))
       end
 
       HTML_TAGS.each do |tag|

@@ -783,34 +783,34 @@ Place partials under `app/views/goodmin/fields/<field_type>/` where `<field_type
 
 **Step 3 – Use the field in a resource:**
 
-Pass the field class via the `field:` option when declaring an attribute in any block (`index`, `show`, `form`, or `export`):
+Pass the field class via the `as:` option when declaring an attribute in any block (`index`, `show`, `form`, or `export`):
 
 ```ruby
 class ArticleResource
   include Goodmin::Resources::Resource
 
   index do
-    attribute :color, field: Goodmin::Fields::Color
+    attribute :color, as: Goodmin::Fields::Color
   end
 
   show do
-    attribute :color, field: Goodmin::Fields::Color
+    attribute :color, as: Goodmin::Fields::Color
   end
 
   form do
-    attribute :color, field: Goodmin::Fields::Color
+    attribute :color, as: Goodmin::Fields::Color
   end
 end
 ```
 
 **Passing options to a custom field:**
 
-You can pass arbitrary keyword arguments alongside `field:` when declaring an attribute. They are forwarded to the field instance and accessible via `field.options` — both inside the field class and inside its ERB partials.
+You can pass arbitrary keyword arguments alongside `as:` when declaring an attribute. They are forwarded to the field instance and accessible via `field.options` — both inside the field class and inside its ERB partials.
 
 ```ruby
 # Resource service
 index do
-  attribute :color, field: Goodmin::Fields::Color, label: "Hex colour", swatch: true
+  attribute :color, as: Goodmin::Fields::Color, label: "Hex colour", swatch: true
 end
 ```
 
