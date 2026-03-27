@@ -22,7 +22,11 @@ class Goodmin::ResourceGenerator < Goodmin::Generators::NamedBase
   end
 
   def create_controller
-    template "resource_controller.rb", File.join("app/controllers", class_path, "#{file_name.pluralize}_controller.rb")
+    if namespaced?
+      template "resource_controller.rb", File.join("app/controllers", class_path, "#{file_name.pluralize}_controller.rb")
+    else
+      template "resource_controller.rb", File.join("app/controllers", "goodmin", "#{file_name.pluralize}_controller.rb")
+    end
   end
 
   def create_resource
