@@ -19,9 +19,27 @@ module Goodmin
         end
       end
 
+      class CommentResource
+        include Goodmin::Resources::Resource
+
+        form do
+          attribute :title
+          attribute :body
+        end
+      end
+
+      class Comment
+        def self.name
+          "Goodmin::ResourceControllerParamsTest::TestScope::Comment"
+        end
+      end
+
       class Author
         # Simulates accepts_nested_attributes_for :profile
         def profile_attributes=(_attributes); end
+
+        # Simulates accepts_nested_attributes_for :comments
+        def comments_attributes=(_attributes); end
 
         def self.reflect_on_association(name)
           case name
@@ -32,6 +50,10 @@ module Goodmin
           when :profile
             Struct.new(:macro, :klass, :foreign_key, :name, :options, keyword_init: true).new(
               macro: :has_one, klass: Profile, foreign_key: nil, name: :profile, options: {}
+            )
+          when :comments
+            Struct.new(:macro, :klass, :foreign_key, :name, :options, keyword_init: true).new(
+              macro: :has_many, klass: Comment, foreign_key: nil, name: :comments, options: {}
             )
           end
         end
@@ -44,6 +66,7 @@ module Goodmin
           attribute :name
           attribute :editor
           attribute :profile
+          attribute :comments
         end
       end
 
@@ -92,6 +115,22 @@ module Goodmin
       assert_includes nested_entry[:profile_attributes], :id
       assert_includes nested_entry[:profile_attributes], :bio
       assert_includes nested_entry[:profile_attributes], :website
+    end
+
+    def test_nested_has_many_attributes_are_permitted
+      params = @controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:comments_attributes) }
+      assert nested_entry, "Expected comments_attributes key in permitted params"
+      assert_includes nested_entry[:comments_attributes], :id
+      assert_includes nested_entry[:comments_attributes], :_destroy
+      assert_includes nested_entry[:comments_attributes], :title
+      assert_includes nested_entry[:comments_attributes], :body
+    end
+
+    def test_nested_has_many_does_not_use_ids_param
+      params = @controller.resource_params_defaults
+      ids_entry = params.find { |p| p.is_a?(Hash) && p.key?(:comment_ids) }
+      assert_nil ids_entry, "Expected no comment_ids key when nested attributes are accepted"
     end
   end
 end
