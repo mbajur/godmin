@@ -23,19 +23,6 @@ module Goodmin
       #       attribute :title
       #     end
       #   end
-      #
-      # +section+ may also be nested inside +col+ and +row+:
-      #
-      #   form do
-      #     row do
-      #       col(size: 6) do
-      #         section(title: "Left column") { attribute :title }
-      #       end
-      #       col(size: 6) do
-      #         section(title: "Right column") { attribute :body }
-      #       end
-      #     end
-      #   end
       class Section
         include FormComponent
 

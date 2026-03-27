@@ -11,19 +11,6 @@ module Goodmin
       #       col { attribute :body }
       #     end
       #   end
-      #
-      # Components such as +section+ may also be used as children:
-      #
-      #   form do
-      #     row do
-      #       col(size: 6) do
-      #         section(title: "Left") { attribute :title }
-      #       end
-      #       col(size: 6) do
-      #         section(title: "Right") { attribute :body }
-      #       end
-      #     end
-      #   end
       class Row
         include FormComponent
 
