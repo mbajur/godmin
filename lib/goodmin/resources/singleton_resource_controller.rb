@@ -7,8 +7,8 @@ module Goodmin
 
       include ResourceController::Base
 
-      def singleton_resource?
-        true
+      def new_button_visible?
+        false
       end
 
       def resource

@@ -21,7 +21,7 @@ module Goodmin
           before_action :set_resource_parents
           before_action :set_resource, only: [:show, :new, :edit, :create, :update, :destroy]
 
-          helper_method :resource_url_array, :resources_url_array, :singleton_resource?
+          helper_method :resource_url_array, :resources_url_array, :new_button_visible?
         end
 
         def show

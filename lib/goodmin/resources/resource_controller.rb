@@ -43,8 +43,8 @@ module Goodmin
         end
       end
 
-      def singleton_resource?
-        false
+      def new_button_visible?
+        policy(@resource_service.build_resource({})).new?
       end
 
       def resource_url_array(action: nil)
