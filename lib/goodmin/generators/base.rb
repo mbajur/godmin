@@ -4,7 +4,7 @@ module Goodmin
   module Generators
     class Base < Rails::Generators::Base
       def self.source_paths
-        %w[authentication install policy resource].map do |path|
+        %w[authentication field install policy resource].map do |path|
           File.expand_path("../../../generators/goodmin/#{path}/templates", __FILE__)
         end
       end

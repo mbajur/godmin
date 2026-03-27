@@ -724,6 +724,23 @@ Strong parameters are automatically derived from all attributes declared inside 
 
 Goodmin automatically maps database column types to built-in field classes (`Fields::String`, `Fields::Text`, `Fields::Boolean`, `Fields::Date`, `Fields::DateTime`, `Fields::Number`, and `Fields::Association`). When you need different rendering or behaviour for a particular attribute, you can create your own field class and tell Goodmin to use it.
 
+You can scaffold a custom field using the built-in generator:
+
+```
+$ bin/rails generate goodmin:field color
+```
+
+This creates the field class and all three view partials in one go:
+
+```
+app/goodmin/fields/color.rb
+app/views/goodmin/fields/color/_form.html.erb
+app/views/goodmin/fields/color/_index.html.erb
+app/views/goodmin/fields/color/_show.html.erb
+```
+
+Alternatively, you can create these files by hand — follow the steps below.
+
 **Step 1 – Create the field class:**
 
 A custom field must inherit from `Goodmin::Fields::Base`. Place it in `app/goodmin/fields/` — Goodmin automatically loads files from that directory under the `Goodmin::Fields` namespace. Override `value` if you need to transform the raw attribute value, and provide ERB partials to control how the field is rendered.
