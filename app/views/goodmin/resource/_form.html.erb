@@ -13,6 +13,7 @@
     </div>
     <div class="col-md-10">
       <%= form_for @resource do |f| %>
+        <%= hidden_field_tag :tab, active_tab.key %>
         <%= render_form_nodes(active_tab.children, f) %>
         <%= f.submit class: "btn btn-primary" %>
       <% end %>
