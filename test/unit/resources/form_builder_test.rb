@@ -342,7 +342,7 @@ module Goodmin
       builder.instance_eval { col { attribute :title } }
 
       col = builder.nodes.first.component
-      assert_equal 12, col.instance_variable_get(:@size)
+      assert_equal 6, col.instance_variable_get(:@size)
     end
 
     def test_col_component_custom_size
