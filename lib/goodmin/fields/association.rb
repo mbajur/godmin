@@ -21,6 +21,16 @@ module Goodmin
         belongs_to? ? :"#{attribute}_id" : :"#{attribute.to_s.singularize}_ids"
       end
 
+      def select_options
+        options.fetch(:options, {})
+      end
+
+      def select_html_options
+        base = { class: "form-control" }
+        base[:multiple] = true if many_to_many? || has_many?
+        base.merge(options.fetch(:html_options, {}))
+      end
+
       def collection
         klass = reflection&.klass
         return [] unless klass

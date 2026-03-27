@@ -1,13 +1,13 @@
 <% if field.belongs_to? %>
   <div class="form-group">
     <%= f.label field.select_attribute %>
-    <%= f.select field.select_attribute, field.collection, {}, class: "form-control" %>
+    <%= f.select field.select_attribute, field.collection, field.select_options, field.select_html_options %>
     <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
   </div>
 <% elsif field.many_to_many? || field.has_many? %>
   <div class="form-group">
     <%= f.label field.select_attribute, field.attribute.to_s.humanize %>
-    <%= f.select field.select_attribute, field.collection, {}, class: "form-control", multiple: true %>
+    <%= f.select field.select_attribute, field.collection, field.select_options, field.select_html_options %>
     <%= content_tag(:p, field.hint, class: "help-block") if field.hint.present? %>
   </div>
 <% else %>
