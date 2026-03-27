@@ -5,10 +5,11 @@ module Goodmin
         extend ActiveSupport::Concern
 
         def apply_order(order_param, resources)
-          if order_param.present? && order_column_method?(order_column(order_param))
-            send("order_by_#{order_column(order_param)}", resources, order_direction(order_param))
-          elsif order_param.present? && order_column_column?(order_column(order_param))
-            resources.order("#{resource_class.table_name}.#{order_column(order_param)} #{order_direction(order_param)}")
+          effective_order = order_param.presence || self.class.default_ordering
+          if effective_order.present? && order_column_method?(order_column(effective_order))
+            send("order_by_#{order_column(effective_order)}", resources, order_direction(effective_order))
+          elsif effective_order.present? && order_column_column?(order_column(effective_order))
+            resources.order("#{resource_class.table_name}.#{order_column(effective_order)} #{order_direction(effective_order)}")
           else
             resources
           end
@@ -16,6 +17,16 @@ module Goodmin
 
         def orderable_column?(column)
           order_column_method?(column) || order_column_column?(column)
+        end
+
+        module ClassMethods
+          def default_order(column = nil, direction = :desc)
+            @default_ordering = "#{column}_#{direction}" if column
+          end
+
+          def default_ordering
+            @default_ordering
+          end
         end
 
         protected
