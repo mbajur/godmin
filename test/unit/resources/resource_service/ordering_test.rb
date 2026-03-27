@@ -34,20 +34,22 @@ module Goodmin
       end
 
       def test_apply_order_uses_default_order_when_order_param_blank
-        resource_class = Class.new(Fakes::ArticleResource) do
+        klass = Class.new(Fakes::ArticleResource) do
           default_order :title, :asc
+          def resource_class; Fakes::Article; end
         end
-        resource = resource_class.new(resources: @resources)
+        resource = klass.new(resources: @resources)
         resources = @resources_class.new
         resource.apply_order("", resources)
         assert_equal "articles.title asc", resources.order_param
       end
 
       def test_apply_order_explicit_param_overrides_default_order
-        resource_class = Class.new(Fakes::ArticleResource) do
+        klass = Class.new(Fakes::ArticleResource) do
           default_order :title, :asc
+          def resource_class; Fakes::Article; end
         end
-        resource = resource_class.new(resources: @resources)
+        resource = klass.new(resources: @resources)
         resources = @resources_class.new
         resource.apply_order("title_desc", resources)
         assert_equal "articles.title desc", resources.order_param
