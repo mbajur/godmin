@@ -152,12 +152,12 @@ module Goodmin
 
       def resource_params_defaults
         @resource_service.attrs_for_form.map do |attribute|
-          association = @resource_class.reflect_on_association(attribute)
+          association = @resource_class.reflect_on_association(attribute.name)
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
           else
-            attribute
+            attribute.name
           end
         end
       end

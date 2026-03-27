@@ -24,9 +24,9 @@ class Goodmin::InstallGenerator < Goodmin::Generators::Base
   def modify_application_controller
     return if namespaced?
 
-    gsub_file "app/controllers/application_controller.rb",
-      /class ApplicationController < ActionController::Base/,
-      "class ApplicationController < Goodmin::ApplicationController"
+    inject_into_class "app/controllers/application_controller.rb", "ApplicationController" do
+      "  include Goodmin::ApplicationController\n"
+    end
   end
 
   def require_library_if_namespaced

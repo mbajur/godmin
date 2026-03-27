@@ -30,7 +30,7 @@ module Goodmin
       assert_file "config/routes.rb", /resources :foos/
       assert_file "app/views/goodmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
-      assert_file "app/controllers/application_controller.rb", /class ApplicationController < Goodmin::ApplicationController/
+      assert_file "app/controllers/application_controller.rb", /include Goodmin::ApplicationController/
 
       assert_file "app/controllers/foos_controller.rb" do |content|
         expected_content = <<-CONTENT.strip_heredoc
