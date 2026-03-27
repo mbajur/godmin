@@ -10,4 +10,14 @@ class Goodmin::FieldGenerator < Goodmin::Generators::NamedBase
     template "field_index.html.erb", File.join("app/views/goodmin/fields", file_name, "_index.html.erb")
     template "field_show.html.erb", File.join("app/views/goodmin/fields", file_name, "_show.html.erb")
   end
+
+  private
+
+  def class_name
+    @_class_name ||= name.camelize
+  end
+
+  def file_name
+    @_file_name ||= name.demodulize.underscore
+  end
 end
