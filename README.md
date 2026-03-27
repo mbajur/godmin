@@ -733,7 +733,7 @@ $ bin/rails generate goodmin:field color
 This creates the field class and all three view partials in one go:
 
 ```
-app/goodmin/fields/color_field.rb
+app/goodmin/fields/color.rb
 app/views/goodmin/fields/color/_form.html.erb
 app/views/goodmin/fields/color/_index.html.erb
 app/views/goodmin/fields/color/_show.html.erb
