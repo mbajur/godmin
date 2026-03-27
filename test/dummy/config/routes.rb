@@ -3,7 +3,6 @@ Rails.application.routes.draw do
     resources :comments
     resources :magazines
   end
-  resources :magazines
   resource :magazine, controller: :magazine
   resources :authenticated_articles
   resources :authorized_articles
