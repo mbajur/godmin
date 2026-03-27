@@ -1,6 +1,6 @@
 module Goodmin
   module Fields
-    class <%= class_name %>Field < Base
+    class <%= class_name %> < Base
     end
   end
 end

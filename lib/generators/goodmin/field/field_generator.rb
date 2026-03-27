@@ -2,7 +2,7 @@ require "goodmin/generators/named_base"
 
 class Goodmin::FieldGenerator < Goodmin::Generators::NamedBase
   def create_field
-    template "field.rb", File.join("app/goodmin/fields", class_path, "#{file_name}_field.rb")
+    template "field.rb", File.join("app/goodmin/fields", class_path, "#{file_name}.rb")
   end
 
   def create_views
