@@ -10,15 +10,16 @@
     <% end %>
   </template>
 
-  <div data-nested-form-target="target">
-    <%= f.fields_for field.attribute do |nested_f| %>
-      <div class="nested-form-wrapper">
-        <%= nested_f.hidden_field :_destroy %>
-        <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: nested_f.object, resource_service: field.associated_service) %>
-        <button type="button" data-action="nested-form#remove">Remove</button>
-      </div>
-    <% end %>
-  </div>
+  <%= f.fields_for field.attribute do |nested_f| %>
+    <div class="nested-form-wrapper">
+      <%= nested_f.hidden_field :_destroy %>
+      <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: nested_f.object, resource_service: field.associated_service) %>
+      <button type="button" data-action="nested-form#remove">Remove</button>
+    </div>
+  <% end %>
+
+  <%# New records are inserted before this marker via the Stimulus controller %>
+  <div data-nested-form-target="target"></div>
 
   <button type="button" data-action="nested-form#add">Add <%= field.attribute.to_s.singularize.humanize %></button>
 </fieldset>
