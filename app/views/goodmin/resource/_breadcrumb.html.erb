@@ -11,9 +11,35 @@
       <% end %>
     <% end %>
     <% if action_name == "index" %>
-      <li class="active">
-        <%= @resource_class.model_name.human(count: 2) %>
-      </li>
+      <% parent_service_class = if @resource_parents.present?
+           Goodmin::ServiceLocator.find_service_class_for(
+             @resource_parents.last.class,
+             context_service_class: @resource_service.class
+           )
+         end %>
+      <% sibling_map = parent_service_class&.has_many_map || {} %>
+      <% if sibling_map.present? %>
+        <li class="dropdown active">
+          <a href="#" data-toggle="dropdown">
+            <%= @resource_class.model_name.human(count: 2) %> <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <% sibling_map.each do |_name, options| %>
+              <% sibling_class = options[:class_name].constantize %>
+              <% if policy(sibling_class).index? %>
+                <li class="<%= 'active' if sibling_class == @resource_class %>">
+                  <%= link_to sibling_class.model_name.human(count: 2),
+                    polymorphic_path([*@resource_parents, sibling_class]) %>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </li>
+      <% else %>
+        <li class="active">
+          <%= @resource_class.model_name.human(count: 2) %>
+        </li>
+      <% end %>
     <% else %>
       <li>
         <%= link_to @resource_class.model_name.human(count: 2), [*@resource_parents, @resource_class] %>

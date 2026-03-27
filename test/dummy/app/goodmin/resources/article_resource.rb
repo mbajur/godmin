@@ -36,6 +36,7 @@ module Goodmin
       association_option_text :magazines, :name
 
       has_many :comments
+      has_many :magazines
 
       def order_by_admin_user(resources, direction)
         resources.joins(:admin_users).order("admin_users.email #{direction}")
