@@ -156,10 +156,33 @@ module Goodmin
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
+          elsif association && (many_to_many_association?(association) || has_many_association?(association))
+            { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
+          elsif association && nested_attributes_accepted?(attribute.name)
+            { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
           else
             attribute.name
           end
         end
+      end
+
+      def nested_attributes_accepted?(attribute_name)
+        @resource_class.method_defined?("#{attribute_name}_attributes=")
+      end
+
+      def nested_attribute_permit_list(association)
+        service_class = Goodmin::ServiceLocator.find_service_class_for(association.klass, context_service_class: @resource_service.class)
+        attrs = service_class&.attrs_for_form || []
+        [:id] + attrs.map(&:name)
+      end
+
+      def many_to_many_association?(association)
+        association.macro == :has_and_belongs_to_many ||
+          (association.macro == :has_many && association.options[:through].present?)
+      end
+
+      def has_many_association?(association)
+        association.macro == :has_many && !association.options[:through].present?
       end
 
       def redirect_after_create

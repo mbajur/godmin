@@ -4,12 +4,34 @@ module Goodmin
   class ResourceControllerParamsTest < ActiveSupport::TestCase
     # Minimal stubs used exclusively in this test
     module TestScope
+      class ProfileResource
+        include Goodmin::Resources::Resource
+
+        form do
+          attribute :bio
+          attribute :website
+        end
+      end
+
+      class Profile
+        def self.name
+          "Goodmin::ResourceControllerParamsTest::TestScope::Profile"
+        end
+      end
+
       class Author
+        # Simulates accepts_nested_attributes_for :profile
+        def profile_attributes=(_attributes); end
+
         def self.reflect_on_association(name)
           case name
           when :editor
-            Struct.new(:macro, :foreign_key, keyword_init: true).new(
-              macro: :belongs_to, foreign_key: "editor_id"
+            Struct.new(:macro, :foreign_key, :options, keyword_init: true).new(
+              macro: :belongs_to, foreign_key: "editor_id", options: {}
+            )
+          when :profile
+            Struct.new(:macro, :klass, :foreign_key, :name, :options, keyword_init: true).new(
+              macro: :has_one, klass: Profile, foreign_key: nil, name: :profile, options: {}
             )
           end
         end
@@ -21,6 +43,7 @@ module Goodmin
         form do
           attribute :name
           attribute :editor
+          attribute :profile
         end
       end
 
@@ -34,7 +57,7 @@ module Goodmin
 
         include Goodmin::Resources::ResourceController
 
-        # Expose the protected method for testing
+        # Expose the protected methods for testing
         public :resource_params_defaults
 
         def initialize(resource_class, resource_service)
@@ -60,6 +83,15 @@ module Goodmin
       params = @controller.resource_params_defaults
       assert_includes params, :editor_id
       assert_not_includes params, :editor
+    end
+
+    def test_nested_has_one_attributes_are_permitted
+      params = @controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:profile_attributes) }
+      assert nested_entry, "Expected profile_attributes key in permitted params"
+      assert_includes nested_entry[:profile_attributes], :id
+      assert_includes nested_entry[:profile_attributes], :bio
+      assert_includes nested_entry[:profile_attributes], :website
     end
   end
 end
