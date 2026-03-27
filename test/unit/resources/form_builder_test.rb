@@ -165,7 +165,7 @@ module Goodmin
     def test_attribute_with_custom_field
       builder = Resources::FormBuilder.new
       builder.instance_eval do
-        attribute :body, field: Fields::Text
+        attribute :body, as: Fields::Text
       end
 
       node = builder.nodes.first
@@ -177,7 +177,7 @@ module Goodmin
       builder = Resources::FormBuilder.new
       val = ->(record) { record.foo }
       builder.instance_eval do
-        attribute :body, field: Fields::Text, value: val, label: "Custom"
+        attribute :body, as: Fields::Text, value: val, label: "Custom"
       end
 
       attr = builder.nodes.first.attribute
