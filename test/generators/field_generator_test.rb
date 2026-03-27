@@ -10,8 +10,8 @@ module Goodmin
     def test_field_generator_creates_field_class
       run_generator ["color"]
 
-      assert_file "app/goodmin/fields/color_field.rb" do |content|
-        assert_match "class ColorField < Base", content
+      assert_file "app/goodmin/fields/color.rb" do |content|
+        assert_match "class Color < Base", content
         assert_match "module Goodmin", content
         assert_match "module Fields", content
       end
