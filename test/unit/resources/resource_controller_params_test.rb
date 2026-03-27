@@ -59,6 +59,20 @@ module Goodmin
         end
       end
 
+      # Same as Author but without accepts_nested_attributes_for :profile
+      class AuthorWithoutNestedAttrs
+        def self.reflect_on_association(name)
+          Author.reflect_on_association(name)
+        end
+      end
+
+      # Model with no association matching the attribute name
+      class Museum
+        def self.reflect_on_association(_name)
+          nil
+        end
+      end
+
       class AuthorResource
         include Goodmin::Resources::Resource
 
@@ -67,6 +81,22 @@ module Goodmin
           attribute :editor
           attribute :profile
           attribute :comments, as: Goodmin::Fields::NestedHasMany
+        end
+      end
+
+      class AuthorWithoutNestedAttrsResource
+        include Goodmin::Resources::Resource
+
+        form do
+          attribute :profile
+        end
+      end
+
+      class MuseumResource
+        include Goodmin::Resources::Resource
+
+        form do
+          attribute :application_settings, as: Goodmin::Fields::NestedHasOne
         end
       end
 
@@ -115,6 +145,31 @@ module Goodmin
       assert_includes nested_entry[:profile_attributes], :id
       assert_includes nested_entry[:profile_attributes], :bio
       assert_includes nested_entry[:profile_attributes], :website
+    end
+
+    def test_nested_has_one_without_nested_attrs_accepted
+      controller = TestScope::FakeController.new(
+        TestScope::AuthorWithoutNestedAttrs,
+        TestScope::AuthorWithoutNestedAttrsResource.new
+      )
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:profile_attributes) }
+      assert nested_entry, "Expected profile_attributes key even without accepts_nested_attributes_for"
+      assert_includes nested_entry[:profile_attributes], :id
+      assert_includes nested_entry[:profile_attributes], :bio
+      assert_includes nested_entry[:profile_attributes], :website
+    end
+
+    def test_nested_has_one_with_explicit_field_class_and_no_matching_association
+      controller = TestScope::FakeController.new(
+        TestScope::Museum,
+        TestScope::MuseumResource.new
+      )
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:application_settings_attributes) }
+      assert nested_entry, "Expected application_settings_attributes key when NestedHasOne field class is explicit"
+      assert_includes nested_entry[:application_settings_attributes], :id
+      assert_includes nested_entry[:application_settings_attributes], :_destroy
     end
 
     def test_nested_has_many_attributes_are_permitted
