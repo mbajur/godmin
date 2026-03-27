@@ -156,6 +156,8 @@ module Goodmin
 
           if association && association.macro == :belongs_to
             association.foreign_key.to_sym
+          elsif association && nested_has_many_form?(attribute, association)
+            { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
           elsif association && (many_to_many_association?(association) || has_many_association?(association))
             { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
           elsif association && nested_attributes_accepted?(attribute.name)
@@ -166,6 +168,12 @@ module Goodmin
         end
       end
 
+      def nested_has_many_form?(attribute, association)
+        attribute.field_class == Goodmin::Fields::NestedHasMany &&
+          has_many_association?(association) &&
+          nested_attributes_accepted?(attribute.name)
+      end
+
       def nested_attributes_accepted?(attribute_name)
         @resource_class.method_defined?("#{attribute_name}_attributes=")
       end
@@ -173,7 +181,7 @@ module Goodmin
       def nested_attribute_permit_list(association)
         service_class = Goodmin::ServiceLocator.find_service_class_for(association.klass, context_service_class: @resource_service.class)
         attrs = service_class&.attrs_for_form || []
-        [:id] + attrs.map(&:name)
+        [:id, :_destroy] + attrs.map(&:name)
       end
 
       def many_to_many_association?(association)

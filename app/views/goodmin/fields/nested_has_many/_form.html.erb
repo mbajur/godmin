@@ -1,0 +1,35 @@
+<fieldset data-controller="nested-form">
+  <legend><%= field.attribute.to_s.humanize %></legend>
+
+  <template data-nested-form-target="template">
+    <%= f.fields_for field.attribute, field.new_record, child_index: "NEW_RECORD" do |nested_f| %>
+      <div class="nested-form-wrapper panel panel-default" data-new-record="true">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-danger btn-xs pull-right" data-action="nested-form#remove">Remove</button>
+          <h4 class="panel-title"><%= field.attribute.to_s.singularize.humanize %></h4>
+        </div>
+        <div class="panel-body">
+          <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: field.new_record, resource_service: field.associated_service) %>
+        </div>
+      </div>
+    <% end %>
+  </template>
+
+  <%= f.fields_for field.attribute do |nested_f| %>
+    <div class="nested-form-wrapper panel panel-default">
+      <div class="panel-heading">
+        <%= nested_f.hidden_field :_destroy %>
+        <button type="button" class="btn btn-danger btn-xs pull-right" data-action="nested-form#remove">Remove</button>
+        <h4 class="panel-title"><%= field.attribute.to_s.singularize.humanize %></h4>
+      </div>
+      <div class="panel-body">
+        <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: nested_f.object, resource_service: field.associated_service) %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# New records are inserted before this marker via the Stimulus controller %>
+  <div data-nested-form-target="target"></div>
+
+  <button type="button" class="btn btn-default mb-3" data-action="nested-form#add">Add <%= field.attribute.to_s.singularize.humanize %></button>
+</fieldset>
