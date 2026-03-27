@@ -21,7 +21,7 @@ module Goodmin
         before_action :set_resources, only: :index
         before_action :set_resource, only: [:show, :new, :edit, :create, :update, :destroy]
 
-        helper_method :singleton_resource?, :resource_url_array, :resources_url_array
+        helper_method :resource_url_array, :resources_url_array, :singleton_resource?
       end
 
       def index
@@ -136,16 +136,7 @@ module Goodmin
       end
 
       def resource
-        if singleton_resource?
-          case action_name
-          when "create"
-            @resource_service.build_resource(resource_params)
-          when "new"
-            @resource_service.build_resource(nil)
-          else
-            @resource_service.find_singleton_resource
-          end
-        elsif params[:id]
+        if params[:id]
           @resource_service.find_resource(params[:id])
         else
           case action_name
@@ -225,17 +216,14 @@ module Goodmin
       end
 
       def singleton_resource?
-        @resource_service.class.singleton
+        false
       end
 
       def resource_url_array(action: nil)
-        base = singleton_resource? ? resource_class.model_name.singular_route_key.to_sym : @resource
-        [action, *@resource_parents, base].compact
+        [action, *@resource_parents, @resource].compact
       end
 
       def resources_url_array
-        return resource_url_array if singleton_resource?
-
         [*@resource_parents, resource_class.model_name.route_key.to_sym]
       end
     end

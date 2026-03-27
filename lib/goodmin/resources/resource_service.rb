@@ -189,11 +189,6 @@ module Goodmin
           @attrs_for_export || []
         end
 
-        def singleton(value = nil)
-          @singleton = value unless value.nil?
-          @singleton || false
-        end
-
         def association_option_text(attribute, method_name)
           @association_option_texts ||= {}
           @association_option_texts[attribute] = method_name
