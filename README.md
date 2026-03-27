@@ -102,10 +102,12 @@ Goodmin should be up and running at `localhost:3000/admin`
 
 Installing Goodmin does a number of things to the Rails application.
 
-The application controller is modified as such:
+A base controller is created at `app/controllers/goodmin/base_controller.rb`:
 ```ruby
-class ApplicationController < ActionController::Base
-  include Goodmin::ApplicationController
+module Goodmin
+  class BaseController < ActionController::Base
+    include Goodmin::ApplicationController
+  end
 end
 ```
 
@@ -156,7 +158,7 @@ end
 It creates a controller:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 end
 ```
@@ -288,7 +290,7 @@ batch_action :unpublish, only: [:published]
 If you wish to implement your own redirect after a batch action, it needs to be implemented in the controller:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 
   private
@@ -445,7 +447,7 @@ end
 When using the `form` block, parameters are automatically permitted based on the declared attributes. If building a custom form, see the [forms](#forms) section, parameters can be permitted by overriding the `resource_params` method in the controller:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 
   private
@@ -461,7 +463,7 @@ end
 Sometimes you want to pass additional params to the resource object, other that those passed in `resource_params`. In order to do this, you need to pass them along when initializing the resource object in the controller:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 
   private
@@ -493,7 +495,7 @@ By default the user is redirected to the resource show page after create and upd
 For instance, to have the article controller redirect to the index page after both create and update:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 
   private
@@ -507,7 +509,7 @@ end
 Or, to have the article controller redirect to the index page after create and the edit page after update:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 
   private
@@ -522,10 +524,10 @@ class ArticlesController < ApplicationController
 end
 ```
 
-If you wish to change the behaviour for every resource controller, consider creating a common resource controller that your other controllers can inherit from:
+If you wish to change the behaviour for every resource controller, consider overriding methods in `Goodmin::BaseController` or creating an intermediate base controller that your other controllers can inherit from:
 
 ```ruby
-class ResourceController < ApplicationController
+class ResourceController < Goodmin::BaseController
   include Goodmin::Resources::ResourceController
 
   private
@@ -992,7 +994,7 @@ The admin section is now authenticated using Devise.
 If you want to disable authentication for a single controller or controller action, use the following `before_action`:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   prepend_before_action :disable_authentication
 end
 ```
@@ -1104,7 +1106,7 @@ end
 If you want to disable authorization for a single controller or controller action, use the following `before_action`:
 
 ```ruby
-class ArticlesController < ApplicationController
+class ArticlesController < Goodmin::BaseController
   prepend_before_action :disable_authorization
 end
 ```
