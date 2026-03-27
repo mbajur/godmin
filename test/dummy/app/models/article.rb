@@ -4,6 +4,7 @@ class Article < ActiveRecord::Base
   has_and_belongs_to_many :magazines
   has_one :profile
   accepts_nested_attributes_for :profile, allow_destroy: true
+  accepts_nested_attributes_for :comments, allow_destroy: true
 
   def non_orderable_column
     "Not orderable"

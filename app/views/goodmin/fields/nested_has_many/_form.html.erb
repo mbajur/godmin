@@ -1,0 +1,24 @@
+<fieldset data-controller="nested-form">
+  <legend><%= field.attribute.to_s.humanize %></legend>
+
+  <template data-nested-form-target="template">
+    <%= f.fields_for field.attribute, field.new_record, child_index: "NEW_RECORD" do |nested_f| %>
+      <div class="nested-form-wrapper" data-new-record="true">
+        <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: field.new_record, resource_service: field.associated_service) %>
+        <button type="button" data-action="nested-form#remove">Remove</button>
+      </div>
+    <% end %>
+  </template>
+
+  <div data-nested-form-target="target">
+    <%= f.fields_for field.attribute do |nested_f| %>
+      <div class="nested-form-wrapper">
+        <%= nested_f.hidden_field :_destroy %>
+        <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: nested_f.object, resource_service: field.associated_service) %>
+        <button type="button" data-action="nested-form#remove">Remove</button>
+      </div>
+    <% end %>
+  </div>
+
+  <button type="button" data-action="nested-form#add">Add <%= field.attribute.to_s.singularize.humanize %></button>
+</fieldset>

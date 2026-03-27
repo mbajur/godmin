@@ -24,7 +24,7 @@ class ArticleService
     attribute :admin_user
     attribute :published
     attribute :magazines
-    attribute :comments
+    attribute :comments, field: Goodmin::Fields::NestedHasMany
     attribute :profile
   end
   association_option_text :magazines, :name
