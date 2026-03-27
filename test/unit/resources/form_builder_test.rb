@@ -429,6 +429,85 @@ module Goodmin
       assert_equal [:title, :body, :published], attrs.map(&:name)
     end
 
+    def test_section_can_be_nested_inside_col_inside_row
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        row do
+          col(size: 6) do
+            section(title: "Left") do
+              attribute :title
+            end
+          end
+          col(size: 6) do
+            section(title: "Right") do
+              attribute :body
+            end
+          end
+        end
+      end
+
+      assert_equal 1, builder.nodes.length
+      row_node = builder.nodes.first
+      assert_kind_of Resources::ComponentNode, row_node
+      assert_kind_of Resources::FormComponents::Row, row_node.component
+
+      cols = row_node.component.children
+      assert_equal 2, cols.length
+      cols.each { |c| assert_kind_of Resources::FormComponents::Col, c.component }
+
+      left_section = cols.first.component.children.first.component
+      right_section = cols.last.component.children.first.component
+      assert_kind_of Resources::FormComponents::Section, left_section
+      assert_kind_of Resources::FormComponents::Section, right_section
+      assert_equal "Left", left_section.instance_variable_get(:@title)
+      assert_equal "Right", right_section.instance_variable_get(:@title)
+    end
+
+    def test_section_inside_col_inside_row_attributes_are_extracted
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        row do
+          col(size: 6) do
+            section(title: "Left") do
+              attribute :title
+            end
+          end
+          col(size: 6) do
+            section(title: "Right") do
+              attribute :body
+            end
+          end
+        end
+        attribute :published
+      end
+
+      attrs = builder.attributes
+      assert_equal [:title, :body, :published], attrs.map(&:name)
+    end
+
+    def test_section_inside_col_inside_row_renders_title
+      builder = Resources::FormBuilder.new
+      builder.instance_eval do
+        row do
+          col do
+            section(title: "My Section") do
+              attribute :title
+            end
+          end
+        end
+      end
+
+      row_component = builder.nodes.first.component
+      col_component = row_component.children.first.component
+      section_component = col_component.children.first.component
+
+      view_context = build_section_view_context
+      f = build_form_stub(Object.new)
+
+      output = section_component.render(view_context, f)
+      assert_includes output, "My Section"
+    end
+
     def test_section_component_description_can_be_a_proc
       builder = Resources::FormBuilder.new
       desc_proc = ->(record) { "Dynamic: #{record}" }
