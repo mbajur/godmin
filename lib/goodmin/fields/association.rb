@@ -26,7 +26,7 @@ module Goodmin
       end
 
       def select_html_options
-        base = { class: "form-control" }
+        base = { class: "form-select" }
         base[:multiple] = true if many_to_many? || has_many?
         base.merge(options.fetch(:html_options, {}))
       end

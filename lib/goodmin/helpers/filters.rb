@@ -110,7 +110,7 @@ module Goodmin
           @template.concat(@template.select_tag(
             html_options[:name] || "filter[#{name}]",
             @template.safe_join([blank_option, choices]),
-            { class: "form-control", id: name }.merge(html_options.except(:name))
+            { class: "form-select", id: name }.merge(html_options.except(:name))
           ))
         end
       end

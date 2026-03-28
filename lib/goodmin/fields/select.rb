@@ -12,7 +12,7 @@ module Goodmin
       end
 
       def select_html_options
-        { class: "form-control" }.merge(options.fetch(:html_options, {}))
+        { class: "form-select" }.merge(options.fetch(:html_options, {}))
       end
     end
   end
