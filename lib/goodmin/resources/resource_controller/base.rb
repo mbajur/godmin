@@ -150,6 +150,8 @@ module Goodmin
           native_array = if @resource_class.respond_to?(:column_for_attribute)
             column = @resource_class.column_for_attribute(attr_name)
             column.respond_to?(:array?) && column.array?
+          else
+            false
           end
           serialized_array || native_array
         end

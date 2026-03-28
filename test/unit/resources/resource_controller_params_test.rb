@@ -135,21 +135,16 @@ module Goodmin
     end
 
     def test_serialized_array_attribute_is_permitted_as_array
-      post_class = Class.new do
-        def self.name; "Post"; end
-        def self.reflect_on_association(_); nil; end
-        def self.attribute_types; { "tags" => Struct.new(:object_type).new(Array) }; end
-      end
-      post_resource = Class.new do
+      article_resource = Class.new do
         include Goodmin::Resources::Resource
-        form { attribute :tags }
+        form { attribute :properties }
       end
-      controller = TestScope::FakeController.new(post_class, post_resource.new)
+      controller = TestScope::FakeController.new(Article, article_resource.new)
 
       params = controller.resource_params_defaults
-      array_entry = params.find { |p| p.is_a?(Hash) && p.key?(:tags) }
-      assert array_entry, "Expected tags to be permitted as an array"
-      assert_equal [], array_entry[:tags]
+      array_entry = params.find { |p| p.is_a?(Hash) && p.key?(:properties) }
+      assert array_entry, "Expected properties to be permitted as an array"
+      assert_equal [], array_entry[:properties]
     end
 
     def test_native_array_column_attribute_is_permitted_as_array

@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 2026_03_24_000000) do
     t.text "body"
     t.boolean "published", default: false
     t.integer "admin_user_id"
+    t.text "properties"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["admin_user_id"], name: "index_articles_on_admin_user_id"
