@@ -3,12 +3,12 @@
 
   <template data-nested-form-target="template">
     <%= f.fields_for field.attribute, field.new_record, child_index: "NEW_RECORD" do |nested_f| %>
-      <div class="nested-form-wrapper panel panel-default" data-new-record="true">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-danger btn-xs pull-right" data-action="nested-form#remove">Remove</button>
-          <h4 class="panel-title"><%= field.attribute.to_s.singularize.humanize %></h4>
+      <div class="nested-form-wrapper card mb-3" data-new-record="true">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="mb-0"><%= field.attribute.to_s.singularize.humanize %></h4>
+          <button type="button" class="btn btn-danger btn-sm" data-action="nested-form#remove">Remove</button>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
           <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: field.new_record, resource_service: field.associated_service) %>
         </div>
       </div>
@@ -16,13 +16,13 @@
   </template>
 
   <%= f.fields_for field.attribute do |nested_f| %>
-    <div class="nested-form-wrapper panel panel-default">
-      <div class="panel-heading">
+    <div class="nested-form-wrapper card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
         <%= nested_f.hidden_field :_destroy %>
-        <button type="button" class="btn btn-danger btn-xs pull-right" data-action="nested-form#remove">Remove</button>
-        <h4 class="panel-title"><%= field.attribute.to_s.singularize.humanize %></h4>
+        <h4 class="mb-0"><%= field.attribute.to_s.singularize.humanize %></h4>
+        <button type="button" class="btn btn-danger btn-sm" data-action="nested-form#remove">Remove</button>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
         <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: nested_f.object, resource_service: field.associated_service) %>
       </div>
     </div>
@@ -31,5 +31,5 @@
   <%# New records are inserted before this marker via the Stimulus controller %>
   <div data-nested-form-target="target"></div>
 
-  <button type="button" class="btn btn-default mb-3" data-action="nested-form#add">Add <%= field.attribute.to_s.singularize.humanize %></button>
+  <button type="button" class="btn btn-secondary mb-3" data-action="nested-form#add">Add <%= field.attribute.to_s.singularize.humanize %></button>
 </fieldset>

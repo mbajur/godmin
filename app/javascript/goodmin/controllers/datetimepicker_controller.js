@@ -1,24 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { type: String }
-
-  connect() {
-    if (typeof $ === "undefined" || !$.fn.datetimepicker) return
-
-    const options = {}
-    if (this.typeValue === "date") {
-      options.pickTime = false
-    } else if (this.typeValue === "time") {
-      options.pickDate = false
-    }
-
-    $(this.element).datetimepicker(options)
-  }
-
-  disconnect() {
-    if (typeof $ === "undefined" || !$.fn.datetimepicker) return
-    const picker = $(this.element).data("DateTimePicker")
-    if (picker) picker.destroy()
-  }
+  // Native HTML5 date/datetime-local inputs are used for date and time selection.
+  // This controller is kept as a no-op for backward compatibility.
 }

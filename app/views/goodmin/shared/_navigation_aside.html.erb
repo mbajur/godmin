@@ -1,7 +1,7 @@
 <% if authentication_enabled? &&
       admin_user.singleton_class.include?(Goodmin::Authentication::User) &&
       admin_user_signed_in? %>
-  <li>
-    <%= link_to translate_scoped("sessions.sign_out"), session_path, method: :delete %>
+  <li class="nav-item">
+    <%= link_to translate_scoped("sessions.sign_out"), session_path, method: :delete, class: "nav-link" %>
   </li>
 <% end %>

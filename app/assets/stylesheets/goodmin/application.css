@@ -14,7 +14,7 @@ body {
   margin-bottom: 20px;
 }
 
-#filters .filter .control-label {
+#filters .filter .form-label {
   display: block;
 }
 
@@ -24,12 +24,6 @@ body {
 
 #actions {
   margin-bottom: 20px;
-}
-
-#actions::after {
-  display: block;
-  content: "";
-  clear: both;
 }
 
 #table td {

@@ -1,6 +1,6 @@
 <% if @resource_service.filter_map.present? %>
-  <div id="filters" class="panel panel-default">
-    <div class="panel-body">
+  <div id="filters" class="card">
+    <div class="card-body">
       <%= filter_form do |f| %>
         <%= hidden_field_tag :scope, params[:scope] %>
         <%= hidden_field_tag :order, params[:order] %>
@@ -11,8 +11,8 @@
           <% end %>
         <% end %>
 
-        <div class="form-group pull-right">
-          <label class="control-label">&nbsp;</label><br>
+        <div class="mb-3 float-end">
+          <label class="form-label">&nbsp;</label><br>
           <%= f.apply_filters_button %>
           <%= f.clear_filters_button %>
         </div>

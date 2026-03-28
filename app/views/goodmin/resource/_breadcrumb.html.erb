@@ -1,33 +1,37 @@
-<div id="breadcrumb">
-  <ol class="breadcrumb">
-    <% if @resource_parents %>
-      <% @resource_parents.each do |parent| %>
-        <li>
-          <%= link_to parent.class.model_name.human(count: 2), parent.class %>
-        </li>
-        <li>
-          <%= link_to resource_display_name(parent), parent %>
-        </li>
-      <% end %>
-    <% end %>
-    <% if action_name == "index" %>
-      <li class="active">
-        <%= @resource_class.model_name.human(count: 2) %>
-      </li>
-    <% else %>
-      <li>
-        <%= link_to @resource_class.model_name.human(count: 2), resources_url_array %>
-      </li>
-      <li class="active">
-        <% if @resource.new_record? %>
-          <%= t("helpers.submit.create", model: @resource_class.model_name.human) %>
-        <% else %>
-          <%= @resource_service.display_name(@resource) %>
+<div id="breadcrumb" class="d-flex align-items-center">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-0">
+      <% if @resource_parents %>
+        <% @resource_parents.each do |parent| %>
+          <li class="breadcrumb-item">
+            <%= link_to parent.class.model_name.human(count: 2), parent.class %>
+          </li>
+          <li class="breadcrumb-item">
+            <%= link_to resource_display_name(parent), parent %>
+          </li>
         <% end %>
-      </li>
-      <% if @resource.persisted? %>
-        <%= render partial: "breadcrumb_actions" %>
       <% end %>
-    <% end %>
-  </ol>
+      <% if action_name == "index" %>
+        <li class="breadcrumb-item active" aria-current="page">
+          <%= @resource_class.model_name.human(count: 2) %>
+        </li>
+      <% else %>
+        <li class="breadcrumb-item">
+          <%= link_to @resource_class.model_name.human(count: 2), resources_url_array %>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <% if @resource.new_record? %>
+            <%= t("helpers.submit.create", model: @resource_class.model_name.human) %>
+          <% else %>
+            <%= @resource_service.display_name(@resource) %>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  </nav>
+  <% if action_name != "index" && @resource.persisted? %>
+    <div class="ms-auto d-flex gap-2">
+      <%= render partial: "breadcrumb_actions" %>
+    </div>
+  <% end %>
 </div>

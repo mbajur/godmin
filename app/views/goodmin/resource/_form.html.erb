@@ -3,10 +3,10 @@
   <% active_tab = form_tabs.find { |t| t.key == params[:tab] } || form_tabs.first %>
   <div class="row">
     <div class="col-md-2">
-      <ul class="nav nav-pills nav-stacked">
+      <ul class="nav nav-pills flex-column">
         <% form_tabs.each do |tab| %>
-          <li class="<%= "active" if tab == active_tab %>">
-            <%= link_to tab.title, request.path + "?tab=#{CGI.escape(tab.key)}" %>
+          <li class="nav-item">
+            <%= link_to tab.title, request.path + "?tab=#{CGI.escape(tab.key)}", class: "nav-link #{"active" if tab == active_tab}" %>
           </li>
         <% end %>
       </ul>

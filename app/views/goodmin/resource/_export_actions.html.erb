@@ -1,14 +1,14 @@
 <% if @resource_service.attrs_for_export.present? %>
   <div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-      <%= translate_scoped("actions.export") %> <span class="caret"></span>
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      <%= translate_scoped("actions.export") %>
     </button>
-    <ul class="dropdown-menu" role="menu">
+    <ul class="dropdown-menu">
       <li>
-        <%= link_to "#{translate_scoped("actions.export_as")} JSON", url_for(params.to_unsafe_h.merge(only_path: true, format: "json")) %>
+        <%= link_to "#{translate_scoped("actions.export_as")} JSON", url_for(params.to_unsafe_h.merge(only_path: true, format: "json")), class: "dropdown-item" %>
       </li>
       <li>
-        <%= link_to "#{translate_scoped("actions.export_as")} CSV", url_for(params.to_unsafe_h.merge(only_path: true, format: "csv")) %>
+        <%= link_to "#{translate_scoped("actions.export_as")} CSV", url_for(params.to_unsafe_h.merge(only_path: true, format: "csv")), class: "dropdown-item" %>
       </li>
     </ul>
   </div>
