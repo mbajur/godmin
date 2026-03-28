@@ -3,6 +3,7 @@
     <%= link_to(
       translate_scoped("actions.show"),
       [*@resource_parents, resource],
+      class: "btn btn-sm btn-outline-secondary",
       title: translate_scoped("actions.show_title", resource: resource)
     ) %>
   <% end %>
@@ -10,6 +11,7 @@
     <%= link_to(
       translate_scoped("actions.edit"),
       [:edit, *@resource_parents, resource],
+      class: "btn btn-sm btn-outline-secondary",
       title: translate_scoped("actions.edit_title", resource: resource)
     ) %>
   <% end %>
@@ -18,6 +20,7 @@
       translate_scoped("actions.destroy"),
       [*@resource_parents, resource],
       method: :delete,
+      class: "btn btn-sm btn-outline-secondary",
       title: translate_scoped("actions.destroy_title", resource: resource),
       data: { confirm: translate_scoped("actions.confirm_message") }
     ) %>
