@@ -2,9 +2,8 @@ module Goodmin
   module Helpers
     module Forms
       def form_for(record, options = {}, &block)
-        super(record, {
-          url: [*@resource_parents, record]
-        }.merge(options), &block)
+        options = { url: resource_url_array }.merge(options) unless options.key?(:url)
+        super(record, options, &block)
       end
 
       def render_form_nodes(nodes, f)

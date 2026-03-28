@@ -61,6 +61,22 @@ module Goodmin
       assert_equal "My Label", attr.options[:label]
     end
 
+    def test_find_singleton_resource
+      assert_equal :foo, @article_resource.find_singleton_resource
+    end
+
+    def test_find_singleton_resource_returns_nil_when_empty
+      resource_class = Class.new do
+        include Goodmin::Resources::Resource
+
+        def resources_relation
+          []
+        end
+      end
+
+      assert_nil resource_class.new.find_singleton_resource
+    end
+
     def test_display_name
       record = Object.new
       def record.to_s; "my record"; end

@@ -77,6 +77,7 @@ module Goodmin
         def self.helper(*) end
         def self.before_action(*) end
         def self.prepend_before_action(*) end
+        def self.helper_method(*) end
 
         include Goodmin::Resources::ResourceController
 

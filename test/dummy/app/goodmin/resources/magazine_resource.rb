@@ -8,6 +8,10 @@ module Goodmin
         attribute :name
       end
 
+      show do
+        attribute :name
+      end
+
       form do
         attribute :name
       end

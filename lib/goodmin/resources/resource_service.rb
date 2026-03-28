@@ -74,6 +74,10 @@ module Goodmin
         resources_relation.find(id)
       end
 
+      def find_singleton_resource
+        resources_relation.first
+      end
+
       def build_resource(params)
         resources_relation.new(params)
       end
