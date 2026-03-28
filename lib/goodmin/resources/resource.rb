@@ -114,6 +114,10 @@ module Goodmin
         self.class.form_tabs
       end
 
+      def form_tabs_for(record)
+        self.class.form_tabs_for(record)
+      end
+
       def attrs_for_export
         self.class.attrs_for_export
       end
@@ -183,6 +187,10 @@ module Goodmin
 
         def form_tabs
           @form_tabs || []
+        end
+
+        def form_tabs_for(record)
+          FormBuilder.extract_visible_tabs(@form_nodes || [], record)
         end
 
         def attrs_for_export

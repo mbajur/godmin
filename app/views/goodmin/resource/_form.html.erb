@@ -1,4 +1,4 @@
-<% form_tabs = @resource_service.form_tabs %>
+<% form_tabs = @resource_service.form_tabs_for(@resource) %>
 <% if form_tabs.any? %>
   <% active_tab = form_tabs.find { |t| t.key == params[:tab] } || form_tabs.first %>
   <div class="row">
