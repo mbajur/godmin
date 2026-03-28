@@ -44,7 +44,11 @@ module Goodmin
       end
 
       def new_button_visible?
-        policy(@resource_service.build_resource({})).new?
+        if authorization_enabled?
+          policy(@resource_service.build_resource({})).new?
+        else
+          true
+        end
       end
 
       def resource_url_array(action: nil)
