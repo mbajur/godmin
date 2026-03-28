@@ -24,6 +24,9 @@ module Goodmin
       private
 
       def render_form_node(node, f)
+        if_cond = node.respond_to?(:if_condition) ? node.if_condition : nil
+        return nil if if_cond && !if_cond.call(@resource)
+
         case node
         when Resources::AttributeNode
           field = node.attribute.to_field(record: @resource, resource_service: @resource_service)

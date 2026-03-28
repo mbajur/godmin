@@ -661,7 +661,167 @@ module Goodmin
       assert_equal [], klass.form_tabs
     end
 
-    private
+    # if: conditional support
+
+    def test_attribute_node_stores_if_condition
+      cond = ->(r) { r }
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { attribute :title, if: cond }
+
+      node = builder.nodes.first
+      assert_equal cond, node.if_condition
+    end
+
+    def test_attribute_node_if_condition_defaults_to_nil
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { attribute :title }
+
+      assert_nil builder.nodes.first.if_condition
+    end
+
+    def test_html_node_stores_if_condition
+      cond = ->(r) { r }
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { div(if: cond) { attribute :title } }
+
+      node = builder.nodes.first
+      assert_kind_of Resources::HtmlNode, node
+      assert_equal cond, node.if_condition
+    end
+
+    def test_html_node_if_condition_does_not_bleed_into_html_attrs
+      cond = ->(r) { r }
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { div(class: "foo", if: cond) { attribute :title } }
+
+      node = builder.nodes.first
+      assert_equal({ class: "foo" }, node.html_attrs)
+    end
+
+    def test_html_node_if_condition_defaults_to_nil
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { div { attribute :title } }
+
+      assert_nil builder.nodes.first.if_condition
+    end
+
+    def test_component_node_stores_if_condition
+      cond = ->(r) { r }
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { tab(title: "General", if: cond) { attribute :title } }
+
+      node = builder.nodes.first
+      assert_kind_of Resources::ComponentNode, node
+      assert_equal cond, node.if_condition
+    end
+
+    def test_component_node_if_condition_does_not_bleed_into_component_kwargs
+      received_kwargs = {}
+      component_klass = Class.new do
+        include Goodmin::Resources::FormComponent
+
+        define_method(:initialize) do |children, **kwargs|
+          super(children)
+          received_kwargs.merge!(kwargs)
+        end
+
+        def render(_vc, _f) = ""
+      end
+
+      builder_klass = Class.new(Resources::FormBuilder)
+      builder_klass.register_component(:my_widget, component_klass)
+
+      cond = ->(_r) { true }
+      builder = builder_klass.new
+      builder.instance_eval { my_widget(label: "A", if: cond) }
+
+      assert_equal({ label: "A" }, received_kwargs)
+    end
+
+    def test_component_node_if_condition_defaults_to_nil
+      builder = Resources::FormBuilder.new
+      builder.instance_eval { tab(title: "General") { attribute :title } }
+
+      assert_nil builder.nodes.first.if_condition
+    end
+
+    def test_extract_visible_tabs_includes_tabs_with_true_condition
+      record = Object.new
+      nodes = [
+        Resources::ComponentNode.new(
+          Resources::FormComponents::Tab.new([], title: "Visible"),
+          if_condition: ->(_r) { true }
+        )
+      ]
+
+      tabs = Resources::FormBuilder.extract_visible_tabs(nodes, record)
+      assert_equal 1, tabs.length
+      assert_equal "Visible", tabs.first.title
+    end
+
+    def test_extract_visible_tabs_excludes_tabs_with_false_condition
+      record = Object.new
+      nodes = [
+        Resources::ComponentNode.new(
+          Resources::FormComponents::Tab.new([], title: "Hidden"),
+          if_condition: ->(_r) { false }
+        )
+      ]
+
+      tabs = Resources::FormBuilder.extract_visible_tabs(nodes, record)
+      assert_equal 0, tabs.length
+    end
+
+    def test_extract_visible_tabs_includes_tabs_with_nil_condition
+      record = Object.new
+      nodes = [
+        Resources::ComponentNode.new(
+          Resources::FormComponents::Tab.new([], title: "Always Visible")
+        )
+      ]
+
+      tabs = Resources::FormBuilder.extract_visible_tabs(nodes, record)
+      assert_equal 1, tabs.length
+    end
+
+    def test_extract_visible_tabs_passes_record_to_condition
+      passed_record = nil
+      record = Object.new
+      cond = ->(r) { passed_record = r; true }
+
+      nodes = [
+        Resources::ComponentNode.new(
+          Resources::FormComponents::Tab.new([], title: "Tab"),
+          if_condition: cond
+        )
+      ]
+
+      Resources::FormBuilder.extract_visible_tabs(nodes, record)
+      assert_same record, passed_record
+    end
+
+    def test_form_tabs_for_on_resource_service_filters_by_record
+      admin_record = Struct.new(:admin).new(true)
+      regular_record = Struct.new(:admin).new(false)
+
+      klass = Class.new do
+        include Goodmin::Resources::ResourceService
+
+        form do
+          tab(title: "General") { attribute :title }
+          tab(title: "Admin only", if: ->(r) { r.admin }) { attribute :secret }
+        end
+      end
+
+      admin_tabs = klass.form_tabs_for(admin_record)
+      assert_equal 2, admin_tabs.length
+
+      regular_tabs = klass.form_tabs_for(regular_record)
+      assert_equal 1, regular_tabs.length
+      assert_equal "General", regular_tabs.first.title
+    end
+
+
 
     def build_section_view_context
       view_context = Object.new
