@@ -25,7 +25,7 @@
     </nav>
   <% end %>
 </div>
-<div class="pagination-entries float-end d-none d-sm-block">
+<div class="pagination-entries float-end d-none d-sm-block small text-muted">
   <% if @resources.length == 0 %>
     <%= translate_scoped("pagination.entries.zero",
       resource: @resource_class.model_name.human(count: @resources.length).downcase
