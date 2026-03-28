@@ -1,5 +1,5 @@
 <div class="mb-3">
-  <%= f.label field.attribute %>
+  <%= f.label field.attribute, class: "form-label" %>
   <%= f.text_area field.attribute, class: "form-control" %>
   <%= content_tag(:p, field.hint, class: "form-text") if field.hint.present? %>
 </div>

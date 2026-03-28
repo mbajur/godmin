@@ -1,18 +1,18 @@
 <% if field.belongs_to? %>
   <div class="mb-3">
-    <%= f.label field.select_attribute %>
+    <%= f.label field.select_attribute, class: "form-label" %>
     <%= f.select field.select_attribute, field.collection, field.select_options, field.select_html_options %>
     <%= content_tag(:p, field.hint, class: "form-text") if field.hint.present? %>
   </div>
 <% elsif field.many_to_many? || field.has_many? %>
   <div class="mb-3">
-    <%= f.label field.select_attribute, field.attribute.to_s.humanize %>
+    <%= f.label field.select_attribute, field.attribute.to_s.humanize, class: "form-label" %>
     <%= f.select field.select_attribute, field.collection, field.select_options, field.select_html_options %>
     <%= content_tag(:p, field.hint, class: "form-text") if field.hint.present? %>
   </div>
 <% else %>
   <div class="mb-3">
-    <%= f.label field.attribute %>
+    <%= f.label field.attribute, class: "form-label" %>
     <%= f.text_field field.attribute, class: "form-control" %>
     <%= content_tag(:p, field.hint, class: "form-text") if field.hint.present? %>
   </div>
