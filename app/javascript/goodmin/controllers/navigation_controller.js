@@ -8,15 +8,15 @@ export default class extends Controller {
 
   setActiveLink() {
     const pathWithSearch = window.location.pathname + window.location.search
-    let links = this.element.querySelectorAll(`.nav.navbar-nav a[href="${pathWithSearch}"]`)
+    let links = this.element.querySelectorAll(`.navbar-nav a[href="${pathWithSearch}"]`)
 
     if (links.length === 0) {
-      links = this.element.querySelectorAll(`.nav.navbar-nav a[href="${window.location.pathname}"]`)
+      links = this.element.querySelectorAll(`.navbar-nav a[href="${window.location.pathname}"]`)
     }
 
     links.forEach(link => {
-      link.closest("li")?.classList.add("active")
-      link.closest("li.dropdown")?.classList.add("active")
+      link.classList.add("active")
+      link.closest(".dropdown")?.querySelector(".nav-link")?.classList.add("active")
     })
   }
 

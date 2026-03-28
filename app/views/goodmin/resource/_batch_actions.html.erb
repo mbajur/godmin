@@ -1,7 +1,7 @@
 <% if @resource_service.include_batch_actions? %>
-  <%= link_to translate_scoped("batch_actions.buttons.select_all"), "#", class: "btn btn-default",
+  <%= link_to translate_scoped("batch_actions.buttons.select_all"), "#", class: "btn btn-outline-secondary",
     data: { batch_actions_target: "selectAll", action: "click->batch-actions#toggle" } %>
-  <%= link_to translate_scoped("batch_actions.buttons.deselect_all"), "#", class: "btn btn-default hidden",
+  <%= link_to translate_scoped("batch_actions.buttons.deselect_all"), "#", class: "btn btn-outline-secondary d-none",
     data: { batch_actions_target: "selectNone", action: "click->batch-actions#toggle" } %>
 
   <div class="btn-group">

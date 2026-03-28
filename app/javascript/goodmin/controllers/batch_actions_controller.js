@@ -76,21 +76,21 @@ export default class extends Controller {
   }
 
   showSelectAll() {
-    this.selectAllTargets.forEach(el => el.classList.remove("hidden"))
-    this.selectNoneTargets.forEach(el => el.classList.add("hidden"))
+    this.selectAllTargets.forEach(el => el.classList.remove("d-none"))
+    this.selectNoneTargets.forEach(el => el.classList.add("d-none"))
   }
 
   showSelectNone() {
-    this.selectAllTargets.forEach(el => el.classList.add("hidden"))
-    this.selectNoneTargets.forEach(el => el.classList.remove("hidden"))
+    this.selectAllTargets.forEach(el => el.classList.add("d-none"))
+    this.selectNoneTargets.forEach(el => el.classList.remove("d-none"))
   }
 
   updateActions() {
     if (this.checkedIds().length > 0) {
-      this.actionLinkTargets.forEach(el => el.classList.remove("hidden"))
+      this.actionLinkTargets.forEach(el => el.classList.remove("d-none"))
       this.showSelectNone()
     } else {
-      this.actionLinkTargets.forEach(el => el.classList.add("hidden"))
+      this.actionLinkTargets.forEach(el => el.classList.add("d-none"))
       this.showSelectAll()
     }
   }

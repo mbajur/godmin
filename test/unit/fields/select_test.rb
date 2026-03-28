@@ -47,13 +47,13 @@ module Goodmin
       assert_equal({ include_blank: true }, build_field(nil, options: { include_blank: true }).select_options)
     end
 
-    def test_select_html_options_includes_form_control_class_by_default
-      assert_equal({ class: "form-control" }, build_field.select_html_options)
+    def test_select_html_options_includes_form_select_class_by_default
+      assert_equal({ class: "form-select" }, build_field.select_html_options)
     end
 
     def test_select_html_options_merges_passed_html_options
       result = build_field(nil, html_options: { disabled: true }).select_html_options
-      assert_equal({ class: "form-control", disabled: true }, result)
+      assert_equal({ class: "form-select", disabled: true }, result)
     end
 
     def test_select_html_options_allows_class_override

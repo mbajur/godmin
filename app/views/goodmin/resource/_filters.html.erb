@@ -1,20 +1,21 @@
 <% if @resource_service.filter_map.present? %>
-  <div id="filters" class="panel panel-default">
-    <div class="panel-body">
+  <div id="filters" class="card mb-3">
+    <div class="card-body">
       <%= filter_form do |f| %>
         <%= hidden_field_tag :scope, params[:scope] %>
         <%= hidden_field_tag :order, params[:order] %>
 
-        <% @resource_service.filter_map.each do |name, options| %>
-          <%= partial_override "#{controller_path}/filters/#{name}", f: f, name: name, options: options do %>
-            <%= f.filter_field(name, options) %>
+        <div class="row g-3 align-items-end">
+          <% @resource_service.filter_map.each do |name, options| %>
+            <%= partial_override "#{controller_path}/filters/#{name}", f: f, name: name, options: options do %>
+              <%= f.filter_field(name, options) %>
+            <% end %>
           <% end %>
-        <% end %>
 
-        <div class="form-group pull-right">
-          <label class="control-label">&nbsp;</label><br>
-          <%= f.apply_filters_button %>
-          <%= f.clear_filters_button %>
+          <div class="col-auto">
+            <%= f.apply_filters_button %>
+            <%= f.clear_filters_button %>
+          </div>
         </div>
       <% end %>
     </div>
