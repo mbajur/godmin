@@ -6,7 +6,7 @@
       <div class="nested-form-wrapper card mb-3" data-new-record="true">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h4 class="mb-0"><%= field.attribute.to_s.singularize.humanize %></h4>
-          <button type="button" class="btn btn-danger btn-sm" data-action="nested-form#remove">Remove</button>
+          <%= link_to "Remove", "#", data: { action: "nested-form#remove" } %>
         </div>
         <div class="card-body">
           <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: field.new_record, resource_service: field.associated_service) %>
@@ -20,7 +20,7 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <%= nested_f.hidden_field :_destroy %>
         <h4 class="mb-0"><%= field.attribute.to_s.singularize.humanize %></h4>
-        <button type="button" class="btn btn-danger btn-sm" data-action="nested-form#remove">Remove</button>
+        <%= link_to "Remove", "#", data: { action: "nested-form#remove" } %>
       </div>
       <div class="card-body">
         <%= render_form_nodes_for(field.nested_form_nodes, nested_f, record: nested_f.object, resource_service: field.associated_service) %>
@@ -31,5 +31,5 @@
   <%# New records are inserted before this marker via the Stimulus controller %>
   <div data-nested-form-target="target"></div>
 
-  <button type="button" class="btn btn-outline-secondary mb-3" data-action="nested-form#add">Add <%= field.attribute.to_s.singularize.humanize %></button>
+  <%= link_to "Add #{field.attribute.to_s.singularize.humanize}", "#", data: { action: "nested-form#add" } %>
 </fieldset>
