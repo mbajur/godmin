@@ -1,4 +1,4 @@
-class AddPropertiesToArticles < ActiveRecord::Migration[5.0]
+class AddPropertiesToArticles < ActiveRecord::Migration[7.0]
   def change
     add_column :articles, :properties, :text
   end

@@ -148,7 +148,6 @@ module Goodmin
     end
 
     def test_native_array_column_attribute_is_permitted_as_array
-      native_array_column = Struct.new(:array?).new(true)
       post_class = Class.new do
         def self.name; "Post"; end
         def self.reflect_on_association(_); nil; end

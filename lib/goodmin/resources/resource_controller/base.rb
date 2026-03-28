@@ -146,7 +146,8 @@ module Goodmin
           return false unless @resource_class.respond_to?(:attribute_types)
 
           attr_type = @resource_class.attribute_types[attr_name.to_s]
-          serialized_array = attr_type.respond_to?(:object_type) && attr_type.object_type == Array
+          serialized_array = (attr_type.respond_to?(:object_type) && attr_type.object_type == Array) ||
+            (attr_type.respond_to?(:coder) && attr_type.coder.respond_to?(:object_class) && attr_type.coder.object_class == Array)
           native_array = if @resource_class.respond_to?(:column_for_attribute)
             column = @resource_class.column_for_attribute(attr_name)
             column.respond_to?(:array?) && column.array?
