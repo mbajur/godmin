@@ -134,10 +134,27 @@ module Goodmin
               { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
             elsif association && nested_attributes_accepted?(attribute.name)
               { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
+            elsif array_attribute?(attribute.name)
+              { attribute.name => [] }
             else
               attribute.name
             end
           end
+        end
+
+        def array_attribute?(attr_name)
+          return false unless @resource_class.respond_to?(:attribute_types)
+
+          attr_type = @resource_class.attribute_types[attr_name.to_s]
+          serialized_array = (attr_type.respond_to?(:object_type) && attr_type.object_type == Array) ||
+            (attr_type.respond_to?(:coder) && attr_type.coder.respond_to?(:object_class) && attr_type.coder.object_class == Array)
+          native_array = if @resource_class.respond_to?(:column_for_attribute)
+            column = @resource_class.column_for_attribute(attr_name)
+            column.respond_to?(:array?) && column.array?
+          else
+            false
+          end
+          serialized_array || native_array
         end
 
         def nested_has_many_form?(attribute, association)

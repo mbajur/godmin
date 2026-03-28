@@ -133,5 +133,37 @@ module Goodmin
       ids_entry = params.find { |p| p.is_a?(Hash) && p.key?(:comment_ids) }
       assert_nil ids_entry, "Expected no comment_ids key when nested attributes are accepted"
     end
+
+    def test_serialized_array_attribute_is_permitted_as_array
+      article_resource = Class.new do
+        include Goodmin::Resources::Resource
+        form { attribute :properties }
+      end
+      controller = TestScope::FakeController.new(Article, article_resource.new)
+
+      params = controller.resource_params_defaults
+      array_entry = params.find { |p| p.is_a?(Hash) && p.key?(:properties) }
+      assert array_entry, "Expected properties to be permitted as an array"
+      assert_equal [], array_entry[:properties]
+    end
+
+    def test_native_array_column_attribute_is_permitted_as_array
+      post_class = Class.new do
+        def self.name; "Post"; end
+        def self.reflect_on_association(_); nil; end
+        def self.attribute_types; { "tags" => Object.new }; end
+        def self.column_for_attribute(_attr); Struct.new(:array?).new(true); end
+      end
+      post_resource = Class.new do
+        include Goodmin::Resources::Resource
+        form { attribute :tags }
+      end
+      controller = TestScope::FakeController.new(post_class, post_resource.new)
+
+      params = controller.resource_params_defaults
+      array_entry = params.find { |p| p.is_a?(Hash) && p.key?(:tags) }
+      assert array_entry, "Expected tags to be permitted as an array"
+      assert_equal [], array_entry[:tags]
+    end
   end
 end
