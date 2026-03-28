@@ -3,7 +3,7 @@ module Goodmin
     module Filters
       def filter_form(url: params.to_unsafe_h)
         builder = FormBuilders::FilterFormBuilder.new("", nil, self, {})
-        form_tag(url, method: :get, class: "form-inline") do
+        form_tag(url, method: :get) do
           yield(builder)
         end
       end
@@ -25,8 +25,8 @@ module Goodmin
 
       def string_filter_field(name, _options, html_options = {})
         label_text = @template.translate_scoped("filters.labels.#{name}", default: name.to_s.titleize)
-        @template.content_tag(:div, class: "form-group filter") do
-          @template.concat(@template.label_tag(name, label_text, class: "control-label"))
+        @template.content_tag(:div, class: "col-auto") do
+          @template.concat(@template.label_tag(name, label_text, class: "form-label"))
           @template.concat(@template.text_field_tag(
             "filter[#{name}]",
             default_filter_value(name),
@@ -105,8 +105,8 @@ module Goodmin
 
         blank_option = @template.content_tag(:option, "", value: "")
 
-        @template.content_tag(:div, class: "form-group filter") do
-          @template.concat(@template.label_tag(name, label_text, class: "control-label"))
+        @template.content_tag(:div, class: "col-auto") do
+          @template.concat(@template.label_tag(name, label_text, class: "form-label"))
           @template.concat(@template.select_tag(
             html_options[:name] || "filter[#{name}]",
             @template.safe_join([blank_option, choices]),
