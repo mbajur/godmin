@@ -18,6 +18,16 @@ module Goodmin
         )
       end
 
+      # Returns a flat array of extra attribute names (symbols) to include in
+      # the strong-parameters permit list alongside this attribute.  Merges:
+      #   1. the field class's own +additional_permitted_attributes+ (class-level)
+      #   2. per-usage extras declared via +permitted_attributes:+ in the DSL
+      def additional_permitted_attributes
+        from_field_class = field_class&.additional_permitted_attributes || []
+        from_options = Array(options[:permitted_attributes])
+        from_field_class + from_options
+      end
+
       private
 
       def resolved_field_class(record)

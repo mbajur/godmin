@@ -123,21 +123,22 @@ module Goodmin
         end
 
         def resource_params_defaults
-          @resource_service.attrs_for_form.map do |attribute|
+          @resource_service.attrs_for_form.flat_map do |attribute|
             association = @resource_class.reflect_on_association(attribute.name)
+            extra = attribute.additional_permitted_attributes
 
             if association && association.macro == :belongs_to
-              association.foreign_key.to_sym
+              [association.foreign_key.to_sym] + extra
             elsif association && nested_has_many_form?(attribute, association)
-              { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
+              [{ "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association, extra) }]
             elsif association && (many_to_many_association?(association) || has_many_association?(association))
-              { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
+              [{ "#{attribute.name.to_s.singularize}_ids".to_sym => [] }] + extra
             elsif association && nested_attributes_accepted?(attribute.name)
-              { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
+              [{ "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association, extra) }]
             elsif array_attribute?(attribute.name)
-              { attribute.name => [] }
+              [{ attribute.name => [] }] + extra
             else
-              attribute.name
+              [attribute.name] + extra
             end
           end
         end
@@ -167,10 +168,10 @@ module Goodmin
           @resource_class.method_defined?("#{attribute_name}_attributes=")
         end
 
-        def nested_attribute_permit_list(association)
+        def nested_attribute_permit_list(association, extra = [])
           service_class = Goodmin::ServiceLocator.find_service_class_for(association.klass, context_service_class: @resource_service.class)
           attrs = service_class&.attrs_for_form || []
-          [:id, :_destroy] + attrs.map(&:name)
+          [:id, :_destroy] + attrs.map(&:name) + extra
         end
 
         def many_to_many_association?(association)

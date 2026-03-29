@@ -30,6 +30,14 @@ module Goodmin
         Goodmin::ServiceLocator.find_service_class_for(klass, context_service_class: resource_service.class)
       end
 
+      # Returns a list of extra attribute names (symbols) that this field class
+      # always needs included in the strong-parameters permit list, in addition
+      # to the attribute itself.  Subclasses can override this to declare any
+      # virtual or auxiliary params they require (e.g. file-upload cache fields).
+      def self.additional_permitted_attributes
+        []
+      end
+
       def self.partial_index
         "goodmin/fields/#{field_type}/index"
       end
