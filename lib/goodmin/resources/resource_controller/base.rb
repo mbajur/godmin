@@ -141,7 +141,7 @@ module Goodmin
             end
           end
 
-          defaults + @resource_service.class.additional_permitted_attributes(record: @resource)
+          defaults + @resource_service.class.additional_permitted_attributes(@resource)
         end
 
         def array_attribute?(attr_name)
@@ -172,7 +172,7 @@ module Goodmin
         def nested_attribute_permit_list(association)
           service_class = Goodmin::ServiceLocator.find_service_class_for(association.klass, context_service_class: @resource_service.class)
           attrs = service_class&.attrs_for_form || []
-          additional = service_class&.additional_permitted_attributes(record: nil) || []
+          additional = service_class&.additional_permitted_attributes || []
           [:id, :_destroy] + attrs.map(&:name) + additional
         end
 

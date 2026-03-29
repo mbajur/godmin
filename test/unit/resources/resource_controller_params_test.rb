@@ -144,7 +144,7 @@ module Goodmin
         include Goodmin::Resources::Resource
         form { attribute :title }
 
-        def self.additional_permitted_attributes(record: nil)
+        def self.additional_permitted_attributes(record = nil)
           [:extra_token, :internal_flag]
         end
       end
@@ -166,7 +166,7 @@ module Goodmin
         include Goodmin::Resources::Resource
         form { attribute :title }
 
-        define_singleton_method(:additional_permitted_attributes) do |record: nil|
+        define_singleton_method(:additional_permitted_attributes) do |record = nil|
           received_record = record
           []
         end
@@ -184,7 +184,7 @@ module Goodmin
         include Goodmin::Resources::Resource
         form { attribute :note }
 
-        def self.additional_permitted_attributes(record: nil)
+        def self.additional_permitted_attributes(record = nil)
           [:metadata]
         end
       end
