@@ -25,6 +25,10 @@ module Goodmin
       # attribute defined on the associated resource, and any extras declared
       # via the <tt>permitted_attributes:</tt> DSL option.
       #
+      # Each attribute's own +permitted_attribute+ is called (not just the
+      # bare name), so nested or custom fields can return richer structures
+      # such as <tt>{ properties: [:foo] }</tt>.
+      #
       # Subclasses override this and call +super+ to decorate the list:
       #
       #   class MyProfileField < Goodmin::Fields::NestedHasOne
@@ -34,7 +38,22 @@ module Goodmin
       #   end
       def nested_permitted_attributes
         attrs = associated_service&.attrs_for_form || []
-        [:id, :_destroy] + attrs.map(&:name) + Array(options[:permitted_attributes])
+        rec   = nested_record_instance
+        permitted = if rec
+          attrs.map { |attr| attr.to_field(record: rec, resource_service: associated_service).permitted_attribute }
+        else
+          attrs.map(&:name)
+        end
+        [:id, :_destroy] + permitted + Array(options[:permitted_attributes])
+      end
+
+      protected
+
+      # Returns an instance of the associated model class used for attribute
+      # type resolution inside +nested_permitted_attributes+. Subclasses must
+      # implement this.
+      def nested_record_instance
+        raise NotImplementedError, "#{self.class} must implement #nested_record_instance"
       end
     end
   end

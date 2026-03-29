@@ -70,6 +70,50 @@ module Goodmin
         end
       end
 
+      # Scope for testing recursive nested permitted attributes.
+      # Museum has_one Config; Config has a :params field whose permitted_attribute
+      # returns { params: [:foo] } rather than the bare :params symbol.
+      module Recursive
+        HashField = Class.new(Goodmin::Fields::Base) do
+          def permitted_attribute
+            { attribute => [:foo] }
+          end
+        end
+
+        class ConfigResource
+          include Goodmin::Resources::Resource
+
+          form do
+            attribute :name
+            attribute :params, as: HashField
+          end
+        end
+
+        class Config
+          def self.name
+            "Goodmin::ResourceControllerParamsTest::TestScope::Recursive::Config"
+          end
+        end
+
+        class Museum
+          def self.reflect_on_association(name)
+            return unless name == :config
+
+            Struct.new(:macro, :klass, :foreign_key, :name, :options, keyword_init: true).new(
+              macro: :has_one, klass: Config, foreign_key: nil, name: :config, options: {}
+            )
+          end
+        end
+
+        class MuseumResource
+          include Goodmin::Resources::Resource
+
+          form do
+            attribute :config
+          end
+        end
+      end
+
       # A minimal controller object that exposes resource_params_defaults
       # without needing the full ActionController stack.
       class FakeController
@@ -215,6 +259,23 @@ module Goodmin
       array_entry = params.find { |p| p.is_a?(Hash) && p.key?(:tags) }
       assert array_entry, "Expected tags to be permitted as an array"
       assert_equal [], array_entry[:tags]
+    end
+
+    def test_nested_sub_field_permitted_attribute_is_used_recursively
+      controller = TestScope::FakeController.new(
+        TestScope::Recursive::Museum,
+        TestScope::Recursive::MuseumResource.new
+      )
+
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:config_attributes) }
+      assert nested_entry, "Expected config_attributes key in permitted params"
+      assert_includes nested_entry[:config_attributes], :name,
+        "Plain :name attribute should be permitted as a bare symbol"
+      assert_includes nested_entry[:config_attributes], { params: [:foo] },
+        "Hash field's permitted_attribute ({ params: [:foo] }) should be included recursively"
+      assert_not_includes nested_entry[:config_attributes], :params,
+        "Bare :params symbol should NOT appear when the field returns a hash"
     end
   end
 end

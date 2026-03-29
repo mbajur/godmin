@@ -24,6 +24,12 @@ module Goodmin
         associated_service&.form_nodes || []
       end
 
+      protected
+
+      def nested_record_instance
+        associated_model_class&.new
+      end
+
       private
 
       def reflection
