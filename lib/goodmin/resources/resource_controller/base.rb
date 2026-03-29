@@ -123,21 +123,13 @@ module Goodmin
         end
 
         def resource_params_defaults
+          record = @resource || @resource_class.new
           @resource_service.attrs_for_form.map do |attribute|
-            association = @resource_class.reflect_on_association(attribute.name)
-
-            if association && association.macro == :belongs_to
-              association.foreign_key.to_sym
-            elsif association && nested_has_many_form?(attribute, association)
-              { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
-            elsif association && (many_to_many_association?(association) || has_many_association?(association))
-              { "#{attribute.name.to_s.singularize}_ids".to_sym => [] }
-            elsif association && nested_attributes_accepted?(attribute.name)
-              { "#{attribute.name}_attributes".to_sym => nested_attribute_permit_list(association) }
-            elsif array_attribute?(attribute.name)
+            if array_attribute?(attribute.name)
               { attribute.name => [] }
             else
-              attribute.name
+              field = attribute.to_field(record: record, resource_service: @resource_service)
+              field.permitted_attribute
             end
           end
         end
@@ -155,31 +147,6 @@ module Goodmin
             false
           end
           serialized_array || native_array
-        end
-
-        def nested_has_many_form?(attribute, association)
-          attribute.field_class == Goodmin::Fields::NestedHasMany &&
-            has_many_association?(association) &&
-            nested_attributes_accepted?(attribute.name)
-        end
-
-        def nested_attributes_accepted?(attribute_name)
-          @resource_class.method_defined?("#{attribute_name}_attributes=")
-        end
-
-        def nested_attribute_permit_list(association)
-          service_class = Goodmin::ServiceLocator.find_service_class_for(association.klass, context_service_class: @resource_service.class)
-          attrs = service_class&.attrs_for_form || []
-          [:id, :_destroy] + attrs.map(&:name)
-        end
-
-        def many_to_many_association?(association)
-          association.macro == :has_and_belongs_to_many ||
-            (association.macro == :has_many && association.options[:through].present?)
-        end
-
-        def has_many_association?(association)
-          association.macro == :has_many && !association.options[:through].present?
         end
 
         def redirect_after_create

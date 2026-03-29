@@ -1,6 +1,7 @@
 module Goodmin
   module Fields
-    class NestedHasMany < Base
+    class NestedHasMany < BaseNested
+
       def associated_records
         record.public_send(attribute)
       end
@@ -15,6 +16,12 @@ module Goodmin
 
       def nested_form_nodes
         associated_service&.form_nodes || []
+      end
+
+      protected
+
+      def nested_record_instance
+        new_record
       end
 
       private

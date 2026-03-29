@@ -70,6 +70,50 @@ module Goodmin
         end
       end
 
+      # Scope for testing recursive nested permitted attributes.
+      # Museum has_one Config; Config has a :params field whose permitted_attribute
+      # returns { params: [:foo] } rather than the bare :params symbol.
+      module Recursive
+        HashField = Class.new(Goodmin::Fields::Base) do
+          def permitted_attribute
+            { attribute => [:foo] }
+          end
+        end
+
+        class ConfigResource
+          include Goodmin::Resources::Resource
+
+          form do
+            attribute :name
+            attribute :params, as: HashField
+          end
+        end
+
+        class Config
+          def self.name
+            "Goodmin::ResourceControllerParamsTest::TestScope::Recursive::Config"
+          end
+        end
+
+        class Museum
+          def self.reflect_on_association(name)
+            return unless name == :config
+
+            Struct.new(:macro, :klass, :foreign_key, :name, :options, keyword_init: true).new(
+              macro: :has_one, klass: Config, foreign_key: nil, name: :config, options: {}
+            )
+          end
+        end
+
+        class MuseumResource
+          include Goodmin::Resources::Resource
+
+          form do
+            attribute :config
+          end
+        end
+      end
+
       # A minimal controller object that exposes resource_params_defaults
       # without needing the full ActionController stack.
       class FakeController
@@ -84,9 +128,10 @@ module Goodmin
         # Expose the protected methods for testing
         public :resource_params_defaults
 
-        def initialize(resource_class, resource_service)
+        def initialize(resource_class, resource_service, resource = nil)
           @resource_class = resource_class
           @resource_service = resource_service
+          @resource = resource || resource_class.new
         end
       end
     end
@@ -147,6 +192,56 @@ module Goodmin
       assert_equal [], array_entry[:properties]
     end
 
+    def test_field_class_permitted_attribute_instance_override
+      custom_field = Class.new(Goodmin::Fields::NestedHasOne) do
+        def nested_permitted_attributes
+          super + [:avatar_cache, :remove_avatar]
+        end
+      end
+
+      author_resource = Class.new do
+        include Goodmin::Resources::Resource
+        form { attribute :profile, as: custom_field }
+      end
+      controller = TestScope::FakeController.new(TestScope::Author, author_resource.new)
+
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:profile_attributes) }
+      assert nested_entry, "Expected profile_attributes key in permitted params"
+      assert_includes nested_entry[:profile_attributes], :bio
+      assert_includes nested_entry[:profile_attributes], :avatar_cache
+      assert_includes nested_entry[:profile_attributes], :remove_avatar
+    end
+
+    def test_permitted_attributes_option_on_nested_has_one
+      author_resource = Class.new do
+        include Goodmin::Resources::Resource
+        form { attribute :profile, permitted_attributes: [:avatar_cache] }
+      end
+      controller = TestScope::FakeController.new(TestScope::Author, author_resource.new)
+
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:profile_attributes) }
+      assert nested_entry, "Expected profile_attributes key in permitted params"
+      assert_includes nested_entry[:profile_attributes], :avatar_cache
+      assert_includes nested_entry[:profile_attributes], :bio
+    end
+
+    def test_permitted_attributes_option_on_nested_has_many
+      author_resource = Class.new do
+        include Goodmin::Resources::Resource
+        form { attribute :comments, as: Goodmin::Fields::NestedHasMany, permitted_attributes: [:rank] }
+      end
+      controller = TestScope::FakeController.new(TestScope::Author, author_resource.new)
+
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:comments_attributes) }
+      assert nested_entry, "Expected comments_attributes key in permitted params"
+      assert_includes nested_entry[:comments_attributes], :rank
+      assert_includes nested_entry[:comments_attributes], :title
+      assert_includes nested_entry[:comments_attributes], :body
+    end
+
     def test_native_array_column_attribute_is_permitted_as_array
       post_class = Class.new do
         def self.name; "Post"; end
@@ -164,6 +259,23 @@ module Goodmin
       array_entry = params.find { |p| p.is_a?(Hash) && p.key?(:tags) }
       assert array_entry, "Expected tags to be permitted as an array"
       assert_equal [], array_entry[:tags]
+    end
+
+    def test_nested_sub_field_permitted_attribute_is_used_recursively
+      controller = TestScope::FakeController.new(
+        TestScope::Recursive::Museum,
+        TestScope::Recursive::MuseumResource.new
+      )
+
+      params = controller.resource_params_defaults
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:config_attributes) }
+      assert nested_entry, "Expected config_attributes key in permitted params"
+      assert_includes nested_entry[:config_attributes], :name,
+        "Plain :name attribute should be permitted as a bare symbol"
+      assert_includes nested_entry[:config_attributes], { params: [:foo] },
+        "Hash field's permitted_attribute ({ params: [:foo] }) should be included recursively"
+      assert_not_includes nested_entry[:config_attributes], :params,
+        "Bare :params symbol should NOT appear when the field returns a hash"
     end
   end
 end

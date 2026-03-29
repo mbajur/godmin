@@ -30,6 +30,16 @@ module Goodmin
         Goodmin::ServiceLocator.find_service_class_for(klass, context_service_class: resource_service.class)
       end
 
+      # Returns the single strong-parameters permit entry for this field.
+      # The default is just the attribute name (a symbol).
+      #
+      # Subclasses override this to return richer structures — a foreign-key
+      # symbol, an ids hash, or a nested-attributes hash — without any
+      # knowledge leaking into the controller.
+      def permitted_attribute
+        attribute
+      end
+
       def self.partial_index
         "goodmin/fields/#{field_type}/index"
       end

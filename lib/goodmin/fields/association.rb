@@ -21,6 +21,16 @@ module Goodmin
         belongs_to? ? :"#{attribute}_id" : :"#{attribute.to_s.singularize}_ids"
       end
 
+      # Returns the permit entry for this association field.
+      # belongs_to → the foreign-key symbol; others → <tt>{ ids: [] }</tt>.
+      def permitted_attribute
+        if belongs_to?
+          reflection.foreign_key.to_sym
+        else
+          { :"#{attribute.to_s.singularize}_ids" => [] }
+        end
+      end
+
       def select_options
         options.fetch(:options, {})
       end
