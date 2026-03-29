@@ -1,7 +1,6 @@
 module Goodmin
   module Fields
-    class NestedHasOne < Base
-      include NestedAssociation
+    class NestedHasOne < Nested
 
       def associated_record
         @associated_record ||= begin

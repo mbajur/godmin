@@ -1,15 +1,17 @@
 module Goodmin
   module Fields
-    # Shared permit-list logic included by NestedHasOne and NestedHasMany.
+    # Abstract base class for nested-association field types.
     #
-    # Both nested-association field types share the same strong-parameters API:
-    #
-    # * +permitted_attribute+ — returns the single permit entry:
-    #   <tt>{ *_attributes: [:id, :_destroy, ...] }</tt>.
-    # * +nested_permitted_attributes+ — returns the flat list of attribute
-    #   names that go *inside* that hash.  Override this in a subclass and
-    #   call +super+ to extend the default list.
-    module NestedAssociation
+    # Subclasses (NestedHasOne, NestedHasMany) inherit the shared
+    # strong-parameters logic defined here.  This class must not be
+    # instantiated directly.
+    class Nested < Base
+      def initialize(...)
+        raise NotImplementedError, "#{self.class} is abstract and cannot be instantiated directly" if instance_of?(Nested)
+
+        super
+      end
+
       # Returns the single strong-parameters permit entry for this nested field, e.g.:
       #   { profile_attributes: [:id, :_destroy, :bio, :website] }
       #
