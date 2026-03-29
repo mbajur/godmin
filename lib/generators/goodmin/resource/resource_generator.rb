@@ -4,7 +4,24 @@ class Goodmin::ResourceGenerator < Goodmin::Generators::NamedBase
   argument :attributes, type: :array, default: [], banner: "attribute attribute"
 
   def add_route
-    invoke "resource_route"
+    route_content = "resources :#{file_name.pluralize}"
+
+    if namespaced?
+      inject_into_file "config/routes.rb", before: /^end/ do
+        "    #{route_content}\n"
+      end
+    else
+      routes_file = File.join(destination_root, "config/routes.rb")
+      if File.exist?(routes_file) && File.read(routes_file).match?(/Goodmin::Engine\.routes\.draw/)
+        inject_into_file "config/routes.rb", after: /Goodmin::Engine\.routes\.draw do\s*\n/ do
+          "  #{route_content}\n"
+        end
+      else
+        append_to_file "config/routes.rb" do
+          "\nGoodmin::Engine.routes.draw do\n  #{route_content}\nend\n"
+        end
+      end
+    end
   end
 
   def add_navigation
