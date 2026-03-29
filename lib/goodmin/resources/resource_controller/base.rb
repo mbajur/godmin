@@ -123,11 +123,12 @@ module Goodmin
         end
 
         def resource_params_defaults
+          record = @resource || @resource_class.new
           @resource_service.attrs_for_form.map do |attribute|
             if array_attribute?(attribute.name)
               { attribute.name => [] }
             else
-              field = attribute.to_field(record: @resource, resource_service: @resource_service)
+              field = attribute.to_field(record: record, resource_service: @resource_service)
               field.permitted_attribute
             end
           end
