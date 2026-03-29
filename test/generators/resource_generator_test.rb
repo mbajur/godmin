@@ -27,6 +27,7 @@ module Goodmin
       system! "cd #{destination_root} && bin/rails generate goodmin:resource foo bar --quiet"
 
       assert_file "config/routes.rb", /mount Goodmin::Engine/
+      assert_file "config/routes.rb", /Goodmin::Engine\.routes\.draw do/
       assert_file "config/routes.rb", /resources :foos/
       assert_file "app/views/goodmin/shared/_navigation.html.erb", /<%= navbar_item Foo %>/
 
