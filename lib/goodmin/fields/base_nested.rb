@@ -5,9 +5,9 @@ module Goodmin
     # Subclasses (NestedHasOne, NestedHasMany) inherit the shared
     # strong-parameters logic defined here.  This class must not be
     # instantiated directly.
-    class Nested < Base
+    class BaseNested < Base
       def initialize(...)
-        raise NotImplementedError, "#{self.class} is abstract and cannot be instantiated directly" if instance_of?(Nested)
+        raise NotImplementedError, "#{self.class} is abstract and cannot be instantiated directly" if instance_of?(BaseNested)
 
         super
       end
