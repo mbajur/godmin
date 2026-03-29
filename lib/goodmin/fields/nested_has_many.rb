@@ -1,6 +1,8 @@
 module Goodmin
   module Fields
     class NestedHasMany < Base
+      include NestedAssociation
+
       def associated_records
         record.public_send(attribute)
       end

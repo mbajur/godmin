@@ -84,9 +84,10 @@ module Goodmin
         # Expose the protected methods for testing
         public :resource_params_defaults
 
-        def initialize(resource_class, resource_service)
+        def initialize(resource_class, resource_service, resource = nil)
           @resource_class = resource_class
           @resource_service = resource_service
+          @resource = resource || resource_class.new
         end
       end
     end
@@ -188,10 +189,10 @@ module Goodmin
       assert_includes nested_entry[:comments_attributes], :body
     end
 
-    def test_field_class_additional_permitted_attributes
+    def test_field_class_permitted_attributes_instance_override
       custom_field = Class.new(Goodmin::Fields::String) do
-        def self.additional_permitted_attributes
-          [:photo_cache, :remove_photo]
+        def permitted_attributes
+          super + [:photo_cache, :remove_photo]
         end
       end
 
