@@ -23,11 +23,11 @@ module Goodmin
 
       # Returns the permit entry for this association field.
       # belongs_to → the foreign-key symbol; others → <tt>{ ids: [] }</tt>.
-      def permitted_attributes
+      def permitted_attribute
         if belongs_to?
-          [reflection.foreign_key.to_sym]
+          reflection.foreign_key.to_sym
         else
-          [{ :"#{attribute.to_s.singularize}_ids" => [] }]
+          { :"#{attribute.to_s.singularize}_ids" => [] }
         end
       end
 

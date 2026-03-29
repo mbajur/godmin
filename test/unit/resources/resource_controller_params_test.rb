@@ -148,16 +148,25 @@ module Goodmin
       assert_equal [], array_entry[:properties]
     end
 
-    def test_permitted_attributes_option_on_plain_attribute
+    def test_field_class_permitted_attribute_instance_override
+      custom_field = Class.new(Goodmin::Fields::NestedHasOne) do
+        def nested_permitted_attributes
+          super + [:avatar_cache, :remove_avatar]
+        end
+      end
+
       author_resource = Class.new do
         include Goodmin::Resources::Resource
-        form { attribute :name, permitted_attributes: [:name_cache] }
+        form { attribute :profile, as: custom_field }
       end
       controller = TestScope::FakeController.new(TestScope::Author, author_resource.new)
 
       params = controller.resource_params_defaults
-      assert_includes params, :name
-      assert_includes params, :name_cache
+      nested_entry = params.find { |p| p.is_a?(Hash) && p.key?(:profile_attributes) }
+      assert nested_entry, "Expected profile_attributes key in permitted params"
+      assert_includes nested_entry[:profile_attributes], :bio
+      assert_includes nested_entry[:profile_attributes], :avatar_cache
+      assert_includes nested_entry[:profile_attributes], :remove_avatar
     end
 
     def test_permitted_attributes_option_on_nested_has_one
@@ -187,25 +196,6 @@ module Goodmin
       assert_includes nested_entry[:comments_attributes], :rank
       assert_includes nested_entry[:comments_attributes], :title
       assert_includes nested_entry[:comments_attributes], :body
-    end
-
-    def test_field_class_permitted_attributes_instance_override
-      custom_field = Class.new(Goodmin::Fields::String) do
-        def permitted_attributes
-          super + [:photo_cache, :remove_photo]
-        end
-      end
-
-      author_resource = Class.new do
-        include Goodmin::Resources::Resource
-        form { attribute :name, as: custom_field }
-      end
-      controller = TestScope::FakeController.new(TestScope::Author, author_resource.new)
-
-      params = controller.resource_params_defaults
-      assert_includes params, :name
-      assert_includes params, :photo_cache
-      assert_includes params, :remove_photo
     end
 
     def test_native_array_column_attribute_is_permitted_as_array

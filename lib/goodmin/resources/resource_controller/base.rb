@@ -123,12 +123,12 @@ module Goodmin
         end
 
         def resource_params_defaults
-          @resource_service.attrs_for_form.flat_map do |attribute|
+          @resource_service.attrs_for_form.map do |attribute|
             if array_attribute?(attribute.name)
-              [{ attribute.name => [] }]
+              { attribute.name => [] }
             else
               field = attribute.to_field(record: @resource, resource_service: @resource_service)
-              Array(field.permitted_attributes)
+              field.permitted_attribute
             end
           end
         end
