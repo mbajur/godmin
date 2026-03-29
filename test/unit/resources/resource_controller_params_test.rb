@@ -144,7 +144,7 @@ module Goodmin
         include Goodmin::Resources::Resource
         form { attribute :title }
 
-        def self.additional_permitted_attributes
+        def self.additional_permitted_attributes(record: nil)
           [:extra_token, :internal_flag]
         end
       end
@@ -155,12 +155,36 @@ module Goodmin
       assert_includes params, :internal_flag
     end
 
+    def test_additional_permitted_attributes_receives_record
+      resource_class = Class.new do
+        def self.name; "FakeModel"; end
+        def self.reflect_on_association(_); nil; end
+        def self.attribute_types; {}; end
+      end
+      received_record = nil
+      resource_service_class = Class.new do
+        include Goodmin::Resources::Resource
+        form { attribute :title }
+
+        define_singleton_method(:additional_permitted_attributes) do |record: nil|
+          received_record = record
+          []
+        end
+      end
+      fake_record = Object.new
+      controller = TestScope::FakeController.new(resource_class, resource_service_class.new)
+      controller.instance_variable_set(:@resource, fake_record)
+
+      controller.resource_params_defaults
+      assert_equal fake_record, received_record, "Expected record to be passed to additional_permitted_attributes"
+    end
+
     def test_additional_permitted_attributes_injected_into_nested_permit_list
       resource_class_with_additional = Class.new do
         include Goodmin::Resources::Resource
         form { attribute :note }
 
-        def self.additional_permitted_attributes
+        def self.additional_permitted_attributes(record: nil)
           [:metadata]
         end
       end

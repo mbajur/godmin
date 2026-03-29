@@ -206,7 +206,7 @@ module Goodmin
           @association_option_texts || {}
         end
 
-        def additional_permitted_attributes
+        def additional_permitted_attributes(record: nil)
           []
         end
       end
