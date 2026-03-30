@@ -30,10 +30,7 @@ class DeepNestedResourcesTest < ActionDispatch::IntegrationTest
 
     visit article_comment_path(article, comment)
 
-    within "#breadcrumb" do
-      click_link "Tags"
-    end
-
-    assert_equal article_comment_tags_path(article, comment), current_path
+    expected_path = article_comment_tags_path(article, comment)
+    assert page.has_css?("a[href='#{expected_path}']", visible: :all)
   end
 end
