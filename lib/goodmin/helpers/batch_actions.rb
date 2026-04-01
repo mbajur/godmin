@@ -6,10 +6,8 @@ module Goodmin
 
         data = {
           batch_actions_target: "actionButton",
-          action: "click->batch-actions#prepareAction",
-          value: name
-        }
-        data[:confirm] = translate_scoped("batch_actions.confirm_message") if options[:confirm]
+          confirm: options[:confirm] ? translate_scoped("batch_actions.confirm_message") : nil
+        }.compact
 
         content_tag(
           :button,

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["selectAll", "selectNone", "checkbox", "checkboxContainer", "form", "actionButton"]
+  static targets = ["selectAll", "selectNone", "checkbox", "checkboxContainer", "actionButton"]
 
   connect() {
     this.updateState()
@@ -34,13 +34,14 @@ export default class extends Controller {
       return
     }
 
-    const confirmMessage = event.currentTarget.dataset.confirm
+    const button = event.submitter
+    const confirmMessage = button?.dataset.confirm
     if (confirmMessage && !window.confirm(confirmMessage)) {
       event.preventDefault()
       return
     }
 
-    this.formTarget.action = this.formTarget.dataset.resourcePath + "/" + ids.join(",")
+    event.currentTarget.action = event.currentTarget.dataset.resourcePath + "/" + ids.join(",")
   }
 
   checkedIds() {
