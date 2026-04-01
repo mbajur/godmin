@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["selectAll", "selectNone", "checkbox", "checkboxContainer", "actionLink"]
+  static targets = ["selectAll", "selectNone", "checkbox", "checkboxContainer", "form", "actionButton"]
 
   connect() {
     this.updateState()
@@ -27,43 +27,20 @@ export default class extends Controller {
     this.updateActions()
   }
 
-  triggerAction(event) {
-    event.preventDefault()
-    const link = event.currentTarget
-    const confirmMessage = link.dataset.confirm
-    if (confirmMessage && !window.confirm(confirmMessage)) return
-
-    const action = link.getAttribute("href") + "/" + this.checkedIds().join(",")
-    const batchAction = link.dataset.value
-    const csrfToken = document.querySelector("meta[name='csrf-token']")?.content
-
-    const form = document.createElement("form")
-    form.method = "post"
-    form.action = action
-
-    const methodInput = document.createElement("input")
-    methodInput.type = "hidden"
-    methodInput.name = "_method"
-    methodInput.value = "patch"
-    form.appendChild(methodInput)
-
-    const batchInput = document.createElement("input")
-    batchInput.type = "hidden"
-    batchInput.name = "batch_action"
-    batchInput.value = batchAction
-    form.appendChild(batchInput)
-
-    if (csrfToken) {
-      const csrfInput = document.createElement("input")
-      csrfInput.type = "hidden"
-      csrfInput.name = "authenticity_token"
-      csrfInput.value = csrfToken
-      form.appendChild(csrfInput)
+  prepareAction(event) {
+    const ids = this.checkedIds()
+    if (ids.length === 0) {
+      event.preventDefault()
+      return
     }
 
-    document.body.appendChild(form)
-    form.dataset.turbo = "false"
-    form.requestSubmit()
+    const confirmMessage = event.currentTarget.dataset.confirm
+    if (confirmMessage && !window.confirm(confirmMessage)) {
+      event.preventDefault()
+      return
+    }
+
+    this.formTarget.action = this.formTarget.dataset.resourcePath + "/" + ids.join(",")
   }
 
   checkedIds() {
@@ -88,10 +65,10 @@ export default class extends Controller {
 
   updateActions() {
     if (this.checkedIds().length > 0) {
-      this.actionLinkTargets.forEach(el => el.classList.remove("d-none"))
+      this.actionButtonTargets.forEach(el => el.classList.remove("d-none"))
       this.showSelectNone()
     } else {
-      this.actionLinkTargets.forEach(el => el.classList.add("d-none"))
+      this.actionButtonTargets.forEach(el => el.classList.add("d-none"))
       this.showSelectAll()
     }
   }
