@@ -7,7 +7,7 @@ module Goodmin
         data = {
           batch_actions_target: "actionLink",
           action: "click->batch-actions#triggerAction",
-          turbo: false,
+          turbo: "false",
           value: name
         }
         data[:confirm] = translate_scoped("batch_actions.confirm_message") if options[:confirm]
