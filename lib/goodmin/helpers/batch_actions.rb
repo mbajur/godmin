@@ -4,10 +4,8 @@ module Goodmin
       def batch_action_button(name, options)
         return unless @resource_service.include_batch_action?(name)
 
-        data = {
-          batch_actions_target: "actionButton",
-          confirm: options[:confirm] ? translate_scoped("batch_actions.confirm_message") : nil
-        }.compact
+        data = {}
+        data[:confirm] = translate_scoped("batch_actions.confirm_message") if options[:confirm]
 
         content_tag(
           :button,
@@ -15,7 +13,7 @@ module Goodmin
           type: :submit,
           name: :batch_action,
           value: name,
-          class: "btn btn-default d-none",
+          class: "btn btn-default",
           data: data
         )
       end
