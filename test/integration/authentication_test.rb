@@ -10,7 +10,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     click_button "Sign in"
     visit authenticated_articles_path
     assert_equal authenticated_articles_path, current_path
-    click_link "Sign out"
+    click_on "Sign out"
     visit authenticated_articles_path
     assert_not_equal authenticated_articles_path, current_path
   end
