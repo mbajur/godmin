@@ -16,13 +16,13 @@
     ) %>
   <% end %>
   <% if policy(resource).destroy? %>
-    <%= link_to(
+    <%= button_to(
       translate_scoped("actions.destroy"),
       [*@resource_parents, resource],
       method: :delete,
       class: "btn btn-sm btn-outline-secondary",
       title: translate_scoped("actions.destroy_title", resource: resource),
-      data: { confirm: translate_scoped("actions.confirm_message") }
+      form: { data: { turbo_confirm: translate_scoped("actions.confirm_message") } }
     ) %>
   <% end %>
 </div>

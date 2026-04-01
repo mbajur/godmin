@@ -11,7 +11,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
-      click_link "Destroy"
+      click_button "Destroy"
     end
 
     assert_equal 200, page.status_code
@@ -30,7 +30,7 @@ class BatchActionsTest < ActionDispatch::IntegrationTest
 
     all("[data-batch-actions-target='checkbox']").each(&:click)
     within "#actions" do
-      click_link "Publish"
+      click_button "Publish"
     end
 
     assert_equal articles_path(scope: :published), current_path_with_params

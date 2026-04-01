@@ -4,9 +4,13 @@
   <%= link_to translate_scoped("batch_actions.buttons.deselect_all"), "#", class: "btn btn-outline-secondary d-none",
     data: { batch_actions_target: "selectNone", action: "click->batch-actions#toggle" } %>
 
-  <div class="btn-group">
-    <% @resource_service.batch_action_map.each do |name, options| %>
-      <%= batch_action_link(name, options) %>
-    <% end %>
-  </div>
+  <%= form_tag("#{url_for([*@resource_parents, @resource_class])}/batch", method: :patch,
+      id: "goodmin-batch-form",
+      data: { turbo: "false" }) do %>
+    <div class="btn-group">
+      <% @resource_service.batch_action_map.each do |name, options| %>
+        <%= batch_action_button(name, options) %>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>

@@ -37,7 +37,11 @@ module Goodmin
         end
 
         def batch_action_ids
-          @_batch_action_ids ||= params[:id].split(",").map(&:to_i)
+          @_batch_action_ids ||= if params[:batch_ids].present?
+            Array(params[:batch_ids]).map(&:to_i).select { |id| id > 0 }
+          else
+            params[:id].to_s.split(",").map(&:to_i)
+          end
         end
 
         def batch_action_records

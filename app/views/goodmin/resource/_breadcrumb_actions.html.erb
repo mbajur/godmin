@@ -15,9 +15,10 @@
     <% end %>
     <% if policy(@resource).destroy? %>
       <li>
-        <%= link_to translate_scoped("actions.destroy"), resource_url_array, method: :delete,
+        <%= button_to translate_scoped("actions.destroy"), resource_url_array,
+          method: :delete,
           class: "dropdown-item",
-          data: { confirm: translate_scoped("actions.confirm_message") } %>
+          form: { data: { turbo_confirm: translate_scoped("actions.confirm_message") } } %>
       </li>
     <% end %>
   </ul>

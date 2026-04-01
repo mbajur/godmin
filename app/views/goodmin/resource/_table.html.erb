@@ -23,7 +23,9 @@
             <td align="center"
                 data-batch-actions-target="checkboxContainer"
                 data-action="click->batch-actions#containerClick">
-              <%= check_box_tag "batch_action[items][#{resource.id}]", nil, nil,
+              <%= check_box_tag "batch_ids[]", resource.id, false,
+                id: "batch_ids_#{resource.id}",
+                form: "goodmin-batch-form",
                 data: { batch_actions_target: "checkbox", action: "change->batch-actions#checkboxChange" } %>
             </td>
           <% end %>

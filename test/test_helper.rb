@@ -57,6 +57,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def teardown
+    Capybara.use_default_driver
     @template_paths.each do |path|
       File.delete(path) if File.exist?(path)
     end
