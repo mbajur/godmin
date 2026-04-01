@@ -62,6 +62,7 @@ export default class extends Controller {
     }
 
     document.body.appendChild(form)
+    form.dataset.turbo = "false"
     form.requestSubmit()
   }
 
