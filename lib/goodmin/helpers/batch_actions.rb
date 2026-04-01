@@ -15,7 +15,7 @@ module Goodmin
           type: :submit,
           name: :batch_action,
           value: name,
-          class: "btn btn-default hidden",
+          class: "btn btn-default d-none",
           data: data
         )
       end
