@@ -1,6 +1,5 @@
 require "importmap-rails"
 require "stimulus-rails"
-require "turbo-rails"
 require "csv_builder"
 require "goodmin/application_controller"
 require "goodmin/authentication"

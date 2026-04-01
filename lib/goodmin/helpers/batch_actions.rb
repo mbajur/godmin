@@ -4,16 +4,19 @@ module Goodmin
       def batch_action_link(name, options)
         return unless @resource_service.include_batch_action?(name)
 
+        data = {
+          batch_actions_target: "actionLink",
+          action: "click->batch-actions#triggerAction",
+          turbo: false,
+          value: name
+        }
+        data[:confirm] = translate_scoped("batch_actions.confirm_message") if options[:confirm]
+
         link_to(
           translate_scoped("batch_actions.labels.#{name}", default: name.to_s.titleize),
           [*@resource_parents, @resource_class],
           class: "btn btn-default hidden",
-          data: {
-            batch_actions_target: "actionLink",
-            action: "click->batch-actions#triggerAction",
-            confirm: options[:confirm] ? translate_scoped("batch_actions.confirm_message") : false,
-            value: name
-          }
+          data: data
         )
       end
     end
