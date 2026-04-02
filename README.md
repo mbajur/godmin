@@ -308,6 +308,18 @@ If you are using Goodmin's built in authorization functionality you must [author
 By default, Goodmin supports ordering of database columns in the index view table. However, it cannot automatically sort associations, custom attributes and so on.
 If you want to order something that Goodmin doesn't support out of the box, or you just want to customize how a columns is ordered, you can implement your own ordering functionality in the resource object by creating a `order_by_<attribute>` method.
 
+To set a default column and direction that the index view will be sorted by when no explicit ordering is chosen, use `default_order`:
+
+```ruby
+class ArticleResource
+  include Goodmin::Resources::Resource
+
+  default_order :created_at, :desc
+end
+```
+
+The first argument is the column name and the second is the direction (`:asc` or `:desc`, defaults to `:desc`). The user can still override this by clicking a column header in the index view.
+
 ```ruby
 class ArticleResource
   include Goodmin::Resources::Resource
