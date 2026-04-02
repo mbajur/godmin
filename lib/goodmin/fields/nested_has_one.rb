@@ -39,10 +39,6 @@ module Goodmin
       def associated_model_class
         reflection&.klass
       end
-
-      def associated_service_class
-        find_associated_service_class(associated_model_class)
-      end
     end
   end
 end

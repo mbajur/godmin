@@ -84,5 +84,19 @@ module Goodmin
       assert_equal "goodmin/fields/nested_has_many/index", Fields::NestedHasMany.partial_index
       assert_equal "goodmin/fields/nested_has_many/show", Fields::NestedHasMany.partial_show
     end
+
+    def test_resource_class_option_overrides_associated_service
+      custom_resource = Class.new do
+        include Goodmin::Resources::Resource
+      end
+
+      field = Fields::NestedHasMany.new(
+        attribute: :comments,
+        record: @record,
+        resource_service: @resource_service,
+        resource_class: custom_resource
+      )
+      assert_instance_of custom_resource, field.associated_service
+    end
   end
 end
