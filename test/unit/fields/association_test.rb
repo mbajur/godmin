@@ -77,6 +77,33 @@ module Goodmin
       TestScope::Museum.define_singleton_method(:all) { [] }
     end
 
+    def test_resource_class_option_overrides_associated_service
+      custom_resource = Class.new do
+        include Goodmin::Resources::Resource
+
+        def display_name(record)
+          "custom: #{record.title}"
+        end
+      end
+
+      field = build_field(resource_class: custom_resource)
+      assert_instance_of custom_resource, field.associated_service
+    end
+
+    def test_resource_class_option_affects_display_name
+      custom_resource = Class.new do
+        include Goodmin::Resources::Resource
+
+        def display_name(record)
+          "custom: #{record.title}"
+        end
+      end
+
+      museum = TestScope::Museum.new("The Louvre", 1)
+      field = build_field(resource_class: custom_resource)
+      assert_equal "custom: The Louvre", field.display_name_for(museum)
+    end
+
     def test_select_options_returns_empty_hash_by_default
       assert_equal({}, build_field.select_options)
     end

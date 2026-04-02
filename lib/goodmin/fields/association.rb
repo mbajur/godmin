@@ -61,7 +61,7 @@ module Goodmin
 
       def associated_service
         @associated_service ||= begin
-          service_class = find_associated_service_class(reflection&.klass)
+          service_class = options[:resource_class] || find_associated_service_class(reflection&.klass)
           service_class&.new
         rescue StandardError
           nil
