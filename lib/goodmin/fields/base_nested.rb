@@ -55,6 +55,12 @@ module Goodmin
       def nested_record_instance
         raise NotImplementedError, "#{self.class} must implement #nested_record_instance"
       end
+
+      private
+
+      def associated_service_class
+        options[:resource_class] || find_associated_service_class(associated_model_class)
+      end
     end
   end
 end
