@@ -38,10 +38,10 @@ module Goodmin
         def create
           respond_to do |format|
             if @resource_service.create_resource(@resource)
-              format.html { redirect_to redirect_after_create, notice: redirect_flash_message }
+              format.html { html_response_after_create }
               format.json { render :show, status: :created, location: @resource }
             else
-              format.html { render :edit }
+              format.html { html_response_after_create_failure }
               format.json { render json: @resource.errors, status: :unprocessable_entity }
             end
           end
@@ -50,10 +50,10 @@ module Goodmin
         def update
           respond_to do |format|
             if @resource_service.update_resource(@resource, resource_params)
-              format.html { redirect_to redirect_after_update, notice: redirect_flash_message }
+              format.html { html_response_after_update }
               format.json { render :show, status: :ok, location: @resource }
             else
-              format.html { render :edit }
+              format.html { html_response_after_update_failure }
               format.json { render json: @resource.errors, status: :unprocessable_entity }
             end
           end
@@ -63,7 +63,7 @@ module Goodmin
           @resource_service.destroy_resource(@resource)
 
           respond_to do |format|
-            format.html { redirect_to redirect_after_destroy, notice: redirect_flash_message }
+            format.html { html_response_after_destroy }
             format.json { head :no_content }
           end
         end
@@ -147,6 +147,26 @@ module Goodmin
             false
           end
           serialized_array || native_array
+        end
+
+        def html_response_after_create
+          redirect_to redirect_after_create, notice: redirect_flash_message
+        end
+
+        def html_response_after_create_failure
+          render :new
+        end
+
+        def html_response_after_update
+          redirect_to redirect_after_update, notice: redirect_flash_message
+        end
+
+        def html_response_after_update_failure
+          render :edit
+        end
+
+        def html_response_after_destroy
+          redirect_to redirect_after_destroy, notice: redirect_flash_message
         end
 
         def redirect_after_create
