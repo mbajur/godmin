@@ -1,5 +1,7 @@
 <%= render partial: "breadcrumb" %>
 
-<%= render partial: "errors", locals: { errors: @resource.errors } %>
+<div id="resource-form">
+  <%= render partial: "errors", locals: { errors: @resource.errors } %>
 
-<%= render partial: "form" %>
+  <%= render partial: "form" %>
+</div>

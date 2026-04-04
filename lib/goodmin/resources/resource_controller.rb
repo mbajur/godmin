@@ -16,6 +16,7 @@ module Goodmin
           format.html
           format.json
           format.csv
+          format.turbo_stream
         end
       end
 

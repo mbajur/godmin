@@ -1,7 +1,4 @@
-<%= render partial: "breadcrumb" %>
-
-<div id="resource-form">
+<%= turbo_stream.replace "resource-form" do %>
   <%= render partial: "errors", locals: { errors: @resource.errors } %>
-
   <%= render partial: "form" %>
-</div>
+<% end %>

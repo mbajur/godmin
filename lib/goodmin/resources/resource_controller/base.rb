@@ -28,6 +28,7 @@ module Goodmin
           respond_to do |format|
             format.html
             format.json
+            format.turbo_stream
           end
         end
 
@@ -40,9 +41,11 @@ module Goodmin
             if @resource_service.create_resource(@resource)
               format.html { html_response_after_create }
               format.json { render :show, status: :created, location: @resource }
+              format.turbo_stream { turbo_stream_response_after_create }
             else
               format.html { html_response_after_create_failure }
               format.json { render json: @resource.errors, status: :unprocessable_entity }
+              format.turbo_stream { turbo_stream_response_after_create_failure }
             end
           end
         end
@@ -52,9 +55,11 @@ module Goodmin
             if @resource_service.update_resource(@resource, resource_params)
               format.html { html_response_after_update }
               format.json { render :show, status: :ok, location: @resource }
+              format.turbo_stream { turbo_stream_response_after_update }
             else
               format.html { html_response_after_update_failure }
               format.json { render json: @resource.errors, status: :unprocessable_entity }
+              format.turbo_stream { turbo_stream_response_after_update_failure }
             end
           end
         end
@@ -65,6 +70,7 @@ module Goodmin
           respond_to do |format|
             format.html { html_response_after_destroy }
             format.json { head :no_content }
+            format.turbo_stream { turbo_stream_response_after_destroy }
           end
         end
 
@@ -167,6 +173,26 @@ module Goodmin
 
         def html_response_after_destroy
           redirect_to redirect_after_destroy, notice: redirect_flash_message
+        end
+
+        def turbo_stream_response_after_create
+          redirect_to redirect_after_create, notice: redirect_flash_message
+        end
+
+        def turbo_stream_response_after_create_failure
+          render :create, status: :unprocessable_entity
+        end
+
+        def turbo_stream_response_after_update
+          redirect_to redirect_after_update, notice: redirect_flash_message
+        end
+
+        def turbo_stream_response_after_update_failure
+          render :update, status: :unprocessable_entity
+        end
+
+        def turbo_stream_response_after_destroy
+          render turbo_stream: turbo_stream.remove(dom_id(@resource))
         end
 
         def redirect_after_create

@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       <% @resources.each do |resource| %>
-        <tr data-resource-id="<%= resource.id %>" class="<%= "highlight" if flash[:updated_ids] && flash[:updated_ids].include?(resource.id) %>">
+        <tr id="<%= dom_id(resource) %>" data-resource-id="<%= resource.id %>" class="<%= "highlight" if flash[:updated_ids] && flash[:updated_ids].include?(resource.id) %>">
           <% if @resource_service.include_batch_actions? %>
             <td align="center"
                 data-batch-actions-target="checkboxContainer"
