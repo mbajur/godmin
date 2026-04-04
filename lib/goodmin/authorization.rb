@@ -13,6 +13,10 @@ module Goodmin
       end
     end
 
+    def authorize(record, query = nil, policy_class: nil)
+      super(namespaced_record(record), query, policy_class: policy_class)
+    end
+
     def policy(record)
       policies[record] ||= Pundit.policy!(pundit_user, namespaced_record(record))
     end
