@@ -18,29 +18,7 @@
     </thead>
     <tbody>
       <% @resources.each do |resource| %>
-        <tr data-resource-id="<%= resource.id %>" class="<%= "highlight" if flash[:updated_ids] && flash[:updated_ids].include?(resource.id) %>">
-          <% if @resource_service.include_batch_actions? %>
-            <td align="center"
-                data-batch-actions-target="checkboxContainer"
-                data-action="click->batch-actions#containerClick">
-              <%= check_box_tag "batch_ids[]", resource.id, false,
-                id: "batch_ids_#{resource.id}",
-                form: "goodmin-batch-form",
-                data: { batch_actions_target: "checkbox", action: "change->batch-actions#checkboxChange" } %>
-            </td>
-          <% end %>
-          <% @resource_service.attrs_for_index.each do |attribute| %>
-            <td>
-              <% field = attribute.to_field(record: resource, resource_service: @resource_service) %>
-              <%= partial_override "#{controller_path}/columns/#{attribute.name}", resource: resource do %>
-                <%= render partial: field.class.partial_index, locals: { field: field } %>
-              <% end %>
-            </td>
-          <% end %>
-          <td>
-            <%= render partial: "#{controller_path}/columns/actions", locals: { resource: resource } %>
-          </td>
-        </tr>
+        <%= render partial: "row", locals: { resource: resource } %>
       <% end %>
     </tbody>
   </table>
